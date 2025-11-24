@@ -1,4 +1,7 @@
-import { Button, SearchInput, FormField, Badge } from '@atomic/ui'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Search } from 'lucide-react'
 
 function App() {
   return (
@@ -43,23 +46,29 @@ function App() {
           <div>
             <h2 className="text-2xl font-semibold mb-4">Molecules</h2>
             <div className="space-y-4 max-w-md">
-              <SearchInput 
-                placeholder="Search components..." 
-                onSearch={(value) => console.log('Searching:', value)}
-              />
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search components..." 
+                  className="pl-8"
+                />
+              </div>
               
-              <FormField 
-                label="Email"
-                placeholder="Enter your email"
-                description="We'll never share your email with anyone else."
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Email</label>
+                <Input placeholder="Enter your email" />
+                <p className="text-sm text-muted-foreground">We'll never share your email with anyone else.</p>
+              </div>
               
-              <FormField 
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                error="Password is required"
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-destructive">Password</label>
+                <Input 
+                  type="password" 
+                  placeholder="Enter your password"
+                  className="border-destructive focus-visible:ring-destructive"
+                />
+                <p className="text-sm text-destructive">Password is required</p>
+              </div>
             </div>
           </div>
         </div>
