@@ -1,30 +1,33 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
+# Dependencies
 node_modules
+
+# Build output
 dist
-dist-ssr
-*.local
+build
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Editor
+.vscode
 .idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.swp
 
-*storybook.log
-storybook-static
+# OS
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+
+# UI Prototyping - these files will be created by `npx ui-prototyping init`
+ui-prototyping.config.js
+Claude.md
+.env.example
+apps/
 
 # UI Prototyping - temporary prototypes
 apps/prototypes/*/

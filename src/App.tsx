@@ -1,50 +1,29 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { useState } from 'react'
-import { Button } from './components/ui/button'
-import { ExampleComponent } from './components/ExampleComponent'
-import PrototypeView from './pages/PrototypeView'
-
-function Home() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold text-center mb-8">UI Design System</h1>
-
-      <div className="grid gap-8">
-        <ExampleComponent />
-
-        <div className="p-4 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">shadcn/ui Buttons</h2>
-          <div className="flex gap-2 flex-wrap">
-            <Button variant="default">Default</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="destructive">Destructive</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-          </div>
-        </div>
-
-        <div className="p-4 border rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Counter Example</h2>
-          <Button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import PrototypeView from './pages/PrototypeView';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/prototypes/:id" element={<PrototypeView />} />
-      </Routes>
+      <div className="app">
+        <nav className="nav">
+          <div className="container">
+            <Link to="/" className="logo">
+              User Test Project
+            </Link>
+            <div className="nav-links">
+              <Link to="/">Home</Link>
+            </div>
+          </div>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/prototypes/:id" element={<PrototypeView />} />
+        </Routes>
+      </div>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
