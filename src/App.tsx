@@ -1,17 +1,19 @@
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { Button } from './components/ui/button'
 import { ExampleComponent } from './components/ExampleComponent'
+import PrototypeView from './pages/PrototypeView'
 
-function App() {
+function Home() {
   const [count, setCount] = useState(0)
 
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold text-center mb-8">UI Design System</h1>
-      
+
       <div className="grid gap-8">
         <ExampleComponent />
-        
+
         <div className="p-4 border rounded-lg">
           <h2 className="text-xl font-semibold mb-4">shadcn/ui Buttons</h2>
           <div className="flex gap-2 flex-wrap">
@@ -22,7 +24,7 @@ function App() {
             <Button variant="ghost">Ghost</Button>
           </div>
         </div>
-        
+
         <div className="p-4 border rounded-lg">
           <h2 className="text-xl font-semibold mb-4">Counter Example</h2>
           <Button onClick={() => setCount((count) => count + 1)}>
@@ -31,6 +33,17 @@ function App() {
         </div>
       </div>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/prototypes/:id" element={<PrototypeView />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
