@@ -106,7 +106,8 @@ export default function PrototypeView() {
 /**
  * Save prototype to main branch (creates a PR)
  */
-async function handleSave(id: string) {
+async function handleSave(id: string | undefined) {
+  if (!id) return;
   if (!confirm('Create a pull request to merge this prototype to main?')) return;
 
   try {
@@ -122,14 +123,16 @@ async function handleSave(id: string) {
     alert(`✅ Pull request created: ${data.prUrl}`);
     window.open(data.prUrl, '_blank');
   } catch (error) {
-    alert(`❌ Failed to save: ${error.message}`);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    alert(`❌ Failed to save: ${message}`);
   }
 }
 
 /**
  * Delete prototype (removes branch and files)
  */
-async function handleDelete(id: string) {
+async function handleDelete(id: string | undefined) {
+  if (!id) return;
   if (!confirm('Delete this prototype? This cannot be undone.')) return;
 
   try {
@@ -144,6 +147,7 @@ async function handleDelete(id: string) {
     alert('✅ Prototype deleted');
     window.location.href = '/';
   } catch (error) {
-    alert(`❌ Failed to delete: ${error.message}`);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    alert(`❌ Failed to delete: ${message}`);
   }
 }
