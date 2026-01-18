@@ -8,6 +8,10 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
+// Eagerly import all prototypes using Vite's glob import
+// This ensures all prototype files are included in the build
+const prototypes = import.meta.glob('../../apps/prototypes/*/index.tsx');
+
 export default function PrototypeView() {
   const { id } = useParams<{ id: string }>();
   const [Component, setComponent] = useState<React.ComponentType | null>(null);
@@ -20,9 +24,21 @@ export default function PrototypeView() {
     setLoading(true);
     setError(null);
 
-    // Dynamically import the prototype component
-    import(`../../apps/prototypes/${id}/index.tsx`)
-      .then((module) => {
+    // Find the matching prototype module
+    const modulePath = `../../apps/prototypes/${id}/index.tsx`;
+    const loadModule = prototypes[modulePath];
+
+    if (!loadModule) {
+      console.error('Prototype not found:', id);
+      console.log('Available prototypes:', Object.keys(prototypes));
+      setError(`Failed to load prototype: ${id}`);
+      setLoading(false);
+      return;
+    }
+
+    // Load the prototype module
+    loadModule()
+      .then((module: any) => {
         setComponent(() => module.default);
         setLoading(false);
       })
