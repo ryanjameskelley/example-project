@@ -42,7 +42,7 @@ export default function PrototypeView() {
         setComponent(() => module.default);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error('Error loading prototype:', err);
         setError(`Failed to load prototype: ${id}`);
         setLoading(false);
