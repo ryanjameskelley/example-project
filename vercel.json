@@ -3,6 +3,23 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "vite",
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "prototypes/*": true
+    }
+  },
+  "headers": [
+    {
+      "source": "/prototypes/:path*",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://app.auui.ai https://*.auui.ai"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
