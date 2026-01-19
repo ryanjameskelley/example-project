@@ -20,6 +20,14 @@
         {
           "key": "Content-Security-Policy",
           "value": "frame-ancestors 'self' https://app.auui.ai https://*.auui.ai"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://app.auui.ai"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
         }
       ]
     }
