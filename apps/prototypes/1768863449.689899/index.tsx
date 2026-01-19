@@ -96,14 +96,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       fontSize: '16px',
       fontWeight: '600',
       color: 'white',
-      backgroundColor: '#3b82f6',
+      backgroundColor: '#10b981',
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
     },
     buttonHover: {
-      backgroundColor: '#2563eb',
+      backgroundColor: '#059669',
     },
     footer: {
       marginTop: '20px',
