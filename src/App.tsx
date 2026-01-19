@@ -1,29 +1,20 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
-import PrototypeView from './pages/PrototypeView';
+import { prototypes } from '../apps/prototypes/registry';
 
 function App() {
-  return (
-    <BrowserRouter>
-      <div className="app">
-        <nav className="nav">
-          <div className="container">
-            <Link to="/" className="logo">
-              User Test Project
-            </Link>
-            <div className="nav-links">
-              <Link to="/">Home</Link>
-            </div>
-          </div>
-        </nav>
+  // Get the prototype component from the registry
+  const PrototypeComponent = prototypes['1768857282.516389'];
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/prototypes/:id" element={<PrototypeView />} />
-        </Routes>
+  if (!PrototypeComponent) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>Prototype not found</h1>
+        <p>Could not find prototype with ID: 1768857282.516389</p>
       </div>
-    </BrowserRouter>
-  );
+    );
+  }
+
+  // Render the prototype component directly (no routing)
+  return <PrototypeComponent />;
 }
 
 export default App;
