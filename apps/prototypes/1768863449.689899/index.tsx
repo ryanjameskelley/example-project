@@ -1,7 +1,5 @@
 import { AuuiBanner } from '../../components/AuuiBanner';
 
-import { AuuiBanner } from '../../components/AuuiBanner';
-
 import React, { useState } from 'react';
 
 interface LoginFormProps {
@@ -98,14 +96,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       fontSize: '16px',
       fontWeight: '600',
       color: 'white',
-      backgroundColor: '#10b981',
+      backgroundColor: '#3b82f6',
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
     },
     buttonHover: {
-      backgroundColor: '#059669',
+      backgroundColor: '#2563eb',
     },
     footer: {
       marginTop: '20px',
@@ -114,7 +112,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       color: '#777',
     },
     link: {
-      color: '#8b5cf6',
+      color: '#f59e0b',
       textDecoration: 'none',
       cursor: 'pointer',
     },
@@ -183,17 +181,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 };
 
 const OriginalComponent = LoginForm;
-
-function OriginalComponent(props: any) {
-  return (
-    <>
-      <AuuiBanner galleryUrl="https://app.auui.ai/prototypes/1768863449.689899" />
-      <div style={{ marginTop: '40px' }}>
-        <OriginalComponent {...props} />
-      </div>
-    </>
-  );
-}
 
 export default function Component(props: any) {
   return (
