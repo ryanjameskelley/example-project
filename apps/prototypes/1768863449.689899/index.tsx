@@ -39,6 +39,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     }
   };
 
+  const primaryColor = '#8b5cf6';
+  const primaryColorHover = '#7c3aed';
+
   const styles = {
     container: {
       display: 'flex',
@@ -96,14 +99,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       fontSize: '16px',
       fontWeight: '600',
       color: 'white',
-      backgroundColor: '#8b5cf6',
+      backgroundColor: primaryColor,
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
     },
     buttonHover: {
-      backgroundColor: '#7c3aed',
+      backgroundColor: primaryColorHover,
     },
     footer: {
       marginTop: '20px',
@@ -112,7 +115,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       color: '#777',
     },
     link: {
-      color: '#8b5cf6',
+      color: primaryColor,
       textDecoration: 'none',
       cursor: 'pointer',
     },
