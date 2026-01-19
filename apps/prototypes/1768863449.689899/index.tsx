@@ -39,8 +39,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     }
   };
 
-  const primaryColor = '#8b5cf6';
-  const primaryColorHover = '#7c3aed';
+  const primaryColor = '#b19cd9';
+  const primaryColorHover = '#9f86c9';
 
   const styles = {
     container: {
