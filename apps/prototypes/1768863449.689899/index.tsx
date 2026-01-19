@@ -96,14 +96,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       fontSize: '16px',
       fontWeight: '600',
       color: 'white',
-      backgroundColor: '#10b981',
+      backgroundColor: '#3b82f6',
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
     },
     buttonHover: {
-      backgroundColor: '#059669',
+      backgroundColor: '#2563eb',
     },
     footer: {
       marginTop: '20px',
@@ -112,7 +112,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       color: '#777',
     },
     link: {
-      color: '#f59e0b',
+      color: '#8b5cf6',
       textDecoration: 'none',
       cursor: 'pointer',
     },

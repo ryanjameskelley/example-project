@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768866040593',
+  id: '1768866385029',
   title: 'Change The Color Of The',
-  description: 'change the color of the sign in button',
+  description: 'change the color of the button and forgot password link',
   createdAt: '2026-01-19',
   temporary: true,
 };
