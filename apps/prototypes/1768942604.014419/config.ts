@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768945950721',
-  title: 'Adjust The Corner Radius To',
-  description: 'adjust the corner radius to be more dounded',
+  id: '1768945963102',
+  title: 'Adjusted The Corner Radius To',
+  description: 'adjusted the corner radius to more rounded',
   createdAt: '2026-01-20',
   temporary: true,
 };

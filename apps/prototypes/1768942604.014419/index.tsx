@@ -82,7 +82,7 @@ function OriginalComponent() {
       .slice(0, 2);
   };
 
-  const getRoleBadgeColor = (role: string) => {
+  const getRoleColor = (role: string) => {
     switch (role) {
       case 'admin':
         return 'bg-red-100 text-red-800';
@@ -111,8 +111,18 @@ function OriginalComponent() {
         <Card className="border-blue-200 bg-blue-50 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <div className="h-12 w-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-                {selectedOrg ? getInitials(selectedOrg.name) : 'ORG'}
+              <div className="h-12 w-12 rounded-2xl bg-blue-600 flex items-center justify-center">
+                {selectedOrg?.avatarUrl ? (
+                  <img 
+                    src={selectedOrg.avatarUrl} 
+                    alt={selectedOrg.name}
+                    className="h-12 w-12 rounded-2xl object-cover"
+                  />
+                ) : (
+                  <span className="text-white font-semibold">
+                    {selectedOrg ? getInitials(selectedOrg.name) : 'ORG'}
+                  </span>
+                )}
               </div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -122,7 +132,7 @@ function OriginalComponent() {
                   {selectedOrg?.name}
                 </p>
               </div>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(selectedOrg?.role || 'member')}`}>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(selectedOrg?.role || 'member')}`}>
                 {selectedOrg?.role}
               </span>
             </div>
@@ -130,13 +140,13 @@ function OriginalComponent() {
         </Card>
 
         {/* Organization List */}
-        <Card className="rounded-2xl overflow-hidden">
+        <Card className="rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Your Organizations</CardTitle>
             <Button 
               variant="outline" 
               size="sm" 
-              className="rounded-xl"
+              className="rounded-full"
               onClick={() => setIsDialogOpen(true)}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -153,8 +163,18 @@ function OriginalComponent() {
                     selectedOrgId === org.id ? 'bg-blue-50' : ''
                   }`}
                 >
-                  <div className="h-10 w-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-semibold">
-                    {getInitials(org.name)}
+                  <div className="h-10 w-10 rounded-2xl bg-gray-200 flex items-center justify-center">
+                    {org.avatarUrl ? (
+                      <img 
+                        src={org.avatarUrl} 
+                        alt={org.name}
+                        className="h-10 w-10 rounded-2xl object-cover"
+                      />
+                    ) : (
+                      <span className="text-gray-700 font-semibold text-sm">
+                        {getInitials(org.name)}
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 text-left">
                     <div className="flex items-center space-x-2">
@@ -164,7 +184,7 @@ function OriginalComponent() {
                       )}
                     </div>
                     <div className="flex items-center space-x-2 mt-1">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(org.role)}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(org.role)}`}>
                         {org.role}
                       </span>
                       <span className="text-xs text-gray-500">
@@ -179,10 +199,24 @@ function OriginalComponent() {
           </CardContent>
         </Card>
 
-        {/* Add Organization Dialog */}
+        {/* Empty State */}
+        {organizations.length === 0 && (
+          <Card className="border-dashed rounded-2xl">
+            <CardContent className="p-12 text-center">
+              <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 mb-4">No organizations yet</p>
+              <Button onClick={() => setIsDialogOpen(true)} className="rounded-full">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Your First Organization
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Dialog Modal */}
         {isDialogOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl max-w-md w-full p-6">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Add New Organization</h2>
                 <button
@@ -201,6 +235,7 @@ function OriginalComponent() {
                     Organization Name
                   </label>
                   <Input
+                    className="rounded-xl"
                     placeholder="Enter organization name"
                     value={newOrgName}
                     onChange={(e) => setNewOrgName(e.target.value)}
@@ -209,25 +244,24 @@ function OriginalComponent() {
                         handleAddOrganization();
                       }
                     }}
-                    className="rounded-xl"
                   />
                 </div>
                 <div className="flex justify-end space-x-2">
                   <Button
                     variant="outline"
+                    className="rounded-full"
                     onClick={() => {
                       setIsDialogOpen(false);
                       setNewOrgName('');
                     }}
                     disabled={isAdding}
-                    className="rounded-xl"
                   >
                     Cancel
                   </Button>
                   <Button
+                    className="rounded-full"
                     onClick={handleAddOrganization}
                     disabled={!newOrgName.trim() || isAdding}
-                    className="rounded-xl"
                   >
                     {isAdding ? 'Adding...' : 'Add Organization'}
                   </Button>
@@ -235,20 +269,6 @@ function OriginalComponent() {
               </div>
             </div>
           </div>
-        )}
-
-        {/* Empty State */}
-        {organizations.length === 0 && (
-          <Card className="border-dashed rounded-2xl">
-            <CardContent className="p-12 text-center">
-              <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">No organizations yet</p>
-              <Button onClick={() => setIsDialogOpen(true)} className="rounded-xl">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Organization
-              </Button>
-            </CardContent>
-          </Card>
         )}
       </div>
     </div>
