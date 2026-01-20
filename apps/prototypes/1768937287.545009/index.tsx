@@ -4,9 +4,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Building2, ChevronDown, Plus, Check } from 'lucide-react';
 
 interface Organization {
@@ -84,12 +81,13 @@ function OriginalComponent() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Avatar className="w-12 h-12">
-                <AvatarImage src={currentOrg.logo} />
-                <AvatarFallback>
+              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                {currentOrg.logo ? (
+                  <img src={currentOrg.logo} alt={currentOrg.name} className="w-full h-full object-cover" />
+                ) : (
                   <Building2 className="w-6 h-6 text-gray-400" />
-                </AvatarFallback>
-              </Avatar>
+                )}
+              </div>
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                   Current Organization
@@ -98,9 +96,9 @@ function OriginalComponent() {
                   {currentOrg.name}
                 </p>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="secondary" className="text-xs">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                     {currentOrg.role}
-                  </Badge>
+                  </span>
                   <span className="text-xs text-gray-400">
                     {currentOrg.memberCount} members
                   </span>
@@ -133,18 +131,19 @@ function OriginalComponent() {
                 className="w-full flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-blue-600 hover:bg-blue-50 transition-colors text-left"
               >
                 <div className="flex items-center space-x-3">
-                  <Avatar className="w-10 h-10">
-                    <AvatarImage src={org.logo} />
-                    <AvatarFallback>
+                  <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                    {org.logo ? (
+                      <img src={org.logo} alt={org.name} className="w-full h-full object-cover" />
+                    ) : (
                       <Building2 className="w-5 h-5 text-gray-400" />
-                    </AvatarFallback>
-                  </Avatar>
+                    )}
+                  </div>
                   <div>
                     <p className="font-medium text-gray-900">{org.name}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="secondary" className="text-xs">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                         {org.role}
-                      </Badge>
+                      </span>
                       <span className="text-xs text-gray-400">
                         {org.memberCount} members
                       </span>
@@ -162,69 +161,74 @@ function OriginalComponent() {
             ))}
 
             {/* Add Organization Button */}
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2 p-4 mt-4 border-dashed"
-                >
-                  <Plus className="w-4 h-4" />
-                  Join Another Organization
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Join an Organization</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 pt-4">
-                  <div>
-                    <label
-                      htmlFor="org-name"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Organization Name
-                    </label>
-                    <Input
-                      id="org-name"
-                      type="text"
-                      placeholder="Enter organization name"
-                      value={newOrgName}
-                      onChange={(e) => setNewOrgName(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleAddOrganization();
-                        }
-                      }}
-                    />
-                    <p className="text-xs text-gray-500 mt-2">
-                      Enter the exact name of the organization you want to join
-                    </p>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setIsAddDialogOpen(false);
-                        setNewOrgName('');
-                      }}
-                      className="flex-1"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleAddOrganization}
-                      disabled={!newOrgName.trim() || isSearching}
-                      className="flex-1"
-                    >
-                      {isSearching ? 'Searching...' : 'Request to Join'}
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button
+              variant="outline"
+              onClick={() => setIsAddDialogOpen(true)}
+              className="w-full flex items-center justify-center gap-2 p-4 mt-4 border-dashed"
+            >
+              <Plus className="w-4 h-4" />
+              Join Another Organization
+            </Button>
           </CardContent>
         </Card>
+      )}
+
+      {/* Add Organization Dialog */}
+      {isAddDialogOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full">
+            <div className="p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Join an Organization
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="org-name"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Organization Name
+                  </label>
+                  <Input
+                    id="org-name"
+                    type="text"
+                    placeholder="Enter organization name"
+                    value={newOrgName}
+                    onChange={(e) => setNewOrgName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddOrganization();
+                      }
+                    }}
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Enter the exact name of the organization you want to join
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsAddDialogOpen(false);
+                      setNewOrgName('');
+                    }}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleAddOrganization}
+                    disabled={!newOrgName.trim() || isSearching}
+                    className="flex-1"
+                  >
+                    {isSearching ? 'Searching...' : 'Request to Join'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
