@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768946281330',
-  title: 'Keeping The Design Mostly The',
-  description: 'keeping the design mostly the same adjust so that "your organizations" is hidden and can be shown wh',
+  id: '1768949682935',
+  title: 'Redesign This Organization Selector Component',
+  description: 'redesign this organization selector component to use the avaliable shad components while maintaingin',
   createdAt: '2026-01-20',
   temporary: true,
 };

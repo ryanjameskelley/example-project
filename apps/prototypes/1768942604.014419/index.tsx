@@ -2,9 +2,13 @@ import { AuuiBanner } from '../../components/AuuiBanner';
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Check, Plus, Building2, X, ChevronDown } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Check, Plus, Building2, ChevronDown } from 'lucide-react';
 
 interface Organization {
   id: string;
@@ -57,7 +61,6 @@ function OriginalComponent() {
 
     setIsAdding(true);
 
-    // Simulate API call
     setTimeout(() => {
       const newOrg: Organization = {
         id: Date.now().toString(),
@@ -85,18 +88,16 @@ function OriginalComponent() {
       .slice(0, 2);
   };
 
-  const getRoleColor = (role: string) => {
+  const getRoleBadgeVariant = (role: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (role) {
       case 'admin':
-        return 'bg-red-100 text-red-800';
+        return 'destructive';
       case 'manager':
-        return 'bg-blue-100 text-blue-800';
+        return 'default';
       case 'member':
-        return 'bg-green-100 text-green-800';
-      case 'viewer':
-        return 'bg-gray-100 text-gray-800';
+        return 'secondary';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'outline';
     }
   };
 
@@ -110,23 +111,19 @@ function OriginalComponent() {
           </p>
         </div>
 
-        {/* Current Organization Display - Now clickable */}
-        <Card className="border-blue-200 bg-blue-50 rounded-2xl cursor-pointer hover:bg-blue-100 transition-colors" onClick={() => setShowOrgList(!showOrgList)}>
+        {/* Current Organization Display */}
+        <Card 
+          className="cursor-pointer hover:bg-gray-50 transition-colors border-blue-200 bg-blue-50"
+          onClick={() => setShowOrgList(!showOrgList)}
+        >
           <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="h-12 w-12 rounded-2xl bg-blue-600 flex items-center justify-center">
-                {selectedOrg?.avatarUrl ? (
-                  <img 
-                    src={selectedOrg.avatarUrl} 
-                    alt={selectedOrg.name}
-                    className="h-12 w-12 rounded-2xl object-cover"
-                  />
-                ) : (
-                  <span className="text-white font-semibold">
-                    {selectedOrg ? getInitials(selectedOrg.name) : 'ORG'}
-                  </span>
-                )}
-              </div>
+            <div className="flex items-center gap-4">
+              <Avatar className="h-12 w-12">
+                <AvatarImage src={selectedOrg?.avatarUrl} alt={selectedOrg?.name} />
+                <AvatarFallback className="bg-blue-600 text-white">
+                  {selectedOrg ? getInitials(selectedOrg.name) : 'ORG'}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1">
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                   Current Organization
@@ -135,33 +132,37 @@ function OriginalComponent() {
                   {selectedOrg?.name}
                 </p>
               </div>
-              <div className="flex items-center space-x-2">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(selectedOrg?.role || 'member')}`}>
+              <div className="flex items-center gap-2">
+                <Badge variant={getRoleBadgeVariant(selectedOrg?.role || 'member')}>
                   {selectedOrg?.role}
-                </span>
+                </Badge>
                 <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${showOrgList ? 'rotate-180' : ''}`} />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Organization List - Conditionally shown */}
+        {/* Organization List */}
         {showOrgList && (
-          <Card className="rounded-2xl">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Switch Organization</CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsDialogOpen(true);
-                }}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Organization
-              </Button>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Switch Organization</CardTitle>
+                  <CardDescription>Select an organization to switch to</CardDescription>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDialogOpen(true);
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-gray-200">
@@ -169,34 +170,27 @@ function OriginalComponent() {
                   <button
                     key={org.id}
                     onClick={() => handleSelectOrganization(org.id)}
-                    className={`w-full px-6 py-4 flex items-center space-x-4 hover:bg-gray-50 transition-colors ${
+                    className={`w-full px-6 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors ${
                       selectedOrgId === org.id ? 'bg-blue-50' : ''
                     }`}
                   >
-                    <div className="h-10 w-10 rounded-2xl bg-gray-200 flex items-center justify-center">
-                      {org.avatarUrl ? (
-                        <img 
-                          src={org.avatarUrl} 
-                          alt={org.name}
-                          className="h-10 w-10 rounded-2xl object-cover"
-                        />
-                      ) : (
-                        <span className="text-gray-700 font-semibold text-sm">
-                          {getInitials(org.name)}
-                        </span>
-                      )}
-                    </div>
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={org.avatarUrl} alt={org.name} />
+                      <AvatarFallback className="bg-gray-200 text-gray-700">
+                        {getInitials(org.name)}
+                      </AvatarFallback>
+                    </Avatar>
                     <div className="flex-1 text-left">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center gap-2">
                         <p className="font-semibold text-gray-900">{org.name}</p>
                         {selectedOrgId === org.id && (
                           <Check className="w-4 h-4 text-blue-600" />
                         )}
                       </div>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(org.role)}`}>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant={getRoleBadgeVariant(org.role)}>
                           {org.role}
-                        </span>
+                        </Badge>
                         <span className="text-xs text-gray-500">
                           {org.memberCount} member{org.memberCount !== 1 ? 's' : ''}
                         </span>
@@ -211,62 +205,48 @@ function OriginalComponent() {
         )}
 
         {/* Dialog Modal */}
-        {isDialogOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Add New Organization</h2>
-                <button
-                  onClick={() => {
-                    setIsDialogOpen(false);
-                    setNewOrgName('');
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Organization</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Organization Name
+                </label>
+                <Input
+                  placeholder="Enter organization name"
+                  value={newOrgName}
+                  onChange={(e) => setNewOrgName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddOrganization();
+                    }
                   }}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Organization Name
-                  </label>
-                  <Input
-                    className="rounded-xl"
-                    placeholder="Enter organization name"
-                    value={newOrgName}
-                    onChange={(e) => setNewOrgName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleAddOrganization();
-                      }
-                    }}
-                  />
-                </div>
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    variant="outline"
-                    className="rounded-full"
-                    onClick={() => {
-                      setIsDialogOpen(false);
-                      setNewOrgName('');
-                    }}
-                    disabled={isAdding}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="rounded-full"
-                    onClick={handleAddOrganization}
-                    disabled={!newOrgName.trim() || isAdding}
-                  >
-                    {isAdding ? 'Adding...' : 'Add Organization'}
-                  </Button>
-                </div>
+                />
               </div>
             </div>
-          </div>
-        )}
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsDialogOpen(false);
+                  setNewOrgName('');
+                }}
+                disabled={isAdding}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAddOrganization}
+                disabled={!newOrgName.trim() || isAdding}
+              >
+                {isAdding ? 'Adding...' : 'Add Organization'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
