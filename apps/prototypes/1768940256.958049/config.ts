@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768940587470',
-  title: 'Change Button Color To',
-  description: 'change button color to',
+  id: '1768940601877',
+  title: 'Change Button Color To Purple',
+  description: 'change button color to purple',
   createdAt: '2026-01-20',
   temporary: true,
 };
