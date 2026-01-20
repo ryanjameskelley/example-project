@@ -206,7 +206,7 @@ function OriginalComponent() {
             />
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
               <div 
-                className="bg-white rounded-lg w-full max-w-md p-4"
+                className="bg-white rounded-lg w-full max-w-md p-4 pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New Organization</h2>

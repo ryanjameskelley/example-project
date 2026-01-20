@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768952914739',
-  title: 'Adjust The Single P-6 Class',
-  description: 'adjust the single p-6 class to p-4',
+  id: '1768953098415',
+  title: 'Remove The Wrapper Div And',
+  description: 'Remove the wrapper div and apply mb-4 directly to DialogTitle',
   createdAt: '2026-01-20',
   temporary: true,
 };
