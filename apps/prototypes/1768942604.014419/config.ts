@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768952762249',
-  title: 'Undpo The Previous Change Onclichk',
-  description: 'undpo the previous change onclichk isnt the issue. this issue is stylistic and much simpler. theres ',
+  id: '1768952914739',
+  title: 'Adjust The Single P-6 Class',
+  description: 'adjust the single p-6 class to p-4',
   createdAt: '2026-01-20',
   temporary: true,
 };

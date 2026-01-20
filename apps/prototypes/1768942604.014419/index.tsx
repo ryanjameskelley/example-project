@@ -112,7 +112,7 @@ function OriginalComponent() {
           className="cursor-pointer hover:bg-gray-50 transition-colors border-blue-200 bg-blue-50"
           onClick={() => setShowOrgList(!showOrgList)}
         >
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
                 {selectedOrg ? getInitials(selectedOrg.name) : 'ORG'}
@@ -206,7 +206,7 @@ function OriginalComponent() {
             />
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
               <div 
-                className="bg-white rounded-lg w-full max-w-md p-6"
+                className="bg-white rounded-lg w-full max-w-md p-4"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New Organization</h2>
