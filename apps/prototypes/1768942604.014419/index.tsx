@@ -197,42 +197,40 @@ function OriginalComponent() {
         {/* Dialog Modal */}
         {isDialogOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg w-full max-w-md mx-4">
-              <div className="p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New Organization</h2>
-                <div className="space-y-2 mb-4">
-                  <label className="text-sm font-medium text-gray-700">
-                    Organization Name
-                  </label>
-                  <Input
-                    placeholder="Enter organization name"
-                    value={newOrgName}
-                    onChange={(e) => setNewOrgName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleAddOrganization();
-                      }
-                    }}
-                  />
-                </div>
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsDialogOpen(false);
-                      setNewOrgName('');
-                    }}
-                    disabled={isAdding}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleAddOrganization}
-                    disabled={!newOrgName.trim() || isAdding}
-                  >
-                    {isAdding ? 'Adding...' : 'Add Organization'}
-                  </Button>
-                </div>
+            <div className="bg-white rounded-lg w-full max-w-md mx-4 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New Organization</h2>
+              <div className="space-y-2 mb-4">
+                <label className="text-sm font-medium text-gray-700">
+                  Organization Name
+                </label>
+                <Input
+                  placeholder="Enter organization name"
+                  value={newOrgName}
+                  onChange={(e) => setNewOrgName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddOrganization();
+                    }
+                  }}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsDialogOpen(false);
+                    setNewOrgName('');
+                  }}
+                  disabled={isAdding}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleAddOrganization}
+                  disabled={!newOrgName.trim() || isAdding}
+                >
+                  {isAdding ? 'Adding...' : 'Add Organization'}
+                </Button>
               </div>
             </div>
           </div>
