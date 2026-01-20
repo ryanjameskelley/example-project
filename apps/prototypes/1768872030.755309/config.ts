@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768891531831',
-  title: 'Lets Implement 1',
-  description: 'lets implement 1',
+  id: '1768892635932',
+  title: 'Change The Color Of The',
+  description: 'change the color of the signup button',
   createdAt: '2026-01-20',
   temporary: true,
 };
