@@ -1,6 +1,10 @@
 import { AuuiBanner } from '../../components/AuuiBanner';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { CheckCircle2 } from 'lucide-react';
 
 interface FormData {
   fullName: string;
@@ -16,7 +20,7 @@ interface FormErrors {
   confirmPassword?: string;
 }
 
-const SignupForm: React.FC = () => {
+function OriginalComponent() {
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
@@ -25,6 +29,7 @@ const SignupForm: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,193 +76,165 @@ const SignupForm: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (validate()) {
+      setIsSubmitting(true);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setIsSubmitting(false);
       setIsSubmitted(true);
-      console.log('Form submitted:', formData);
-      // Here you would typically send data to your backend
+      
+      // Clear form after successful submission
+      setFormData({
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
     }
-  };
-
-  const styles = {
-    container: {
-      maxWidth: '400px',
-      margin: '50px auto',
-      padding: '30px',
-      backgroundColor: '#ffffff',
-      borderRadius: '8px',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    },
-    title: {
-      fontSize: '24px',
-      fontWeight: 600,
-      marginBottom: '24px',
-      textAlign: 'center' as const,
-      color: '#333',
-    },
-    formGroup: {
-      marginBottom: '20px',
-    },
-    label: {
-      display: 'block',
-      marginBottom: '6px',
-      fontSize: '14px',
-      fontWeight: 500,
-      color: '#555',
-    },
-    input: {
-      width: '100%',
-      padding: '10px 12px',
-      fontSize: '14px',
-      border: '1px solid #ddd',
-      borderRadius: '4px',
-      boxSizing: 'border-box' as const,
-      transition: 'border-color 0.3s',
-    },
-    inputError: {
-      borderColor: '#e74c3c',
-    },
-    error: {
-      color: '#e74c3c',
-      fontSize: '12px',
-      marginTop: '4px',
-    },
-    button: {
-      width: '100%',
-      padding: '12px',
-      fontSize: '16px',
-      fontWeight: 600,
-      color: '#ffffff',
-      backgroundColor: '#10b981',
-      border: 'none',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s',
-    },
-    buttonHover: {
-      backgroundColor: '#059669',
-    },
-    successMessage: {
-      padding: '15px',
-      backgroundColor: '#d4edda',
-      color: '#155724',
-      borderRadius: '4px',
-      textAlign: 'center' as const,
-      marginBottom: '20px',
-    },
   };
 
   if (isSubmitted) {
     return (
-      <div style={styles.container}>
-        <div style={styles.successMessage}>
-          <strong>Success!</strong> Your account has been created.
-        </div>
-        <p style={{ textAlign: 'center', color: '#666' }}>
-          Welcome, {formData.fullName}!
-        </p>
+      <div className="container mx-auto px-4 py-12 max-w-md">
+        <Card>
+          <CardContent className="p-8">
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle2 className="w-10 h-10 text-green-600" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-2xl font-bold text-gray-900">Success!</h3>
+                <p className="text-sm text-gray-600">
+                  Your account has been created successfully.
+                </p>
+                <p className="text-base font-medium text-gray-900 pt-2">
+                  Welcome, {formData.fullName || 'there'}!
+                </p>
+              </div>
+              <Button 
+                onClick={() => setIsSubmitted(false)}
+                variant="outline"
+                className="mt-4"
+              >
+                Create Another Account
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <div style={styles.formGroup}>
-          <label style={styles.label} htmlFor="fullName">
-            Full Name
-          </label>
-          <input
-            type="text"
-            id="fullName"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            style={{
-              ...styles.input,
-              ...(errors.fullName ? styles.inputError : {}),
-            }}
-          />
-          {errors.fullName && <div style={styles.error}>{errors.fullName}</div>}
-        </div>
+    <div className="container mx-auto px-4 py-12 max-w-md">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Sign Up</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label 
+                htmlFor="fullName" 
+                className="text-sm font-medium text-gray-700"
+              >
+                Full Name
+              </label>
+              <Input
+                type="text"
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                className={errors.fullName ? 'border-red-500' : ''}
+                placeholder="John Doe"
+              />
+              {errors.fullName && (
+                <p className="text-xs text-red-600 mt-1">{errors.fullName}</p>
+              )}
+            </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label} htmlFor="email">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            style={{
-              ...styles.input,
-              ...(errors.email ? styles.inputError : {}),
-            }}
-          />
-          {errors.email && <div style={styles.error}>{errors.email}</div>}
-        </div>
+            <div className="space-y-2">
+              <label 
+                htmlFor="email" 
+                className="text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className={errors.email ? 'border-red-500' : ''}
+                placeholder="john@example.com"
+              />
+              {errors.email && (
+                <p className="text-xs text-red-600 mt-1">{errors.email}</p>
+              )}
+            </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label} htmlFor="password">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            style={{
-              ...styles.input,
-              ...(errors.password ? styles.inputError : {}),
-            }}
-          />
-          {errors.password && <div style={styles.error}>{errors.password}</div>}
-        </div>
+            <div className="space-y-2">
+              <label 
+                htmlFor="password" 
+                className="text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <Input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={errors.password ? 'border-red-500' : ''}
+                placeholder="••••••••"
+              />
+              {errors.password && (
+                <p className="text-xs text-red-600 mt-1">{errors.password}</p>
+              )}
+            </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label} htmlFor="confirmPassword">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            style={{
-              ...styles.input,
-              ...(errors.confirmPassword ? styles.inputError : {}),
-            }}
-          />
-          {errors.confirmPassword && (
-            <div style={styles.error}>{errors.confirmPassword}</div>
-          )}
-        </div>
+            <div className="space-y-2">
+              <label 
+                htmlFor="confirmPassword" 
+                className="text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+              </label>
+              <Input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={errors.confirmPassword ? 'border-red-500' : ''}
+                placeholder="••••••••"
+              />
+              {errors.confirmPassword && (
+                <p className="text-xs text-red-600 mt-1">{errors.confirmPassword}</p>
+              )}
+            </div>
 
-        <button
-          type="submit"
-          style={styles.button}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor;
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = styles.button.backgroundColor;
-          }}
-        >
-          Sign Up
-        </button>
-      </form>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Creating Account...' : 'Sign Up'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-const OriginalComponent = SignupForm;
+}
 
 export default function Component(props: any) {
   return (
