@@ -3,11 +3,8 @@ import { AuuiBanner } from '../../components/AuuiBanner';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Check, Building2, Plus, Users } from 'lucide-react';
+import { Check, Building2, Plus, Users, X } from 'lucide-react';
 
 interface Organization {
   id: string;
@@ -105,26 +102,24 @@ function OriginalComponent() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <Avatar className="w-12 h-12">
+                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
                     {activeOrg.logoUrl ? (
-                      <AvatarImage src={activeOrg.logoUrl} alt={activeOrg.name} />
+                      <img src={activeOrg.logoUrl} alt={activeOrg.name} className="w-full h-full object-cover" />
                     ) : (
-                      <AvatarFallback className="bg-blue-600 text-white">
-                        <Building2 className="w-6 h-6" />
-                      </AvatarFallback>
+                      <Building2 className="w-6 h-6 text-gray-600" />
                     )}
-                  </Avatar>
+                  </div>
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       {activeOrg.name}
-                      <Badge variant="default" className="bg-blue-600 rounded-full">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white">
                         Current
-                      </Badge>
+                      </span>
                     </CardTitle>
                     <CardDescription className="flex items-center gap-4 mt-1">
-                      <Badge variant="outline" className={`${getRoleColor(activeOrg.role)} rounded-full`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRoleColor(activeOrg.role)}`}>
                         {activeOrg.role}
-                      </Badge>
+                      </span>
                       <span className="flex items-center gap-1 text-xs">
                         <Users className="w-3 h-3" />
                         {activeOrg.memberCount} members
@@ -153,21 +148,19 @@ function OriginalComponent() {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <Avatar className="w-12 h-12">
+                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
                           {org.logoUrl ? (
-                            <AvatarImage src={org.logoUrl} alt={org.name} />
+                            <img src={org.logoUrl} alt={org.name} className="w-full h-full object-cover" />
                           ) : (
-                            <AvatarFallback className="bg-gray-200">
-                              <Building2 className="w-6 h-6 text-gray-600" />
-                            </AvatarFallback>
+                            <Building2 className="w-6 h-6 text-gray-600" />
                           )}
-                        </Avatar>
+                        </div>
                         <div>
                           <p className="font-semibold text-gray-900">{org.name}</p>
                           <div className="flex items-center gap-4 mt-1">
-                            <Badge variant="outline" className={`${getRoleColor(org.role)} rounded-full`}>
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRoleColor(org.role)}`}>
                               {org.role}
-                            </Badge>
+                            </span>
                             <span className="flex items-center gap-1 text-xs text-gray-500">
                               <Users className="w-3 h-3" />
                               {org.memberCount} members
@@ -186,64 +179,80 @@ function OriginalComponent() {
         </div>
 
         {/* Add Organization Button */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Card className="border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 transition-colors rounded-2xl">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-center space-x-3 text-gray-600">
-                  <Plus className="w-5 h-5" />
-                  <span className="font-medium">Add Organization</span>
-                </div>
-              </CardContent>
-            </Card>
-          </DialogTrigger>
-          <DialogContent className="rounded-2xl">
-            <DialogHeader>
-              <DialogTitle>Add Organization</DialogTitle>
-              <DialogDescription>
-                Enter the name of the organization you want to add
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <label htmlFor="org-name" className="text-sm font-medium text-gray-700">
-                  Organization Name
-                </label>
-                <Input
-                  id="org-name"
-                  placeholder="e.g., My Company Inc."
-                  value={newOrgName}
-                  onChange={(e) => setNewOrgName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleAddOrganization();
-                    }
-                  }}
-                  className="rounded-lg"
-                />
-              </div>
-              <div className="flex justify-end gap-3">
+        <Card 
+          className="border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 transition-colors rounded-2xl"
+          onClick={() => setIsAddDialogOpen(true)}
+        >
+          <CardContent className="p-6">
+            <div className="flex items-center justify-center space-x-3 text-gray-600">
+              <Plus className="w-5 h-5" />
+              <span className="font-medium">Add Organization</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Add Organization Dialog */}
+        {isAddDialogOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Add Organization</h3>
                 <Button
-                  variant="outline"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setIsAddDialogOpen(false);
                     setNewOrgName('');
                   }}
-                  className="rounded-full"
+                  className="p-1"
                 >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleAddOrganization}
-                  disabled={!newOrgName.trim()}
-                  className="rounded-full"
-                >
-                  Add Organization
+                  <X className="w-4 h-4" />
                 </Button>
               </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Enter the name of the organization you want to add
+              </p>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="org-name" className="text-sm font-medium text-gray-700">
+                    Organization Name
+                  </label>
+                  <Input
+                    id="org-name"
+                    placeholder="e.g., My Company Inc."
+                    value={newOrgName}
+                    onChange={(e) => setNewOrgName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddOrganization();
+                      }
+                    }}
+                    className="rounded-lg"
+                  />
+                </div>
+                <div className="flex justify-end gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsAddDialogOpen(false);
+                      setNewOrgName('');
+                    }}
+                    className="rounded-full"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleAddOrganization}
+                    disabled={!newOrgName.trim()}
+                    className="rounded-full"
+                  >
+                    Add Organization
+                  </Button>
+                </div>
+              </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        )}
       </div>
     </div>
   );
