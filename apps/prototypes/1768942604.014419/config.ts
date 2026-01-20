@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768949966412',
-  title: 'Reduce The Padding Of The',
-  description: 'reduce the padding of the Add New Organization dialog. should be 24 top bottom and 16px gap between ',
+  id: '1768950167830',
+  title: 'Theres More Padding Above "Add',
+  description: 'theres more padding above "Add New Organization" than there should be it could be coming from elsewh',
   createdAt: '2026-01-20',
   temporary: true,
 };
