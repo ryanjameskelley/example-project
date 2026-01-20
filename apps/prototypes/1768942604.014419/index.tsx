@@ -206,12 +206,12 @@ function OriginalComponent() {
             />
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
               <div 
-                className="bg-white rounded-lg w-full max-w-md p-6 pointer-events-auto"
+                className="bg-white rounded-lg w-full max-w-md p-6"
                 onClick={(e) => e.stopPropagation()}
               >
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New Organization</h2>
-                <div className="space-y-2 mb-4">
-                  <label className="text-sm font-medium text-gray-700">
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
                     Organization Name
                   </label>
                   <Input

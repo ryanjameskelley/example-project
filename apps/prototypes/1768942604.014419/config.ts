@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768952500304',
-  title: 'Attempt The Override, If It',
-  description: 'attempt the override, if it doesnt work then well attempt the other solutions',
+  id: '1768952762249',
+  title: 'Undpo The Previous Change Onclichk',
+  description: 'undpo the previous change onclichk isnt the issue. this issue is stylistic and much simpler. theres ',
   createdAt: '2026-01-20',
   temporary: true,
 };
