@@ -141,7 +141,7 @@ function OriginalComponent() {
             <div className="space-y-2">
               <label 
                 htmlFor="fullName" 
-                className="text-sm font-medium text-gray-700"
+                className="text-xs font-medium text-gray-500 uppercase tracking-wide"
               >
                 Full Name
               </label>
@@ -162,7 +162,7 @@ function OriginalComponent() {
             <div className="space-y-2">
               <label 
                 htmlFor="email" 
-                className="text-sm font-medium text-gray-700"
+                className="text-xs font-medium text-gray-500 uppercase tracking-wide"
               >
                 Email
               </label>
@@ -183,7 +183,7 @@ function OriginalComponent() {
             <div className="space-y-2">
               <label 
                 htmlFor="password" 
-                className="text-sm font-medium text-gray-700"
+                className="text-xs font-medium text-gray-500 uppercase tracking-wide"
               >
                 Password
               </label>
@@ -204,7 +204,7 @@ function OriginalComponent() {
             <div className="space-y-2">
               <label 
                 htmlFor="confirmPassword" 
-                className="text-sm font-medium text-gray-700"
+                className="text-xs font-medium text-gray-500 uppercase tracking-wide"
               >
                 Confirm Password
               </label>
@@ -224,7 +224,7 @@ function OriginalComponent() {
 
             <Button
               type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700"
+              className="w-full bg-blue-600 hover:bg-blue-700"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Creating Account...' : 'Sign Up'}
