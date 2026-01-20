@@ -99,9 +99,9 @@ function OriginalComponent() {
         <Card className="border-blue-200 bg-blue-50 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
-              <Avatar className="h-12 w-12">
+              <Avatar className="h-12 w-12 rounded-2xl">
                 <AvatarImage src={selectedOrg?.avatarUrl} alt={selectedOrg?.name} />
-                <AvatarFallback className="bg-blue-600 text-white">
+                <AvatarFallback className="bg-blue-600 text-white rounded-2xl">
                   {selectedOrg ? getInitials(selectedOrg.name) : 'ORG'}
                 </AvatarFallback>
               </Avatar>
@@ -119,12 +119,12 @@ function OriginalComponent() {
         </Card>
 
         {/* Organization List */}
-        <Card className="rounded-2xl overflow-hidden">
+        <Card className="rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Your Organizations</CardTitle>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-xl">
+                <Button variant="outline" size="sm" className="rounded-full">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Organization
                 </Button>
@@ -139,6 +139,7 @@ function OriginalComponent() {
                       Organization Name
                     </label>
                     <Input
+                      className="rounded-xl"
                       placeholder="Enter organization name"
                       value={newOrgName}
                       onChange={(e) => setNewOrgName(e.target.value)}
@@ -147,25 +148,24 @@ function OriginalComponent() {
                           handleAddOrganization();
                         }
                       }}
-                      className="rounded-xl"
                     />
                   </div>
                   <div className="flex justify-end space-x-2">
                     <Button
                       variant="outline"
+                      className="rounded-full"
                       onClick={() => {
                         setIsDialogOpen(false);
                         setNewOrgName('');
                       }}
                       disabled={isAdding}
-                      className="rounded-xl"
                     >
                       Cancel
                     </Button>
                     <Button
+                      className="rounded-full"
                       onClick={handleAddOrganization}
                       disabled={!newOrgName.trim() || isAdding}
-                      className="rounded-xl"
                     >
                       {isAdding ? 'Adding...' : 'Add Organization'}
                     </Button>
@@ -184,9 +184,9 @@ function OriginalComponent() {
                     selectedOrgId === org.id ? 'bg-blue-50' : ''
                   }`}
                 >
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="h-10 w-10 rounded-2xl">
                     <AvatarImage src={org.avatarUrl} alt={org.name} />
-                    <AvatarFallback className="bg-gray-200 text-gray-700">
+                    <AvatarFallback className="bg-gray-200 text-gray-700 rounded-2xl">
                       {getInitials(org.name)}
                     </AvatarFallback>
                   </Avatar>
@@ -219,7 +219,7 @@ function OriginalComponent() {
             <CardContent className="p-12 text-center">
               <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 mb-4">No organizations yet</p>
-              <Button onClick={() => setIsDialogOpen(true)} className="rounded-xl">
+              <Button onClick={() => setIsDialogOpen(true)} className="rounded-full">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Your First Organization
               </Button>
