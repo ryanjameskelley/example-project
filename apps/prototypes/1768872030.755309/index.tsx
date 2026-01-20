@@ -130,14 +130,14 @@ const SignupForm: React.FC = () => {
       fontSize: '16px',
       fontWeight: 600,
       color: '#ffffff',
-      backgroundColor: '#28a745',
+      backgroundColor: '#007bff',
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer',
       transition: 'background-color 0.3s',
     },
     buttonHover: {
-      backgroundColor: '#218838',
+      backgroundColor: '#0056b3',
     },
     successMessage: {
       padding: '15px',
