@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Check, Plus, Building2, X } from 'lucide-react';
+import { Check, Plus, Building2, X, ChevronDown } from 'lucide-react';
 
 interface Organization {
   id: string;
@@ -41,6 +41,7 @@ function OriginalComponent() {
 
   const [selectedOrgId, setSelectedOrgId] = useState<string>('1');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showOrgList, setShowOrgList] = useState(false);
   const [newOrgName, setNewOrgName] = useState('');
   const [isAdding, setIsAdding] = useState(false);
 
@@ -48,6 +49,7 @@ function OriginalComponent() {
 
   const handleSelectOrganization = (orgId: string) => {
     setSelectedOrgId(orgId);
+    setShowOrgList(false);
   };
 
   const handleAddOrganization = () => {
@@ -70,6 +72,7 @@ function OriginalComponent() {
       setNewOrgName('');
       setIsDialogOpen(false);
       setIsAdding(false);
+      setShowOrgList(false);
     }, 800);
   };
 
@@ -101,14 +104,14 @@ function OriginalComponent() {
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Switch Organization</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Current Organization</h1>
           <p className="text-sm text-gray-600 mt-2">
-            Select an organization to access its workspace
+            View or switch between your organizations
           </p>
         </div>
 
-        {/* Current Organization Display */}
-        <Card className="border-blue-200 bg-blue-50 rounded-2xl">
+        {/* Current Organization Display - Now clickable */}
+        <Card className="border-blue-200 bg-blue-50 rounded-2xl cursor-pointer hover:bg-blue-100 transition-colors" onClick={() => setShowOrgList(!showOrgList)}>
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
               <div className="h-12 w-12 rounded-2xl bg-blue-600 flex items-center justify-center">
@@ -132,83 +135,77 @@ function OriginalComponent() {
                   {selectedOrg?.name}
                 </p>
               </div>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(selectedOrg?.role || 'member')}`}>
-                {selectedOrg?.role}
-              </span>
+              <div className="flex items-center space-x-2">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(selectedOrg?.role || 'member')}`}>
+                  {selectedOrg?.role}
+                </span>
+                <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${showOrgList ? 'rotate-180' : ''}`} />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Organization List */}
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Your Organizations</CardTitle>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="rounded-full"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Organization
-            </Button>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-gray-200">
-              {organizations.map((org) => (
-                <button
-                  key={org.id}
-                  onClick={() => handleSelectOrganization(org.id)}
-                  className={`w-full px-6 py-4 flex items-center space-x-4 hover:bg-gray-50 transition-colors ${
-                    selectedOrgId === org.id ? 'bg-blue-50' : ''
-                  }`}
-                >
-                  <div className="h-10 w-10 rounded-2xl bg-gray-200 flex items-center justify-center">
-                    {org.avatarUrl ? (
-                      <img 
-                        src={org.avatarUrl} 
-                        alt={org.name}
-                        className="h-10 w-10 rounded-2xl object-cover"
-                      />
-                    ) : (
-                      <span className="text-gray-700 font-semibold text-sm">
-                        {getInitials(org.name)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="flex items-center space-x-2">
-                      <p className="font-semibold text-gray-900">{org.name}</p>
-                      {selectedOrgId === org.id && (
-                        <Check className="w-4 h-4 text-blue-600" />
+        {/* Organization List - Conditionally shown */}
+        {showOrgList && (
+          <Card className="rounded-2xl">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Switch Organization</CardTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDialogOpen(true);
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Organization
+              </Button>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-gray-200">
+                {organizations.map((org) => (
+                  <button
+                    key={org.id}
+                    onClick={() => handleSelectOrganization(org.id)}
+                    className={`w-full px-6 py-4 flex items-center space-x-4 hover:bg-gray-50 transition-colors ${
+                      selectedOrgId === org.id ? 'bg-blue-50' : ''
+                    }`}
+                  >
+                    <div className="h-10 w-10 rounded-2xl bg-gray-200 flex items-center justify-center">
+                      {org.avatarUrl ? (
+                        <img 
+                          src={org.avatarUrl} 
+                          alt={org.name}
+                          className="h-10 w-10 rounded-2xl object-cover"
+                        />
+                      ) : (
+                        <span className="text-gray-700 font-semibold text-sm">
+                          {getInitials(org.name)}
+                        </span>
                       )}
                     </div>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(org.role)}`}>
-                        {org.role}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {org.memberCount} member{org.memberCount !== 1 ? 's' : ''}
-                      </span>
+                    <div className="flex-1 text-left">
+                      <div className="flex items-center space-x-2">
+                        <p className="font-semibold text-gray-900">{org.name}</p>
+                        {selectedOrgId === org.id && (
+                          <Check className="w-4 h-4 text-blue-600" />
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(org.role)}`}>
+                          {org.role}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {org.memberCount} member{org.memberCount !== 1 ? 's' : ''}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <Building2 className="w-5 h-5 text-gray-400" />
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Empty State */}
-        {organizations.length === 0 && (
-          <Card className="border-dashed rounded-2xl">
-            <CardContent className="p-12 text-center">
-              <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">No organizations yet</p>
-              <Button onClick={() => setIsDialogOpen(true)} className="rounded-full">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Organization
-              </Button>
+                    <Building2 className="w-5 h-5 text-gray-400" />
+                  </button>
+                ))}
+              </div>
             </CardContent>
           </Card>
         )}

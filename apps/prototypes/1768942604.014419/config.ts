@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768945963102',
-  title: 'Adjusted The Corner Radius To',
-  description: 'adjusted the corner radius to more rounded',
+  id: '1768946281330',
+  title: 'Keeping The Design Mostly The',
+  description: 'keeping the design mostly the same adjust so that "your organizations" is hidden and can be shown wh',
   createdAt: '2026-01-20',
   temporary: true,
 };
