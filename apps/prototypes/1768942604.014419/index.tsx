@@ -96,7 +96,7 @@ function OriginalComponent() {
         </div>
 
         {/* Current Organization Display */}
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-blue-200 bg-blue-50 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center space-x-4">
               <Avatar className="h-12 w-12">
@@ -113,23 +113,23 @@ function OriginalComponent() {
                   {selectedOrg?.name}
                 </p>
               </div>
-              <Badge variant="secondary">{selectedOrg?.role}</Badge>
+              <Badge variant="secondary" className="rounded-full">{selectedOrg?.role}</Badge>
             </div>
           </CardContent>
         </Card>
 
         {/* Organization List */}
-        <Card>
+        <Card className="rounded-2xl overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Your Organizations</CardTitle>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="rounded-xl">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Organization
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="rounded-2xl">
                 <DialogHeader>
                   <DialogTitle>Add New Organization</DialogTitle>
                 </DialogHeader>
@@ -147,6 +147,7 @@ function OriginalComponent() {
                           handleAddOrganization();
                         }
                       }}
+                      className="rounded-xl"
                     />
                   </div>
                   <div className="flex justify-end space-x-2">
@@ -157,12 +158,14 @@ function OriginalComponent() {
                         setNewOrgName('');
                       }}
                       disabled={isAdding}
+                      className="rounded-xl"
                     >
                       Cancel
                     </Button>
                     <Button
                       onClick={handleAddOrganization}
                       disabled={!newOrgName.trim() || isAdding}
+                      className="rounded-xl"
                     >
                       {isAdding ? 'Adding...' : 'Add Organization'}
                     </Button>
@@ -195,7 +198,7 @@ function OriginalComponent() {
                       )}
                     </div>
                     <div className="flex items-center space-x-2 mt-1">
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-xs rounded-full">
                         {org.role}
                       </Badge>
                       <span className="text-xs text-gray-500">
@@ -212,11 +215,11 @@ function OriginalComponent() {
 
         {/* Empty State */}
         {organizations.length === 0 && (
-          <Card className="border-dashed">
+          <Card className="border-dashed rounded-2xl">
             <CardContent className="p-12 text-center">
               <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 mb-4">No organizations yet</p>
-              <Button onClick={() => setIsDialogOpen(true)}>
+              <Button onClick={() => setIsDialogOpen(true)} className="rounded-xl">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Your First Organization
               </Button>
