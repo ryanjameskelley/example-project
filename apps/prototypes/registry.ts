@@ -1,7 +1,5 @@
-import React from 'react';
-
-import p0 from './1768940256.958049/index.tsx';
-
-export const prototypes: Record<string, React.ComponentType> = {
-  '1768940256.958049': p0,
+// Auto-generated prototype registry
+// This file is updated automatically when prototypes are created
+export const prototypes = {
+  '1768940256.958049': () => import('./1768940256.958049'),
 };
