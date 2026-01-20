@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768952262348',
-  title: 'The Issue Persists, Attempt The',
-  description: 'the issue persists, attempt the other solution',
+  id: '1768952500304',
+  title: 'Attempt The Override, If It',
+  description: 'attempt the override, if it doesnt work then well attempt the other solutions',
   createdAt: '2026-01-20',
   temporary: true,
 };
