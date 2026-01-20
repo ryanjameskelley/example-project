@@ -139,11 +139,11 @@ function OriginalComponent() {
                   type="checkbox"
                   id="remember"
                   checked={formData.rememberMe}
-                  onChange={(e) => 
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
                     setFormData({ ...formData, rememberMe: e.target.checked })
                   }
                   disabled={isSubmitting}
-                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label
                   htmlFor="remember"
@@ -154,7 +154,7 @@ function OriginalComponent() {
               </div>
               <button
                 type="button"
-                className="text-sm text-purple-600 hover:text-purple-700"
+                className="text-sm text-blue-600 hover:text-blue-700"
                 disabled={isSubmitting}
               >
                 Forgot password?
@@ -183,7 +183,7 @@ function OriginalComponent() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700"
+              className="w-full bg-blue-600 hover:bg-blue-700"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Signing in...' : 'Sign In'}
@@ -194,7 +194,7 @@ function OriginalComponent() {
         <CardFooter>
           <p className="text-sm text-center text-gray-600 w-full">
             Don't have an account?{' '}
-            <button className="text-purple-600 hover:text-purple-700 font-medium">
+            <button className="text-blue-600 hover:text-blue-700 font-medium">
               Sign up
             </button>
           </p>
