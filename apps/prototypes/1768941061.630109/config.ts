@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768941089869',
-  title: 'Build A Prototype Of An',
-  description: 'build a prototype of an account switching feature. the purpose of the feature is to allow a team mem',
+  id: '1768941372182',
+  title: 'Adjust The Border Radius To',
+  description: 'adjust the border radius to more rounded',
   createdAt: '2026-01-20',
   temporary: true,
 };

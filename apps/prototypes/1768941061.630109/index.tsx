@@ -101,7 +101,7 @@ function OriginalComponent() {
 
         {/* Current Organization */}
         {activeOrg && (
-          <Card className="border-2 border-blue-600">
+          <Card className="border-2 border-blue-600 rounded-2xl">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
@@ -117,12 +117,12 @@ function OriginalComponent() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       {activeOrg.name}
-                      <Badge variant="default" className="bg-blue-600">
+                      <Badge variant="default" className="bg-blue-600 rounded-full">
                         Current
                       </Badge>
                     </CardTitle>
                     <CardDescription className="flex items-center gap-4 mt-1">
-                      <Badge variant="outline" className={getRoleColor(activeOrg.role)}>
+                      <Badge variant="outline" className={`${getRoleColor(activeOrg.role)} rounded-full`}>
                         {activeOrg.role}
                       </Badge>
                       <span className="flex items-center gap-1 text-xs">
@@ -147,7 +147,7 @@ function OriginalComponent() {
               .map(org => (
                 <Card
                   key={org.id}
-                  className="cursor-pointer hover:border-blue-300 transition-colors"
+                  className="cursor-pointer hover:border-blue-300 transition-colors rounded-2xl"
                   onClick={() => handleSwitchOrg(org.id)}
                 >
                   <CardContent className="p-6">
@@ -165,7 +165,7 @@ function OriginalComponent() {
                         <div>
                           <p className="font-semibold text-gray-900">{org.name}</p>
                           <div className="flex items-center gap-4 mt-1">
-                            <Badge variant="outline" className={getRoleColor(org.role)}>
+                            <Badge variant="outline" className={`${getRoleColor(org.role)} rounded-full`}>
                               {org.role}
                             </Badge>
                             <span className="flex items-center gap-1 text-xs text-gray-500">
@@ -175,7 +175,7 @@ function OriginalComponent() {
                           </div>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="rounded-full">
                         Switch
                       </Button>
                     </div>
@@ -188,7 +188,7 @@ function OriginalComponent() {
         {/* Add Organization Button */}
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Card className="border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 transition-colors">
+            <Card className="border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 transition-colors rounded-2xl">
               <CardContent className="p-6">
                 <div className="flex items-center justify-center space-x-3 text-gray-600">
                   <Plus className="w-5 h-5" />
@@ -197,7 +197,7 @@ function OriginalComponent() {
               </CardContent>
             </Card>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="rounded-2xl">
             <DialogHeader>
               <DialogTitle>Add Organization</DialogTitle>
               <DialogDescription>
@@ -219,6 +219,7 @@ function OriginalComponent() {
                       handleAddOrganization();
                     }
                   }}
+                  className="rounded-lg"
                 />
               </div>
               <div className="flex justify-end gap-3">
@@ -228,12 +229,14 @@ function OriginalComponent() {
                     setIsAddDialogOpen(false);
                     setNewOrgName('');
                   }}
+                  className="rounded-full"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleAddOrganization}
                   disabled={!newOrgName.trim()}
+                  className="rounded-full"
                 >
                   Add Organization
                 </Button>
