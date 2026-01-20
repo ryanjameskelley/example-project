@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Mail, Lock, AlertCircle } from 'lucide-react';
 
 interface FormData {
@@ -136,13 +135,15 @@ function OriginalComponent() {
             {/* Remember Me & Forgot Password */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Checkbox
+                <input
+                  type="checkbox"
                   id="remember"
                   checked={formData.rememberMe}
-                  onCheckedChange={(checked) => 
-                    setFormData({ ...formData, rememberMe: checked as boolean })
+                  onChange={(e) => 
+                    setFormData({ ...formData, rememberMe: e.target.checked })
                   }
                   disabled={isSubmitting}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label
                   htmlFor="remember"
