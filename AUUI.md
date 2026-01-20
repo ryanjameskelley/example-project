@@ -1,4 +1,4 @@
-# Claude.md - Prototype Generation Guidelines
+# AUUI.md - Prototype Generation Guidelines
 
 This file customizes how Claude generates prototypes for your project.
 
