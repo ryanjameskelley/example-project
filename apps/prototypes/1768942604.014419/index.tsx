@@ -197,11 +197,9 @@ function OriginalComponent() {
         {/* Dialog Modal */}
         {isDialogOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <div className="mb-4">
+            <div className="bg-white rounded-lg w-full max-w-md mx-4">
+              <div className="py-6 px-6 space-y-4">
                 <h2 className="text-lg font-semibold text-gray-900">Add New Organization</h2>
-              </div>
-              <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
                     Organization Name
@@ -217,24 +215,24 @@ function OriginalComponent() {
                     }}
                   />
                 </div>
-              </div>
-              <div className="flex justify-end gap-2 mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsDialogOpen(false);
-                    setNewOrgName('');
-                  }}
-                  disabled={isAdding}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleAddOrganization}
-                  disabled={!newOrgName.trim() || isAdding}
-                >
-                  {isAdding ? 'Adding...' : 'Add Organization'}
-                </Button>
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsDialogOpen(false);
+                      setNewOrgName('');
+                    }}
+                    disabled={isAdding}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleAddOrganization}
+                    disabled={!newOrgName.trim() || isAdding}
+                  >
+                    {isAdding ? 'Adding...' : 'Add Organization'}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
