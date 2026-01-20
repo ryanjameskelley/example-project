@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768938254372',
-  title: 'Create A Simple Login Form',
-  description: 'create a simple login form',
+  id: '1768938944575',
+  title: 'Change The Color Of The',
+  description: 'change the color of the button to purple',
   createdAt: '2026-01-20',
   temporary: true,
 };

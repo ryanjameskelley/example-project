@@ -40,7 +40,7 @@ function OriginalComponent() {
         <Card>
           <CardHeader className="space-y-1">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
                 <Lock className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -121,7 +121,7 @@ function OriginalComponent() {
                 <Button
                   type="button"
                   variant="link"
-                  className="text-sm text-blue-600 hover:text-blue-700 p-0 h-auto"
+                  className="text-sm text-purple-600 hover:text-purple-700 p-0 h-auto"
                 >
                   Forgot password?
                 </Button>
@@ -131,7 +131,7 @@ function OriginalComponent() {
             <CardFooter className="flex flex-col space-y-4">
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full bg-purple-600 hover:bg-purple-700"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
@@ -142,7 +142,7 @@ function OriginalComponent() {
                 <Button
                   type="button"
                   variant="link"
-                  className="text-blue-600 hover:text-blue-700 p-0 h-auto"
+                  className="text-purple-600 hover:text-purple-700 p-0 h-auto"
                 >
                   Sign up
                 </Button>
