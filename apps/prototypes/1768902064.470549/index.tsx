@@ -158,14 +158,14 @@ function OriginalComponent() {
           <CardFooter className="flex flex-col space-y-4">
             <Button 
               type="submit" 
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Creating Account...' : 'Create Account'}
             </Button>
             <p className="text-sm text-gray-600 text-center">
               Already have an account?{' '}
-              <button type="button" className="text-purple-600 hover:underline font-medium">
+              <button type="button" className="text-blue-600 hover:underline font-medium">
                 Sign in
               </button>
             </p>
