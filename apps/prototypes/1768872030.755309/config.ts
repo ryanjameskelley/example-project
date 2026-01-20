@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768935247544',
+  id: '1768936998871',
   title: 'Change The Button Color To',
-  description: 'change the button color to blue, the form should use the styling specified in the auui.md file as sh',
+  description: 'change the button color to purple, the form should use the styling specified in the auui.md file as ',
   createdAt: '2026-01-20',
   temporary: true,
 };
