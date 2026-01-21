@@ -4,18 +4,6 @@ This file customizes how Claude generates prototypes for your project.
 
 ## Allowed Component Libraries
 
-### Available Components
-
-**From `@/components/ui/*` (shadcn/ui):**
-- `<Button variant="default" | "destructive" | "outline" | "secondary" | "ghost" | "link">` - Button component
-- `<Card>`, `<CardHeader>`, `<CardTitle>`, `<CardDescription>`, `<CardContent>`, `<CardFooter>` - Card layouts
-- `<Avatar>`, `<AvatarImage>`, `<AvatarFallback>` - User avatars
-- `<Input>`, `<Textarea>`, `<Select>`, `<Checkbox>`, `<RadioGroup>` - Form controls
-- `<Table>`, `<TableHeader>`, `<TableBody>`, `<TableRow>`, `<TableCell>` - Data tables
-- `<Dialog>`, `<AlertDialog>` - Modal dialogs
-- `<Tabs>`, `<TabsList>`, `<TabsTrigger>`, `<TabsContent>` - Tab navigation
-- `<Progress>` - Progress bars
-- `<Separator>` - Visual dividers
 
 **From `lucide-react`:**
 - Any icon is allowed (e.g., `TrendingUp`, `Users`, `DollarSign`, `Calendar`, `Settings`)
