@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768954836075',
-  title: 'That Should Be The Color',
-  description: 'that should be the color of the hover effect of the selected item while not expanded. it should also',
+  id: '1768955039193',
+  title: 'Replace The Admin Member Manager',
+  description: 'replace the admin member manager badges with the correct shad badges',
   createdAt: '2026-01-21',
   temporary: true,
 };
