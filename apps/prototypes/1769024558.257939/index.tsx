@@ -162,15 +162,6 @@ function Original_AccountSwitcher() {
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <div className="space-y-4">
-        {/* Current User Info */}
-        <div className="flex items-center space-x-3 mb-6">
-          <Avatar name={currentUser.name} imageUrl={currentUser.avatarUrl} />
-          <div>
-            <p className="text-sm font-medium text-gray-900">{currentUser.name}</p>
-            <p className="text-xs text-gray-500">{currentUser.email}</p>
-          </div>
-        </div>
-
         {/* Account Switcher Button */}
         <Button
           variant="outline"
