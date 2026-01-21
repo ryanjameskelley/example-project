@@ -109,7 +109,7 @@ function OriginalComponent() {
 
         {/* Current Organization Display */}
         <Card 
-          className="cursor-pointer hover:bg-[#e5e5e5] transition-colors border-[#e5e5e5] bg-white"
+          className="cursor-pointer hover:bg-[#e5e5e5] transition-colors border-[#e5e5e5] bg-[#ffffff]"
           onClick={() => setShowOrgList(!showOrgList)}
         >
           <CardContent className="p-6">
@@ -163,8 +163,10 @@ function OriginalComponent() {
                   <button
                     key={org.id}
                     onClick={() => handleSelectOrganization(org.id)}
-                    className={`w-full px-6 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors ${
-                      selectedOrgId === org.id ? 'bg-[#e5e5e5]' : ''
+                    className={`w-full px-6 py-4 flex items-center gap-4 transition-colors ${
+                      selectedOrgId === org.id 
+                        ? 'bg-[#e5e5e5]' 
+                        : 'hover:bg-gray-50'
                     }`}
                   >
                     <div className="h-10 w-10 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-semibold">
