@@ -1,4 +1,4 @@
-# Claude.md - Prototype Generation Guidelines
+# AUUI.md - Prototype Generation Guidelines
 
 This file customizes how Claude generates prototypes for your project.
 
@@ -9,7 +9,6 @@ This file customizes how Claude generates prototypes for your project.
 **From `@/components/ui/*` (shadcn/ui):**
 - `<Button variant="default" | "destructive" | "outline" | "secondary" | "ghost" | "link">` - Button component
 - `<Card>`, `<CardHeader>`, `<CardTitle>`, `<CardDescription>`, `<CardContent>`, `<CardFooter>` - Card layouts
-- `<Badge variant="default" | "secondary" | "destructive" | "outline">` - Status badges
 - `<Avatar>`, `<AvatarImage>`, `<AvatarFallback>` - User avatars
 - `<Input>`, `<Textarea>`, `<Select>`, `<Checkbox>`, `<RadioGroup>` - Form controls
 - `<Table>`, `<TableHeader>`, `<TableBody>`, `<TableRow>`, `<TableCell>` - Data tables
@@ -195,7 +194,7 @@ import { useState, useEffect } from 'react';
 // 2. UI Components
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/atoms/badge';
 
 // 3. Icons
 import { TrendingUp, Users, DollarSign, Calendar } from 'lucide-react';
@@ -528,3 +527,38 @@ apps/prototypes/{id}/
 - Always use the exact data models defined above
 - Follow the design system rules for consistency
 - Include realistic sample data for better demos
+
+
+
+## Integration Context
+
+### API Endpoints
+- GET /api/users - List users
+- POST /api/users - Create user
+
+### Authentication
+- Uses JWT tokens
+- uses Oauth
+
+### Database Tables
+- users, projects, tasks, organizations, 
+
+### Other Important Stuff
+- use css classes from the {}
+
+## Available Components
+
+Components saved from prototypes are automatically added here when you select a category.
+
+### Atoms
+<!-- Small, single-purpose UI elements (buttons, badges, inputs, icons) -->
+- `@/components/atoms/badge` - badge
+
+### Molecules
+<!-- Combinations of atoms that form functional units (search bars, cards, form fields) -->
+
+### Organisms
+<!-- Complex, standalone sections composed of molecules (headers, sidebars, data tables) -->
+
+### Pages
+<!-- Full page layouts and templates -->
