@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768955737366',
-  title: 'Actually, Can You Add @/components/ui/badge',
-  description: 'actually, can you add @/components/ui/badge to the project where the other components are so that we',
+  id: '1768968201620',
+  title: 'Can You Replace The Admin,',
+  description: 'can you replace the admin, member, manager badges with the atom badge',
   createdAt: '2026-01-21',
   temporary: true,
 };
