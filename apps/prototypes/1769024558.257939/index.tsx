@@ -3,6 +3,8 @@ import { AuuiBanner } from '../../components/AuuiBanner';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Check, ChevronDown } from 'lucide-react';
 
 // Inline Badge component since it's not in the allowed imports
@@ -71,6 +73,8 @@ interface User {
 
 function Original_AccountSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newOrgName, setNewOrgName] = useState('');
   const [currentUser, setCurrentUser] = useState<User>({
     id: '1',
     name: 'Sarah Chen',
@@ -121,6 +125,27 @@ function Original_AccountSwitcher() {
       currentOrganization: org
     });
     setIsOpen(false);
+  };
+
+  const handleAddOrganization = () => {
+    if (!newOrgName.trim()) return;
+
+    const newOrg: Organization = {
+      id: `org-${Date.now()}`,
+      name: newOrgName.trim(),
+      role: 'admin',
+      logoUrl: `https://api.dicebear.com/7.x/shapes/svg?seed=${newOrgName.toLowerCase().replace(/\s+/g, '')}`,
+      memberCount: 1
+    };
+
+    setCurrentUser({
+      ...currentUser,
+      organizations: [...currentUser.organizations, newOrg],
+      currentOrganization: newOrg
+    });
+
+    setNewOrgName('');
+    setIsDialogOpen(false);
   };
 
   const getRoleBadgeVariant = (role: string): 'default' | 'secondary' | 'outline' => {
@@ -224,10 +249,50 @@ function Original_AccountSwitcher() {
         )}
 
         {/* Add Organization Button */}
-        <Button variant="ghost" className="w-full">
+        <Button 
+          variant="ghost" 
+          className="w-full"
+          onClick={() => setIsDialogOpen(true)}
+        >
           Add Organization
         </Button>
       </div>
+
+      {/* Add Organization Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Organization</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <label htmlFor="org-name" className="text-sm font-medium text-gray-700 block mb-2">
+              Organization Name
+            </label>
+            <Input
+              id="org-name"
+              placeholder="Enter organization name"
+              value={newOrgName}
+              onChange={(e) => setNewOrgName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleAddOrganization();
+                }
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleAddOrganization}
+              disabled={!newOrgName.trim()}
+            >
+              Add Organization
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

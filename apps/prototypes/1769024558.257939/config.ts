@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769024608233',
-  title: 'Create An Account Switching Feature',
-  description: 'create an account switching feature allowing a member of an organization to switch to another organi',
+  id: '1769024967798',
+  title: 'Selecting "add Organization" Should Open',
+  description: 'selecting "add organization" should open a dialog to enter an organizations name',
   createdAt: '2026-01-21',
   temporary: true,
 };
