@@ -1,29 +1,25 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
-import PrototypeView from './pages/PrototypeView';
+import { useEffect, useState } from 'react';
+import { prototypes } from '../apps/prototypes/registry';
 
 function App() {
-  return (
-    <BrowserRouter>
-      <div className="app">
-        <nav className="nav">
-          <div className="container">
-            <Link to="/" className="logo">
-              User Test Project
-            </Link>
-            <div className="nav-links">
-              <Link to="/">Home</Link>
-            </div>
-          </div>
-        </nav>
+  const [Component, setComponent] = useState<any>(null);
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/prototypes/:id" element={<PrototypeView />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+  useEffect(() => {
+    const prototypeId = '1768942604.014419';
+    const loadPrototype = prototypes[prototypeId];
+
+    if (loadPrototype) {
+      loadPrototype().then((mod: any) => {
+        setComponent(() => mod.default);
+      });
+    }
+  }, []);
+
+  if (!Component) {
+    return <div>Loading...</div>;
+  }
+
+  return <Component />;
 }
 
 export default App;
