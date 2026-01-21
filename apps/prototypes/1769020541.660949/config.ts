@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769020564473',
-  title: 'Create An Account Switching Feature',
-  description: 'create an account switching feature allowing a member of an organization to switch to another organi',
+  id: '1769020699785',
+  title: 'Make The Corner Radiuses More',
+  description: 'make the corner radiuses more rounded',
   createdAt: '2026-01-21',
   temporary: true,
 };
