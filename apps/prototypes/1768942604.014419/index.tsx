@@ -109,7 +109,7 @@ function OriginalComponent() {
 
         {/* Current Organization Display */}
         <Card 
-          className="cursor-pointer hover:bg-gray-50 transition-colors border-[#e5e5e5] bg-transparent"
+          className="cursor-pointer hover:bg-[#e5e5e5] transition-colors border-[#e5e5e5] bg-white"
           onClick={() => setShowOrgList(!showOrgList)}
         >
           <CardContent className="p-6">
