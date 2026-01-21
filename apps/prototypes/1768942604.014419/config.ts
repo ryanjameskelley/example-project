@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768955039193',
-  title: 'Replace The Admin Member Manager',
-  description: 'replace the admin member manager badges with the correct shad badges',
+  id: '1768955338264',
+  title: 'Yes, The Shad Badges. If',
+  description: 'yes, the shad badges. if there is an error, during the auto fix attempt to install download whateer ',
   createdAt: '2026-01-21',
   temporary: true,
 };
