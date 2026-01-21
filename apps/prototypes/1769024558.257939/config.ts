@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769027709141',
-  title: 'The Plus Button And X',
-  description: 'the plus button and x button should be the same height as the form field',
+  id: '1769027938805',
+  title: 'Remove The Seperator Or Border',
+  description: 'remove the seperator or border color from above the "add organization" the badges should be manager ',
   createdAt: '2026-01-21',
   temporary: true,
 };

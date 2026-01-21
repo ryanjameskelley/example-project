@@ -150,9 +150,11 @@ function Original_AccountSwitcher() {
 
   const getRoleBadgeVariant = (role: string): 'default' | 'secondary' | 'outline' => {
     switch (role) {
-      case 'admin':
-        return 'default';
       case 'manager':
+        return 'default';
+      case 'admin':
+        return 'outline';
+      case 'member':
         return 'secondary';
       default:
         return 'outline';
@@ -237,7 +239,7 @@ function Original_AccountSwitcher() {
                 
                 {/* Add Organization Inline Form */}
                 {isAddingOrg ? (
-                  <div className="p-3 border-t border-gray-100 mt-2">
+                  <div className="p-3 mt-2">
                     <div className="flex items-center space-x-2">
                       <Input
                         placeholder="Organization name"
@@ -276,7 +278,7 @@ function Original_AccountSwitcher() {
                 ) : (
                   <button
                     onClick={() => setIsAddingOrg(true)}
-                    className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-gray-50 transition-colors border-t border-gray-100 mt-2"
+                    className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-gray-50 transition-colors mt-2"
                   >
                     <span className="text-sm font-medium text-blue-600">
                       + Add Organization
