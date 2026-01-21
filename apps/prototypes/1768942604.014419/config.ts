@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768978157471',
-  title: 'Can You Replace The Admin,',
-  description: 'can you replace the admin, member, manager badges with the atom badge from @/components/atoms/badge',
+  id: '1768978556119',
+  title: 'Manager Should Be Default, Admin',
+  description: 'manager should be default, admin should be outline, member should be secondary',
   createdAt: '2026-01-21',
   temporary: true,
 };

@@ -85,6 +85,12 @@ function OriginalComponent() {
       .slice(0, 2);
   };
 
+  const getRoleBadgeVariant = (role: string): 'default' | 'outline' | 'secondary' => {
+    if (role === 'admin') return 'outline';
+    if (role === 'member') return 'secondary';
+    return 'default'; // manager
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <div className="space-y-6">
@@ -114,7 +120,7 @@ function OriginalComponent() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <Badge>
+                <Badge variant={selectedOrg ? getRoleBadgeVariant(selectedOrg.role) : 'default'}>
                   {selectedOrg?.role}
                 </Badge>
                 <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${showOrgList ? 'rotate-180' : ''}`} />
@@ -168,7 +174,7 @@ function OriginalComponent() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge>
+                        <Badge variant={getRoleBadgeVariant(org.role)}>
                           {org.role}
                         </Badge>
                         <span className="text-xs text-gray-500">
