@@ -170,7 +170,7 @@ function OriginalComponent() {
                       <div className="flex items-center gap-2">
                         <p className="font-semibold text-gray-900">{org.name}</p>
                         {selectedOrgId === org.id && (
-                          <Check className="w-4 h-4 text-blue-600" />
+                          <Check className="w-4 h-4 text-[#171717]" />
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
