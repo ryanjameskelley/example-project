@@ -9,7 +9,6 @@ This file customizes how Claude generates prototypes for your project.
 **From `@/components/ui/*` (shadcn/ui):**
 - `<Button variant="default" | "destructive" | "outline" | "secondary" | "ghost" | "link">` - Button component
 - `<Card>`, `<CardHeader>`, `<CardTitle>`, `<CardDescription>`, `<CardContent>`, `<CardFooter>` - Card layouts
-- `<Badge variant="default" | "secondary" | "destructive" | "outline">` - Status badges
 - `<Avatar>`, `<AvatarImage>`, `<AvatarFallback>` - User avatars
 - `<Input>`, `<Textarea>`, `<Select>`, `<Checkbox>`, `<RadioGroup>` - Form controls
 - `<Table>`, `<TableHeader>`, `<TableBody>`, `<TableRow>`, `<TableCell>` - Data tables
