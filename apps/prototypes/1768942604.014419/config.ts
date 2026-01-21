@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768953624619',
-  title: 'Add Custom Classes To DialogTitle',
-  description: 'Add custom classes to DialogTitle to override any built-in spacing and Check if we need to add class',
+  id: '1768953765757',
+  title: 'Change From P 4 To',
+  description: 'change from p 4 to p 6',
   createdAt: '2026-01-21',
   temporary: true,
 };
