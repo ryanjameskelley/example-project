@@ -7,7 +7,7 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769027938805',
+  id: '1769029960677',
   title: 'Remove The Seperator Or Border',
   description: 'remove the seperator or border color from above the "add organization" the badges should be manager ',
   createdAt: '2026-01-21',

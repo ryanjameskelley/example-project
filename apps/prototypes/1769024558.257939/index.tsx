@@ -15,9 +15,9 @@ const Badge = ({
   variant?: 'default' | 'secondary' | 'outline';
 }) => {
   const variants = {
-    default: 'bg-blue-100 text-blue-800',
+    default: 'bg-blue-600 text-white',
     secondary: 'bg-gray-100 text-gray-800',
-    outline: 'bg-white text-gray-600 border border-gray-200'
+    outline: 'bg-white text-gray-600 border border-gray-300'
   };
   
   return (
@@ -56,7 +56,7 @@ const Avatar = ({
 interface Organization {
   id: string;
   name: string;
-  role: 'admin' | 'manager' | 'member' | 'viewer';
+  role: 'admin' | 'manager' | 'member';
   logoUrl?: string;
   memberCount: number;
 }
@@ -111,7 +111,7 @@ function Original_AccountSwitcher() {
       {
         id: 'org-4',
         name: 'Consulting Group',
-        role: 'viewer',
+        role: 'member',
         logoUrl: 'https://api.dicebear.com/7.x/shapes/svg?seed=consulting',
         memberCount: 35
       }
@@ -157,7 +157,7 @@ function Original_AccountSwitcher() {
       case 'member':
         return 'secondary';
       default:
-        return 'outline';
+        return 'secondary';
     }
   };
 
@@ -239,7 +239,7 @@ function Original_AccountSwitcher() {
                 
                 {/* Add Organization Inline Form */}
                 {isAddingOrg ? (
-                  <div className="p-3 mt-2">
+                  <div className="p-3">
                     <div className="flex items-center space-x-2">
                       <Input
                         placeholder="Organization name"
@@ -278,7 +278,7 @@ function Original_AccountSwitcher() {
                 ) : (
                   <button
                     onClick={() => setIsAddingOrg(true)}
-                    className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-gray-50 transition-colors mt-2"
+                    className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <span className="text-sm font-medium text-blue-600">
                       + Add Organization
