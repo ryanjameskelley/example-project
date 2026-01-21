@@ -146,6 +146,7 @@ function Original_AccountSwitcher() {
 
     setNewOrgName('');
     setIsDialogOpen(false);
+    setIsOpen(false);
   };
 
   const getRoleBadgeVariant = (role: string): 'default' | 'secondary' | 'outline' => {
@@ -234,19 +235,23 @@ function Original_AccountSwitcher() {
                     </button>
                   );
                 })}
+                
+                {/* Add Organization Button in dropdown */}
+                <button
+                  onClick={() => {
+                    setIsDialogOpen(true);
+                    setIsOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-gray-50 transition-colors border-t border-gray-100 mt-2"
+                >
+                  <span className="text-sm font-medium text-blue-600">
+                    + Add Organization
+                  </span>
+                </button>
               </div>
             </CardContent>
           </Card>
         )}
-
-        {/* Add Organization Button */}
-        <Button 
-          variant="ghost" 
-          className="w-full"
-          onClick={() => setIsDialogOpen(true)}
-        >
-          Add Organization
-        </Button>
       </div>
 
       {/* Add Organization Dialog */}
@@ -269,6 +274,7 @@ function Original_AccountSwitcher() {
                   handleAddOrganization();
                 }
               }}
+              autoFocus
             />
           </div>
           <DialogFooter>

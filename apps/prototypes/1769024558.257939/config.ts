@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769027038749',
-  title: 'Remove The Header Part Of',
-  description: 'remove the header part of the component"Sarah Chen Sarah Chen  s.chen@example.com"',
+  id: '1769027280355',
+  title: 'Selecting "add Organization" Should Open',
+  description: 'selecting "add organization" should open a dialog to enter an organizations name',
   createdAt: '2026-01-21',
   temporary: true,
 };
