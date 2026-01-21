@@ -7,7 +7,7 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768968430104',
+  id: '1768976848133',
   title: 'Can You Replace The Admin,',
   description: 'can you replace the admin, member, manager badges with the atom badge from @/components/atoms/badge',
   createdAt: '2026-01-21',
