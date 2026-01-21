@@ -94,13 +94,6 @@ function OriginalComponent() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Current Organization</h1>
-          <p className="text-sm text-gray-600 mt-2">
-            View or switch between your organizations
-          </p>
-        </div>
-
         {/* Current Organization Display */}
         <Card 
           className="cursor-pointer hover:bg-gray-50 transition-colors border-[#e5e5e5] bg-[#ffffff]"

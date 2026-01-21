@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769017092872',
-  title: 'The Check Beside The Selected',
-  description: 'the check beside the selected org should be 171717 rather than blue',
+  id: '1769017531009',
+  title: 'Remove From The Prototype "Current',
+  description: 'remove from the prototype "Current Organization View or switch between your organizations"',
   createdAt: '2026-01-21',
   temporary: true,
 };
