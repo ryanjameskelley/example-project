@@ -528,3 +528,21 @@ apps/prototypes/{id}/
 - Always use the exact data models defined above
 - Follow the design system rules for consistency
 - Include realistic sample data for better demos
+
+
+
+## Integration Context
+
+### API Endpoints
+- GET /api/users - List users
+- POST /api/users - Create user
+
+### Authentication
+- Uses JWT tokens
+- uses Oauth
+
+### Database Tables
+- users, projects, tasks, organizations, 
+
+### Other Important Stuff
+- use css classes fro the {}
