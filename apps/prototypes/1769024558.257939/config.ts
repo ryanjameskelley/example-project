@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769027280355',
-  title: 'Selecting "add Organization" Should Open',
-  description: 'selecting "add organization" should open a dialog to enter an organizations name',
+  id: '1769027428051',
+  title: 'Remove The Dialog',
+  description: 'remove the dialog',
   createdAt: '2026-01-21',
   temporary: true,
 };

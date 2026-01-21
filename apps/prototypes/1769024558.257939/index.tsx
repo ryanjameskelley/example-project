@@ -3,9 +3,8 @@ import { AuuiBanner } from '../../components/AuuiBanner';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Check, ChevronDown } from 'lucide-react';
+import { Check, ChevronDown, Plus, X } from 'lucide-react';
 
 // Inline Badge component since it's not in the allowed imports
 const Badge = ({ 
@@ -73,7 +72,7 @@ interface User {
 
 function Original_AccountSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddingOrg, setIsAddingOrg] = useState(false);
   const [newOrgName, setNewOrgName] = useState('');
   const [currentUser, setCurrentUser] = useState<User>({
     id: '1',
@@ -145,7 +144,7 @@ function Original_AccountSwitcher() {
     });
 
     setNewOrgName('');
-    setIsDialogOpen(false);
+    setIsAddingOrg(false);
     setIsOpen(false);
   };
 
@@ -236,60 +235,59 @@ function Original_AccountSwitcher() {
                   );
                 })}
                 
-                {/* Add Organization Button in dropdown */}
-                <button
-                  onClick={() => {
-                    setIsDialogOpen(true);
-                    setIsOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-gray-50 transition-colors border-t border-gray-100 mt-2"
-                >
-                  <span className="text-sm font-medium text-blue-600">
-                    + Add Organization
-                  </span>
-                </button>
+                {/* Add Organization Inline Form */}
+                {isAddingOrg ? (
+                  <div className="p-3 border-t border-gray-100 mt-2">
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        placeholder="Organization name"
+                        value={newOrgName}
+                        onChange={(e) => setNewOrgName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleAddOrganization();
+                          } else if (e.key === 'Escape') {
+                            setIsAddingOrg(false);
+                            setNewOrgName('');
+                          }
+                        }}
+                        autoFocus
+                        className="flex-1"
+                      />
+                      <Button
+                        size="sm"
+                        onClick={handleAddOrganization}
+                        disabled={!newOrgName.trim()}
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setIsAddingOrg(false);
+                          setNewOrgName('');
+                        }}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsAddingOrg(true)}
+                    className="w-full flex items-center justify-center p-3 rounded-lg hover:bg-gray-50 transition-colors border-t border-gray-100 mt-2"
+                  >
+                    <span className="text-sm font-medium text-blue-600">
+                      + Add Organization
+                    </span>
+                  </button>
+                )}
               </div>
             </CardContent>
           </Card>
         )}
       </div>
-
-      {/* Add Organization Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Organization</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <label htmlFor="org-name" className="text-sm font-medium text-gray-700 block mb-2">
-              Organization Name
-            </label>
-            <Input
-              id="org-name"
-              placeholder="Enter organization name"
-              value={newOrgName}
-              onChange={(e) => setNewOrgName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleAddOrganization();
-                }
-              }}
-              autoFocus
-            />
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleAddOrganization}
-              disabled={!newOrgName.trim()}
-            >
-              Add Organization
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
