@@ -545,4 +545,4 @@ apps/prototypes/{id}/
 - users, projects, tasks, organizations, 
 
 ### Other Important Stuff
-- use css classes fro the {}
+- use css classes from the {}
