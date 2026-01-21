@@ -255,19 +255,19 @@ function Original_AccountSwitcher() {
                         className="flex-1"
                       />
                       <Button
-                        size="sm"
                         onClick={handleAddOrganization}
                         disabled={!newOrgName.trim()}
+                        className="h-10 w-10 p-0"
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
                       <Button
-                        size="sm"
                         variant="outline"
                         onClick={() => {
                           setIsAddingOrg(false);
                           setNewOrgName('');
                         }}
+                        className="h-10 w-10 p-0"
                       >
                         <X className="w-4 h-4" />
                       </Button>

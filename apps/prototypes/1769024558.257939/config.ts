@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769027428051',
-  title: 'Remove The Dialog',
-  description: 'remove the dialog',
+  id: '1769027709141',
+  title: 'The Plus Button And X',
+  description: 'the plus button and x button should be the same height as the form field',
   createdAt: '2026-01-21',
   temporary: true,
 };
