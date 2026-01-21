@@ -87,7 +87,7 @@ function Original_OrganizationSwitcher() {
           role="combobox"
           aria-expanded={open}
           aria-label="Select organization"
-          className="w-full justify-between px-3 py-2 h-auto rounded-xl"
+          className="w-full justify-between px-3 py-2 h-auto"
         >
           <div className="flex items-center gap-3 min-w-0">
             <Avatar className="h-8 w-8 flex-shrink-0">
@@ -108,7 +108,7 @@ function Original_OrganizationSwitcher() {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="p-0 max-w-md rounded-2xl">
+      <DialogContent className="p-0 max-w-md">
         <DialogHeader className="p-6 pb-4">
           <DialogTitle className="text-lg font-semibold">
             Switch Organization
@@ -120,7 +120,7 @@ function Original_OrganizationSwitcher() {
               <button
                 key={org.id}
                 onClick={() => handleSelectOrganization(org)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 transition-colors text-left"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
               >
                 <Avatar className="h-10 w-10 flex-shrink-0">
                   <AvatarImage src={org.avatarUrl} alt={org.name} />
