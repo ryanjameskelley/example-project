@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { Check, Plus, Building2, ChevronDown } from 'lucide-react';
 
 interface Organization {
@@ -84,16 +85,16 @@ function OriginalComponent() {
       .slice(0, 2);
   };
 
-  const getRoleBadgeClasses = (role: string): string => {
+  const getRoleBadgeVariant = (role: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (role) {
       case 'admin':
-        return 'bg-red-100 text-red-800';
+        return 'destructive';
       case 'manager':
-        return 'bg-blue-100 text-blue-800';
+        return 'default';
       case 'member':
-        return 'bg-gray-100 text-gray-800';
+        return 'secondary';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'secondary';
     }
   };
 
@@ -126,9 +127,9 @@ function OriginalComponent() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleBadgeClasses(selectedOrg?.role || 'member')}`}>
+                <Badge variant={getRoleBadgeVariant(selectedOrg?.role || 'member')}>
                   {selectedOrg?.role}
-                </span>
+                </Badge>
                 <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${showOrgList ? 'rotate-180' : ''}`} />
               </div>
             </div>
@@ -180,9 +181,9 @@ function OriginalComponent() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleBadgeClasses(org.role)}`}>
+                        <Badge variant={getRoleBadgeVariant(org.role)}>
                           {org.role}
-                        </span>
+                        </Badge>
                         <span className="text-xs text-gray-500">
                           {org.memberCount} member{org.memberCount !== 1 ? 's' : ''}
                         </span>
