@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/atoms/badge';
 import { Check, Plus, Building2, ChevronDown } from 'lucide-react';
 
 interface Organization {
@@ -85,19 +85,6 @@ function OriginalComponent() {
       .slice(0, 2);
   };
 
-  const getRoleVariant = (role: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
-    switch (role) {
-      case 'admin':
-        return 'destructive';
-      case 'manager':
-        return 'default';
-      case 'member':
-        return 'secondary';
-      default:
-        return 'secondary';
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <div className="space-y-6">
@@ -127,7 +114,7 @@ function OriginalComponent() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant={getRoleVariant(selectedOrg?.role || 'member')}>
+                <Badge>
                   {selectedOrg?.role}
                 </Badge>
                 <ChevronDown className={`w-5 h-5 text-gray-600 transition-transform ${showOrgList ? 'rotate-180' : ''}`} />
@@ -181,7 +168,7 @@ function OriginalComponent() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge variant={getRoleVariant(org.role)}>
+                        <Badge>
                           {org.role}
                         </Badge>
                         <span className="text-xs text-gray-500">
