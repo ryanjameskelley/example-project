@@ -209,7 +209,7 @@ function OriginalComponent() {
                 className="bg-white rounded-lg w-full max-w-md p-4 pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New Organization</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4 m-0 p-0">Add New Organization</h2>
                 <div className="mb-4">
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
                     Organization Name

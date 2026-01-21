@@ -7,10 +7,10 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768953098415',
-  title: 'Remove The Wrapper Div And',
-  description: 'Remove the wrapper div and apply mb-4 directly to DialogTitle',
-  createdAt: '2026-01-20',
+  id: '1768953624619',
+  title: 'Add Custom Classes To DialogTitle',
+  description: 'Add custom classes to DialogTitle to override any built-in spacing and Check if we need to add class',
+  createdAt: '2026-01-21',
   temporary: true,
 };
 
