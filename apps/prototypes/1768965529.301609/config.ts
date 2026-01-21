@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768965941380',
-  title: 'Adjust The Border Radius To',
-  description: 'adjust the border radius to .5 rounder',
+  id: '1768966123543',
+  title: 'Undo The Previous Change So',
+  description: 'undo the previous change so the border radius is the same as the shad standards',
   createdAt: '2026-01-21',
   temporary: true,
 };
