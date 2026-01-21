@@ -546,3 +546,20 @@ apps/prototypes/{id}/
 
 ### Other Important Stuff
 - use css classes from the {}
+
+## Available Components
+
+Components saved from prototypes are automatically added here when you select a category.
+
+### Atoms
+<!-- Small, single-purpose UI elements (buttons, badges, inputs, icons) -->
+- `@/components/atoms/badge` - badge
+
+### Molecules
+<!-- Combinations of atoms that form functional units (search bars, cards, form fields) -->
+
+### Organisms
+<!-- Complex, standalone sections composed of molecules (headers, sidebars, data tables) -->
+
+### Pages
+<!-- Full page layouts and templates -->
