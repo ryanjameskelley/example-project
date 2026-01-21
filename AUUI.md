@@ -194,7 +194,7 @@ import { useState, useEffect } from 'react';
 // 2. UI Components
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/atoms/badge';
 
 // 3. Icons
 import { TrendingUp, Users, DollarSign, Calendar } from 'lucide-react';
