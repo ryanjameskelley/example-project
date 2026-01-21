@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768965550849',
-  title: 'Create A Simple Badge Component',
-  description: 'create a simple badge component supporting variants based on the shad badge design (primary, outline',
+  id: '1768965941380',
+  title: 'Adjust The Border Radius To',
+  description: 'adjust the border radius to .5 rounder',
   createdAt: '2026-01-21',
   temporary: true,
 };
