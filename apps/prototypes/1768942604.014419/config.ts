@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1768954569122',
-  title: 'The Fill Before Expanded Should',
-  description: 'the fill before expanded should be ffffff then e5e5e5 when hovered. the fill of the selected item in',
+  id: '1768954836075',
+  title: 'That Should Be The Color',
+  description: 'that should be the color of the hover effect of the selected item while not expanded. it should also',
   createdAt: '2026-01-21',
   temporary: true,
 };
