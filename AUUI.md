@@ -544,6 +544,7 @@ Components saved from prototypes are automatically added here when you select a 
 
 ### Molecules
 <!-- Combinations of atoms that form functional units (search bars, cards, form fields) -->
+- `@/components/molecules/Account switcher` - Account switcher
 
 ### Organisms
 <!-- Complex, standalone sections composed of molecules (headers, sidebars, data tables) -->
