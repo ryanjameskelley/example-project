@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769064032514',
-  title: '•  Create A Dialog',
-  description: '•  create a dialog component using the shadcn design and the dialog in molecules at @/components/mol',
+  id: '1769064185408',
+  title: 'Adjust To 4 And 8',
+  description: 'adjust to 4 and 8',
   createdAt: '2026-01-22',
   temporary: true,
 };
