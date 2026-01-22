@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769064759561',
-  title: 'Yes',
-  description: 'yes',
+  id: '1769064898073',
+  title: 'Tit Title Should Be Inline',
+  description: 'tit title should be inline with the remove dialog x',
   createdAt: '2026-01-22',
   temporary: true,
 };
