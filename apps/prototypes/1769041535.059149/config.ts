@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769041559853',
-  title: 'Create A Button Component Based',
-  description: 'create a button component based on shad design with every shad varient',
+  id: '1769041651482',
+  title: 'Make The Corner Radius Slightly',
+  description: 'make the corner radius slightly rounder',
   createdAt: '2026-01-22',
   temporary: true,
 };
