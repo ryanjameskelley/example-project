@@ -1,10 +1,11 @@
 import { AuuiBanner } from '../../components/AuuiBanner';
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/molecules/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/molecules/dialog';
 import { Button } from '@/components/atoms/button';
 import { Input } from '@/components/atoms/input';
 import { Label } from '@/components/atoms/label';
+import { X } from 'lucide-react';
 
 function Original_UserProfileDialog() {
   const [open, setOpen] = useState(false);
@@ -30,13 +31,14 @@ function Original_UserProfileDialog() {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <div className="flex items-center justify-between w-full">
-              <DialogTitle>Edit Profile</DialogTitle>
-            </div>
-            <DialogDescription className="mb-2">
-              Make changes to your profile here. Click save when you're done.
-            </DialogDescription>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogClose>
+              <X className="h-4 w-4" />
+            </DialogClose>
           </DialogHeader>
+          <DialogDescription className="mb-2">
+            Make changes to your profile here. Click save when you're done.
+          </DialogDescription>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4 py-2">
               <div className="space-y-1">

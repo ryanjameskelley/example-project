@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769066459014',
-  title: 'Remove The Title, Put A',
-  description: 'remove the title, put a full width div around the x and put the title in it also with space between ',
+  id: '1769067447635',
+  title: 'Edit DialogHeader To Be A',
+  description: 'Edit DialogHeader to be a row with the X button inside:                                             ',
   createdAt: '2026-01-22',
   temporary: true,
 };
