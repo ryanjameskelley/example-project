@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769067811719',
-  title: 'The Form Fields Are Meant',
-  description: 'the form fields are meant to stach vertically. i meant the x and the title are meant to stack horizo',
+  id: '1769068192769',
+  title: 'Change The Close Button From',
+  description: 'change the close button from absolute right-4 top-4 to absolute right-4 top-8',
   createdAt: '2026-01-22',
   temporary: true,
 };
