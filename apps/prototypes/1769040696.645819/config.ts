@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769040786078',
-  title: 'Create A Comprehensive Vitals Table',
-  description: 'create a comprehensive vitals table for healthcare care coordinators to monitor patients. from top t',
+  id: '1769041118058',
+  title: 'Change The Background Cell Color',
+  description: 'change the background cell color to e5e5e5',
   createdAt: '2026-01-22',
   temporary: true,
 };
