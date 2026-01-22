@@ -1,25 +1,20 @@
-import { useEffect, useState } from 'react';
 import { prototypes } from '../apps/prototypes/registry';
 
 function App() {
-  const [Component, setComponent] = useState<any>(null);
+  // Get the prototype component from the registry
+  const PrototypeComponent = prototypes['1769040696.645819'];
 
-  useEffect(() => {
-    const prototypeId = '1768942604.014419';
-    const loadPrototype = prototypes[prototypeId];
-
-    if (loadPrototype) {
-      loadPrototype().then((mod: any) => {
-        setComponent(() => mod.default);
-      });
-    }
-  }, []);
-
-  if (!Component) {
-    return <div>Loading...</div>;
+  if (!PrototypeComponent) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>Prototype not found</h1>
+        <p>Could not find prototype with ID: 1769040696.645819</p>
+      </div>
+    );
   }
 
-  return <Component />;
+  // Render the prototype component directly (no routing)
+  return <PrototypeComponent />;
 }
 
 export default App;
