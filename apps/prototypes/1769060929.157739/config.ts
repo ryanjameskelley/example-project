@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769061322788',
-  title: 'Decrease All Of The By',
-  description: 'decrease all of the by half',
+  id: '1769061587188',
+  title: 'Replace With The Actual Import',
+  description: 'replace with the actual import npx shadcn@latest add dialog',
   createdAt: '2026-01-22',
   temporary: true,
 };
