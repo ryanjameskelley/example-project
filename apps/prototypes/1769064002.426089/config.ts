@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769067636411',
-  title: 'Theyre Meant To Be Stacked',
-  description: 'theyre meant to be stacked horizontally not vertically',
+  id: '1769067811719',
+  title: 'The Form Fields Are Meant',
+  description: 'the form fields are meant to stach vertically. i meant the x and the title are meant to stack horizo',
   createdAt: '2026-01-22',
   temporary: true,
 };

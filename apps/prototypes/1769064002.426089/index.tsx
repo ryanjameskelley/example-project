@@ -30,7 +30,7 @@ function Original_UserProfileDialog() {
           <Button>Edit Profile</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
+          <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>Edit Profile</DialogTitle>
             <DialogClose>
               <X className="h-4 w-4" />
@@ -40,7 +40,7 @@ function Original_UserProfileDialog() {
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-3 gap-4 py-2">
+            <div className="space-y-4 py-2">
               <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
                 <Input
