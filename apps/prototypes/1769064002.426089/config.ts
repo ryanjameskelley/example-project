@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769064539675',
-  title: 'Adjust It To 6 Then',
-  description: 'adjust it to 6 then make sure there is 8px between the subtitle and the first field',
+  id: '1769064759561',
+  title: 'Yes',
+  description: 'yes',
   createdAt: '2026-01-22',
   temporary: true,
 };

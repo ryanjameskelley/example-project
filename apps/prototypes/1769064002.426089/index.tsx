@@ -31,7 +31,7 @@ function Original_UserProfileDialog() {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Edit Profile</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="mb-2">
               Make changes to your profile here. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
