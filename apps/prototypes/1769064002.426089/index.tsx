@@ -40,8 +40,9 @@ function Original_UserProfileDialog() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 rounded-full"
+              className="h-6 w-6 rounded-full self-start"
               onClick={() => setOpen(false)}
+              style={{ marginTop: '2px' }}
             >
               <X className="h-4 w-4" />
             </Button>

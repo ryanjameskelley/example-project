@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769068632964',
-  title: 'Remove The Dialog Close Build=t',
-  description: 'remove the dialog close build=t into the dialogheader component and put a div around the title in th',
+  id: '1769068885047',
+  title: 'Try Add Explicit Alignment Override',
+  description: 'try Add explicit alignment override - Add self-center or custom styles to force the close button to ',
   createdAt: '2026-01-22',
   temporary: true,
 };
