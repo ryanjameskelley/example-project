@@ -4,6 +4,11 @@ This file customizes how Claude generates prototypes for your project.
 
 ## Allowed Component Libraries
 
+**Core Libraries:**
+- `@tanstack/react-table` - Table state management, sorting, filtering, pagination
+- `class-variance-authority` - Variant styling
+- `clsx` - Class merging
+- `tailwind-merge` - Tailwind class deduplication
 
 **From `lucide-react`:**
 - Any icon is allowed (e.g., `TrendingUp`, `Users`, `DollarSign`, `Calendar`, `Settings`)
@@ -540,7 +545,12 @@ Components saved from prototypes are automatically added here when you select a 
 
 ### Atoms
 <!-- Small, single-purpose UI elements (buttons, badges, inputs, icons) -->
-- `@/components/atoms/badge` - badge
+- `@/components/atoms/badge` - Badge
+- `@/components/ui/button` - Button
+- `@/components/ui/input` - Input
+- `@/components/ui/label` - Label
+- `@/components/ui/table` - Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption
+- `@/components/ui/card` - Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent
 
 ### Molecules
 <!-- Combinations of atoms that form functional units (search bars, cards, form fields) -->
