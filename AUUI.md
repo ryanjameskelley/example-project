@@ -546,18 +546,18 @@ Components saved from prototypes are automatically added here when you select a 
 ### Atoms
 <!-- Small, single-purpose UI elements (buttons, badges, inputs, icons) -->
 - `@/components/atoms/badge` - Badge
-- `@/components/ui/button` - Button
-- `@/components/ui/input` - Input
-- `@/components/ui/label` - Label
-- `@/components/ui/table` - Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption
-- `@/components/ui/card` - Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent
+- `@/components/atoms/button` - Button
+- `@/components/atoms/input` - Input
+- `@/components/atoms/label` - Label
+
 
 ### Molecules
 <!-- Combinations of atoms that form functional units (search bars, cards, form fields) -->
 - `@/components/molecules/Account switcher` - Account switcher
+- `@/components/molecules/card` - Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent
 
 ### Organisms
 <!-- Complex, standalone sections composed of molecules (headers, sidebars, data tables) -->
-
+- `@/components/organisms/table` - Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption
 ### Pages
 <!-- Full page layouts and templates -->

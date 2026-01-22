@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/atoms/button';
+import { Card, CardContent } from '@/components/molecules/card';
+import { Input } from '@/components/atoms/input';
 import { Check, ChevronDown, Plus, X } from 'lucide-react';
 
 export interface Organization {
