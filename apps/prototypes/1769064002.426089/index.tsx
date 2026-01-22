@@ -29,7 +29,7 @@ function Original_UserProfileDialog() {
         <DialogTrigger asChild>
           <Button>Edit Profile</Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Edit Profile</DialogTitle>
             <DialogClose>
@@ -40,7 +40,7 @@ function Original_UserProfileDialog() {
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
           <form onSubmit={handleSubmit}>
-            <div className="space-y-4 py-2">
+            <div className="grid grid-cols-3 gap-4 py-2">
               <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
                 <Input

@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769067447635',
-  title: 'Edit DialogHeader To Be A',
-  description: 'Edit DialogHeader to be a row with the X button inside:                                             ',
+  id: '1769067636411',
+  title: 'Theyre Meant To Be Stacked',
+  description: 'theyre meant to be stacked horizontally not vertically',
   createdAt: '2026-01-22',
   temporary: true,
 };
