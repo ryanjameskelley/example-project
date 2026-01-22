@@ -37,7 +37,7 @@ function Original_UserProfileDialog() {
           </DialogHeader>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4 py-8">
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
@@ -47,7 +47,7 @@ function Original_UserProfileDialog() {
                   required
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -58,7 +58,7 @@ function Original_UserProfileDialog() {
                   required
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="jobTitle">Job Title</Label>
                 <Input
                   id="jobTitle"

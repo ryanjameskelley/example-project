@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769064185408',
-  title: 'Adjust To 4 And 8',
-  description: 'adjust to 4 and 8',
+  id: '1769064375560',
+  title: 'Adjust The Space-y-2 (which Equals',
+  description: 'adjust the space-y-2 (which equals 0.5rem or 8px) between the Label and Input within each field: to ',
   createdAt: '2026-01-22',
   temporary: true,
 };
