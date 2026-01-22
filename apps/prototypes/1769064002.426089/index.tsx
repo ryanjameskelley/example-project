@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from '@/components/atoms/button';
 import { Input } from '@/components/atoms/input';
 import { Label } from '@/components/atoms/label';
+import { X } from 'lucide-react';
 
 function Original_UserProfileDialog() {
   const [open, setOpen] = useState(false);
@@ -29,12 +30,22 @@ function Original_UserProfileDialog() {
           <Button>Edit Profile</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Edit Profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <DialogTitle>Edit Profile</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you're done.
+              </DialogDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 rounded-full"
+              onClick={() => setOpen(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4 py-2">
               <div className="space-y-1">

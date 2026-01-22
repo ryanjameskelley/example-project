@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769068400462',
-  title: 'Option 1: Remove The Duplicate',
-  description: 'Option 1: Remove the duplicate X button in the content area (keep only the one in the header)',
+  id: '1769068632964',
+  title: 'Remove The Dialog Close Build=t',
+  description: 'remove the dialog close build=t into the dialogheader component and put a div around the title in th',
   createdAt: '2026-01-22',
   temporary: true,
 };
