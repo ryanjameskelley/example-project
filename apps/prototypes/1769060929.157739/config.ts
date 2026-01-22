@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769060982577',
-  title: 'Create A Dialog Component Using',
-  description: 'create a dialog component using the shadcn design',
+  id: '1769061322788',
+  title: 'Decrease All Of The By',
+  description: 'decrease all of the by half',
   createdAt: '2026-01-22',
   temporary: true,
 };

@@ -25,7 +25,7 @@ const DialogContent = ({
     <div className="bg-white rounded-lg shadow-lg border border-gray-200">
       <button
         onClick={onClose}
-        className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 transition-opacity"
+        className="absolute right-2 top-2 rounded-sm opacity-70 hover:opacity-100 transition-opacity"
       >
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
@@ -36,7 +36,7 @@ const DialogContent = ({
 );
 
 const DialogHeader = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex flex-col space-y-1.5 text-center sm:text-left p-6 pb-0">
+  <div className="flex flex-col space-y-1 text-center sm:text-left p-3 pb-0">
     {children}
   </div>
 );
@@ -54,7 +54,7 @@ const DialogDescription = ({ children }: { children: React.ReactNode }) => (
 );
 
 const DialogFooter = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-6 pt-0">
+  <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 p-3 pt-0">
     {children}
   </div>
 );
@@ -74,24 +74,24 @@ function Original_DialogComponent() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="space-y-6">
+    <div className="container mx-auto p-3 max-w-7xl">
+      <div className="space-y-3">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dialog Component</h1>
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-gray-600 mt-1">
             A modal dialog component following shadcn design patterns
           </p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <Button onClick={() => setIsOpen(true)}>
             Open Dialog
           </Button>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Features</h3>
-          <ul className="space-y-2 text-sm text-gray-600">
+        <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">Features</h3>
+          <ul className="space-y-1 text-sm text-gray-600">
             <li>• Modal overlay with backdrop blur</li>
             <li>• Centered positioning</li>
             <li>• Close button with hover effect</li>
@@ -114,8 +114,8 @@ function Original_DialogComponent() {
                 </DialogDescription>
               </DialogHeader>
               
-              <div className="p-6 space-y-4">
-                <div className="space-y-2">
+              <div className="p-3 space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
@@ -126,7 +126,7 @@ function Original_DialogComponent() {
                   />
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
