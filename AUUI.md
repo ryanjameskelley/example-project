@@ -494,14 +494,44 @@ Each prototype should follow this structure:
 
 ```
 apps/prototypes/{id}/
-├── index.tsx          # Main component (required)
-├── config.ts          # Metadata (optional)
+├── index.tsx          # Main component (required, entry point)
+├── config.ts          # Metadata (auto-generated)
 └── components/        # Sub-components (optional)
 ```
 
+## Complex Prototypes
+
+For prototypes with multiple components, use this expanded structure:
+
+```
+apps/prototypes/{id}/
+├── index.tsx           # Main component (entry point, imports sub-components)
+├── config.ts           # Metadata
+├── components/
+│   ├── Header.tsx      # Sub-component
+│   └── FormSection.tsx # Sub-component
+└── hooks/
+    └── useFormLogic.ts # Custom hook
+```
+
+**Guidelines for complex prototypes:**
+- `index.tsx` is always the entry point - it should orchestrate sub-components
+- Keep related components in the `components/` folder
+- Extract reusable logic into custom hooks in the `hooks/` folder
+- Each sub-component should be focused and single-purpose
+- Use TypeScript interfaces to define props contracts between components
+
+**Importing sub-components:**
+```tsx
+import { Header } from "./components/Header";
+import { useFormLogic } from "./hooks/useFormLogic";
+```
+
+> **Note:** Use `@/components/...` for shared library components (atoms, molecules, organisms). Use relative paths (`./components/...`) for sub-components within the same prototype.
+
 ## Prototype Guidelines
 
-- **Max Components**: Keep it under 5 components per prototype
+- **Max Components**: Keep it under 10 components per prototype
 - **Data**: Use mock data only, no real API calls
 - **State**: Minimal state management (useState only)
 - **Accessibility**: Include ARIA labels and semantic HTML
