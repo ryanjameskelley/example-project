@@ -1,5 +1,7 @@
-// Auto-generated prototype registry
-// This file is updated automatically when prototypes are created
-export const prototypes = {
-  '1768942604.014419': () => import('./1768942604.014419'),
+import React from 'react';
+
+import p0 from './1769048663.440669/index.tsx';
+
+export const prototypes: Record<string, React.ComponentType> = {
+  '1769048663.440669': p0,
 };
