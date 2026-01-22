@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { Button } from '@/components/atoms/button';
 import { Input } from '@/components/atoms/input';
 import { Badge } from '@/components/atoms/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/molecules/card';
+import { Card, CardContent, CardHeader } from '@/components/molecules/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/organisms/table';
-import { Search, Filter, Download, Eye, EyeOff, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react';
+import { Search, Download, Eye, EyeOff, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react';
 
 // Inline components required (not in whitelist)
 const Tabs = ({ tabs, activeTab, onTabChange }: { tabs: { id: string; label: string; count?: number }[]; activeTab: string; onTabChange: (id: string) => void }) => (
