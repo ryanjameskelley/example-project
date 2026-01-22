@@ -29,12 +29,14 @@ function Original_UserProfileDialog() {
           <Button>Edit Profile</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader className="flex-row items-center justify-between space-y-0">
-            <DialogTitle>Edit Profile</DialogTitle>
+          <DialogHeader>
+            <div className="flex items-center justify-between w-full">
+              <DialogTitle>Edit Profile</DialogTitle>
+            </div>
+            <DialogDescription className="mb-2">
+              Make changes to your profile here. Click save when you're done.
+            </DialogDescription>
           </DialogHeader>
-          <DialogDescription className="mb-2">
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4 py-2">
               <div className="space-y-1">
