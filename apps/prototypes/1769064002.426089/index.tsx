@@ -1,11 +1,10 @@
 import { AuuiBanner } from '../../components/AuuiBanner';
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/molecules/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/molecules/dialog';
 import { Button } from '@/components/atoms/button';
 import { Input } from '@/components/atoms/input';
 import { Label } from '@/components/atoms/label';
-import { X } from 'lucide-react';
 
 function Original_UserProfileDialog() {
   const [open, setOpen] = useState(false);
@@ -30,9 +29,6 @@ function Original_UserProfileDialog() {
           <Button>Edit Profile</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px]">
-          <DialogClose className="absolute right-4 top-8">
-            <X className="h-4 w-4" />
-          </DialogClose>
           <DialogHeader>
             <DialogTitle>Edit Profile</DialogTitle>
             <DialogDescription>

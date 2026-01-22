@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769068192769',
-  title: 'Change The Close Button From',
-  description: 'change the close button from absolute right-4 top-4 to absolute right-4 top-8',
+  id: '1769068400462',
+  title: 'Option 1: Remove The Duplicate',
+  description: 'Option 1: Remove the duplicate X button in the content area (keep only the one in the header)',
   createdAt: '2026-01-22',
   temporary: true,
 };
