@@ -36,7 +36,7 @@ function Original_UserProfileDialog() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit}>
-            <div className="space-y-4 py-8">
+            <div className="space-y-4 py-2">
               <div className="space-y-1">
                 <Label htmlFor="name">Name</Label>
                 <Input

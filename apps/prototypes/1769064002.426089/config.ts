@@ -7,9 +7,9 @@ export interface PrototypeConfig {
 }
 
 const config: PrototypeConfig = {
-  id: '1769064375560',
-  title: 'Adjust The Space-y-2 (which Equals',
-  description: 'adjust the space-y-2 (which equals 0.5rem or 8px) between the Label and Input within each field: to ',
+  id: '1769064539675',
+  title: 'Adjust It To 6 Then',
+  description: 'adjust it to 6 then make sure there is 8px between the subtitle and the first field',
   createdAt: '2026-01-22',
   temporary: true,
 };
