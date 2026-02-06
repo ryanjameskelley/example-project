@@ -10,6 +10,13 @@ import {
 } from './Drawer';
 import { Button } from '@/components/atoms/Button';
 import { Field } from '@/components/atoms/Field';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/atoms/Select';
 import { STEP_CONFIG, type JourneyStepNodeData, type StepField } from './JourneyStepNode';
 
 interface StepSettingsDrawerProps {
@@ -81,11 +88,11 @@ export function StepSettingsDrawer({
           ))}
         </div>
 
-        <DrawerFooter>
-          <Button onClick={handleSave}>Save Changes</Button>
+        <DrawerFooter className="flex flex-row justify-end gap-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>
+          <Button onClick={handleSave}>Save Changes</Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
@@ -144,18 +151,18 @@ function FieldRenderer({ field, value, onChange }: FieldRendererProps) {
     case 'select':
       return (
         <Field label={field.label} required={field.required}>
-          <select
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className={baseInputClass}
-          >
-            <option value="">Select {field.label.toLowerCase()}</option>
-            {field.options?.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <Select value={value} onValueChange={onChange}>
+            <SelectTrigger>
+              <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
+            </SelectTrigger>
+            <SelectContent>
+              {field.options?.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </Field>
       );
 

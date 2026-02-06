@@ -3,7 +3,7 @@ import { Handle, Position } from 'reactflow';
 import {
   MessageCircle, Mail, Phone, Ticket, PenLine, GitBranch, Clock,
   MessageCircleMore, MailOpen, PhoneCall, TicketCheck, PenSquare, GitMerge, Timer,
-  UserRoundPlus, Copy, Terminal, Pencil
+  UserRoundPlus, Copy, Terminal, Pencil, Zap, Calendar, FileText, Database, Trash2, Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/atoms/Button';
@@ -122,6 +122,38 @@ export const STEP_CONFIG = {
       ]},
     ],
   },
+  'patient-added': {
+    label: 'Patient added to database',
+    category: 'Trigger',
+    icon: Database,
+    hoverIcon: Database,
+    color: 'text-indigo-500',
+    fields: [],
+  },
+  'email-received': {
+    label: 'Email received',
+    category: 'Trigger',
+    icon: Mail,
+    hoverIcon: MailOpen,
+    color: 'text-green-500',
+    fields: [],
+  },
+  'appointment-scheduled': {
+    label: 'Appointment scheduled',
+    category: 'Trigger',
+    icon: Calendar,
+    hoverIcon: Calendar,
+    color: 'text-pink-500',
+    fields: [],
+  },
+  'form-submitted': {
+    label: 'Form submitted',
+    category: 'Trigger',
+    icon: FileText,
+    hoverIcon: FileText,
+    color: 'text-teal-500',
+    fields: [],
+  },
 } as const;
 
 export type StepType = keyof typeof STEP_CONFIG;
@@ -152,6 +184,7 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
   const [hovered, setHovered] = useState(false);
   const config = STEP_CONFIG[data.stepType];
   const Icon = hovered ? config.hoverIcon : config.icon;
+  const isTrigger = config.category === 'Trigger';
 
   const finished = data.finished ?? 0;
   const total = data.total ?? 0;
@@ -176,13 +209,23 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
     window.dispatchEvent(new CustomEvent('journey-step-terminal', { detail: { id, data } }));
   };
 
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.dispatchEvent(new CustomEvent('journey-step-delete', { detail: { id, data } }));
+  };
+
+  const handleSparkle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.dispatchEvent(new CustomEvent('journey-step-sparkle', { detail: { id, data } }));
+  };
+
   return (
     <div
       className="group relative min-w-[328px] min-h-[80px] flex items-center gap-3 px-3 border border-border bg-background rounded-[10px]"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Handle type="target" position={Position.Top} className="!bg-muted-foreground !z-10" />
+      <Handle type="target" position={Position.Top} className="!bg-border !w-3 !h-3 !-top-[7px] !z-10" />
 
       <div className={cn("flex items-center justify-center", config.color)}>
         <Icon className="w-5 h-5" />
@@ -194,19 +237,26 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
       </div>
 
       <div className="absolute inset-0 flex flex-col justify-between p-3 bg-background/70 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity rounded-[10px]">
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" onClick={handleAddUser} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
-            <UserRoundPlus className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" onClick={handleCopy} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
-            <Copy className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" onClick={handleTerminal} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
-            <Terminal className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" onClick={handleEdit} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
-            <Pencil className="w-4 h-4" />
-          </Button>
+        <div className="flex items-center justify-between gap-1">
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" onClick={handleAddUser} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
+              <UserRoundPlus className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" onClick={handleCopy} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
+              <Copy className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" onClick={handleTerminal} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
+              <Terminal className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" onClick={handleEdit} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
+              <Pencil className="w-4 h-4" />
+            </Button>
+          </div>
+          {isTrigger && (
+            <Button variant="ghost" onClick={handleSparkle} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
+              <Sparkles className="w-4 h-4" />
+            </Button>
+          )}
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>finished: {finished}</span>
@@ -214,7 +264,7 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
         </div>
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="!bg-muted-foreground !z-10" />
+      <Handle type="source" position={Position.Bottom} className="!bg-border !w-3 !h-3 !-bottom-[7px] !z-10" />
     </div>
   );
 }

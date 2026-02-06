@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
   PanelRight,
   LucideIcon,
+  Route,
 } from "lucide-react";
 
 export interface SidebarNavigationItem {
@@ -74,6 +75,7 @@ const DEFAULT_NAVIGATION: SidebarNavigationItem[] = [
   { id: "ai", icon: Sparkles, label: "Ask AI", translationKey: "navigation.ai", path: "/ai" },
   { id: "contacts", icon: UsersRound, label: "Contacts", translationKey: "navigation.contacts", path: "/contacts" },
   { id: "tickets", icon: Ticket, label: "Tickets", translationKey: "navigation.tickets", path: "/tickets" },
+  { id: "journeys", icon: Route, label: "Journeys", translationKey: "navigation.journeys", path: "/journeys" },
 ];
 
 const DEFAULT_MESSAGING_ITEMS: SidebarNavigationItem[] = [
@@ -149,7 +151,7 @@ export function AppSidebar({
           isCollapsed ? "justify-center" : "justify-start"
         } ${
           isActive
-            ? "bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            ? "bg-[#F5F5F5] text-sidebar-accent-foreground hover:bg-[#F5F5F5] hover:text-sidebar-accent-foreground"
             : ""
         }`}
         onClick={item.path ? () => handleNavigation(item.path!) : hasChildren ? () => {} : undefined}
@@ -206,7 +208,7 @@ export function AppSidebar({
           >
             <div className="flex items-start">
               <Avatar className="h-8 w-8 rounded-lg bg-background">
-                <AvatarImage src={user.avatar || "https://github.com/shadcn.png"} alt={user.name} />
+                <AvatarImage src={user.avatar || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(user.name)}`} alt={user.name} />
               </Avatar>
             </div>
             {!isCollapsed && (

@@ -62,3 +62,16 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+@keyframes dashflow {
+  0% {
+    stroke-dashoffset: 10;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.react-flow__edge-path {
+  animation: dashflow 0.5s linear infinite;
+}

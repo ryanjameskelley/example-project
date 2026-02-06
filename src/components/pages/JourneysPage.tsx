@@ -23,6 +23,7 @@ import {
   PenLine,
   GitBranch,
   Clock,
+  Zap,
 } from 'lucide-react';
 import {
   FlowNode,
@@ -52,6 +53,7 @@ import {
   type JourneyStepNodeData,
 } from '@/components/molecules/JourneyStepNode';
 import { StepSettingsDrawer } from '@/components/molecules/StepSettingsDrawer';
+import { TestRoutesDialog } from '@/components/molecules/TestRoutesDialog';
 
 const CustomNode = ({ data }: any) => {
   return (
@@ -80,9 +82,7 @@ const nodeTypes: NodeTypes = {
   journeyStep: JourneyStepNode,
 };
 
-const initialNodes: Node[] = [
-  { id: '1', position: { x: 250, y: 5 }, data: { label: 'Start' }, type: 'custom' },
-];
+const initialNodes: Node[] = [];
 
 const initialEdges: Edge[] = [];
 
@@ -106,6 +106,8 @@ export function JourneysPage() {
 
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
   const [rightPanelWidth, setRightPanelWidth] = useState(320);
+  const [stepUnlocked, setStepUnlocked] = useState(false);
+  const [testDialogOpen, setTestDialogOpen] = useState(false);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
@@ -128,6 +130,11 @@ export function JourneysPage() {
         },
       };
       setNodes((nds: Node[]) => [...nds, newNode]);
+
+      // If this is a trigger node, unlock steps
+      if (config.category === 'Trigger') {
+        setStepUnlocked(true);
+      }
     },
     [setNodes, nodes.length],
   );
@@ -164,6 +171,13 @@ export function JourneysPage() {
     [setNodes, nodes],
   );
 
+  const handleDeleteNode = useCallback(
+    (nodeId: string, data?: JourneyStepNodeData) => {
+      setNodes((nds: Node[]) => nds.filter((node: Node) => node.id !== nodeId));
+    },
+    [setNodes],
+  );
+
   useEffect(() => {
     const handleEditEvent = (e: CustomEvent<{ id: string; data: JourneyStepNodeData }>) => {
       setEditingNodeId(e.detail.id);
@@ -175,23 +189,61 @@ export function JourneysPage() {
       handleCopyNode(e.detail.id, e.detail.data);
     };
 
+    const handleDeleteEvent = (e: CustomEvent<{ id: string; data: JourneyStepNodeData }>) => {
+      handleDeleteNode(e.detail.id, e.detail.data);
+    };
+
+    const handleSparkleEvent = (e: CustomEvent<{ id: string; data: JourneyStepNodeData }>) => {
+      setIsRightPanelOpen(true);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't handle delete if dialog is open or if focused on an input
+      if (testDialogOpen || drawerOpen) return;
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+
+      if ((e.key === 'Delete' || e.key === 'Backspace') && !e.repeat) {
+        const selectedNodes = nodes.filter((node: Node) => node.selected);
+        selectedNodes.forEach((node: Node) => {
+          handleDeleteNode(node.id);
+        });
+      }
+    };
+
     window.addEventListener('journey-step-edit', handleEditEvent as EventListener);
     window.addEventListener('journey-step-copy', handleCopyEvent as EventListener);
+    window.addEventListener('journey-step-delete', handleDeleteEvent as EventListener);
+    window.addEventListener('journey-step-sparkle', handleSparkleEvent as EventListener);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('journey-step-edit', handleEditEvent as EventListener);
       window.removeEventListener('journey-step-copy', handleCopyEvent as EventListener);
+      window.removeEventListener('journey-step-delete', handleDeleteEvent as EventListener);
+      window.removeEventListener('journey-step-sparkle', handleSparkleEvent as EventListener);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleCopyNode]);
+  }, [handleCopyNode, handleDeleteNode, nodes, testDialogOpen, drawerOpen]);
 
   const actionItems = stepMenuItems.filter((item) => item.category === 'Actions');
   const logicItems = stepMenuItems.filter((item) => item.category === 'Logic');
   const timingItems = stepMenuItems.filter((item) => item.category === 'Timing');
 
+  // Check if there's a trigger node on the canvas
+  const hasTriggerOnCanvas = nodes.some((node: Node) => {
+    const nodeData = node.data as JourneyStepNodeData;
+    if (nodeData?.stepType) {
+      const config = STEP_CONFIG[nodeData.stepType];
+      return config.category === 'Trigger';
+    }
+    return false;
+  });
+
   const rightPanelContent = (
     <div className="h-full flex flex-col">
-      <div className="p-4 border-b">
-        <h2 className="text-lg font-semibold">Panel</h2>
+      <div className="h-[52px] flex items-center px-4 border-b">
+        <h2 className="text-lg font-semibold">Ask AI and Suggestions</h2>
       </div>
       <div className="flex-1 p-4">
         <p className="text-sm text-muted-foreground">Right panel content goes here.</p>
@@ -205,6 +257,7 @@ export function JourneysPage() {
         className: 'bg-[#FFFFFF]',
         isRightPanelOpen,
         onToggleRightPanel: () => setIsRightPanelOpen(!isRightPanelOpen),
+        activePage: 'journeys',
       }}
       rightPanel={rightPanelContent}
       isRightPanelOpen={isRightPanelOpen}
@@ -216,7 +269,29 @@ export function JourneysPage() {
           <ButtonGroup>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" leftIcon={<Plus className="w-4 h-4" />}>
+                <Button variant="outline" leftIcon={<Zap className="w-4 h-4" />} disabled={hasTriggerOnCanvas}>
+                  Trigger
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuItem onClick={() => addStepNode('patient-added')}>
+                  Patient added to database
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addStepNode('email-received')}>
+                  Email received
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addStepNode('appointment-scheduled')}>
+                  Appointment scheduled
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addStepNode('form-submitted')}>
+                  Form submitted
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" leftIcon={<Plus className="w-4 h-4" />} disabled={!stepUnlocked}>
                   Step
                 </Button>
               </DropdownMenuTrigger>
@@ -265,18 +340,19 @@ export function JourneysPage() {
               Note
             </Button>
 
-            <Button variant="outline" leftIcon={<Grid2X2 className="w-4 h-4" />}>
-              Canvas
-            </Button>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" leftIcon={<ChevronDown className="w-4 h-4" />} />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Option 1</DropdownMenuItem>
-                <DropdownMenuItem>Option 2</DropdownMenuItem>
-                <DropdownMenuItem>Option 3</DropdownMenuItem>
+                <DropdownMenuItem className="gap-2">
+                  <Grid2X2 className="w-4 h-4" />
+                  Canvas
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2" onClick={() => setTestDialogOpen(true)}>
+                  <Play className="w-4 h-4" />
+                  Test workflow
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>
@@ -290,6 +366,9 @@ export function JourneysPage() {
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             nodeTypes={nodeTypes}
+            defaultEdgeOptions={{
+              style: { strokeWidth: 2, strokeDasharray: '5, 5' },
+            }}
             fitView
           >
             <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
@@ -304,6 +383,13 @@ export function JourneysPage() {
         data={editingNodeData}
         onSave={handleSaveNodeConfig}
         rightOffset={isRightPanelOpen ? rightPanelWidth : 0}
+      />
+
+      <TestRoutesDialog
+        open={testDialogOpen}
+        onOpenChange={setTestDialogOpen}
+        nodes={nodes}
+        edges={edges}
       />
     </AppLayout>
   );
