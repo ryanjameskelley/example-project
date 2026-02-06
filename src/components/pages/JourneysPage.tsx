@@ -303,6 +303,7 @@ export function JourneysPage() {
         nodeId={editingNodeId}
         data={editingNodeData}
         onSave={handleSaveNodeConfig}
+        rightOffset={isRightPanelOpen ? rightPanelWidth : 0}
       />
     </AppLayout>
   );

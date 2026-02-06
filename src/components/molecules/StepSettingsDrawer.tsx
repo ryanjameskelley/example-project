@@ -18,6 +18,7 @@ interface StepSettingsDrawerProps {
   nodeId: string | null;
   data: JourneyStepNodeData | null;
   onSave: (nodeId: string, config: Record<string, any>) => void;
+  rightOffset?: number;
 }
 
 export function StepSettingsDrawer({
@@ -26,6 +27,7 @@ export function StepSettingsDrawer({
   nodeId,
   data,
   onSave,
+  rightOffset = 0,
 }: StepSettingsDrawerProps) {
   const [formValues, setFormValues] = useState<Record<string, any>>({});
 
@@ -55,7 +57,7 @@ export function StepSettingsDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent rightOffset={rightOffset}>
         <DrawerHeader>
           <div className="flex items-center gap-3">
             <div className={config.color}>
