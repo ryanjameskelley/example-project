@@ -23,7 +23,6 @@ import {
   PenLine,
   GitBranch,
   Clock,
-  PanelRight,
 } from 'lucide-react';
 import {
   FlowNode,
@@ -204,6 +203,8 @@ export function JourneysPage() {
     <AppLayout
       sidebar={{
         className: 'bg-[#FFFFFF]',
+        isRightPanelOpen,
+        onToggleRightPanel: () => setIsRightPanelOpen(!isRightPanelOpen),
       }}
       rightPanel={rightPanelContent}
       isRightPanelOpen={isRightPanelOpen}
@@ -267,12 +268,6 @@ export function JourneysPage() {
             <Button variant="outline" leftIcon={<Grid2X2 className="w-4 h-4" />}>
               Canvas
             </Button>
-
-            <Button
-              variant="outline"
-              leftIcon={<PanelRight className="w-4 h-4" />}
-              onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
-            />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

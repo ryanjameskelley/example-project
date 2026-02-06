@@ -2,11 +2,13 @@ import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
 const Drawer = ({
-  shouldScaleBackground = true,
+  shouldScaleBackground = false,
+  modal = false,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
     shouldScaleBackground={shouldScaleBackground}
+    modal={modal}
     {...props}
   />
 )
@@ -24,7 +26,7 @@ const DrawerOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DrawerPrimitive.Overlay
     ref={ref}
-    className={`fixed inset-0 z-50 bg-[#FFFFFF]/70 backdrop-blur-sm ${className || ""}`}
+    className={`fixed inset-0 z-40 bg-[#FFFFFF]/70 backdrop-blur-sm pointer-events-none ${className || ""}`}
     {...props}
   />
 ))
@@ -38,7 +40,7 @@ const DrawerContent = React.forwardRef<
     <DrawerOverlay />
     <DrawerPrimitive.Content
       ref={ref}
-      className={`fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[14px] border-t bg-background ${className || ""}`}
+      className={`fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[14px] border-t bg-background pointer-events-auto ${className || ""}`}
       {...props}
     >
       <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
