@@ -195,16 +195,16 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
 
       <div className="absolute inset-0 flex flex-col justify-between p-3 bg-background/70 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity rounded-[10px]">
         <div className="flex items-center gap-1">
-          <Button variant="ghost" onClick={handleAddUser} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:bg-[#F5F5F5]">
+          <Button variant="ghost" onClick={handleAddUser} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
             <UserRoundPlus className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" onClick={handleCopy} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:bg-[#F5F5F5]">
+          <Button variant="ghost" onClick={handleCopy} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
             <Copy className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" onClick={handleTerminal} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:bg-[#F5F5F5]">
+          <Button variant="ghost" onClick={handleTerminal} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
             <Terminal className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" onClick={handleEdit} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:bg-[#F5F5F5]">
+          <Button variant="ghost" onClick={handleEdit} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
             <Pencil className="w-4 h-4" />
           </Button>
         </div>
