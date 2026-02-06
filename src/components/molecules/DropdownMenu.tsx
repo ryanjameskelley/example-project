@@ -6,7 +6,7 @@ const DropdownMenu = DropdownMenuPrimitive.Root
 
 const DropdownMenuTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
-  React.DropdownMenuPropsWithoutRef<typeof DropdownMenuPrimitive.Trigger>
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Trigger>
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Trigger
     ref={ref}
@@ -24,7 +24,7 @@ const DropdownMenuSub = DropdownMenuPrimitive.Sub
 
 const DropdownMenuLabel = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Label>,
-  React.DropdownMenuPropsWithoutRef<typeof DropdownMenuPrimitive.Label>
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label>
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
@@ -36,7 +36,7 @@ DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName
 
 const DropdownMenuSeparator = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
-  React.DropdownMenuPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
@@ -65,7 +65,7 @@ const dropdownMenuContentVariants = cva(
 
 const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
-  React.DropdownMenuPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, align = "start", ...props }, ref) => (
   <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
@@ -96,7 +96,7 @@ const dropdownMenuItemVariants = cva(
 
 const DropdownMenuItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
-  React.DropdownMenuPropsWithoutRef<typeof DropdownMenuPrimitive.Item> &
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> &
     VariantProps<typeof dropdownMenuItemVariants>
 >(({ className, variant, ...props }, ref) => (
   <DropdownMenuPrimitive.Item
@@ -109,7 +109,7 @@ DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
 
 const DropdownMenuSubTrigger = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
-  React.DropdownMenuPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger>
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger>
 >(({ className, children, ...props }, ref) => (
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
@@ -138,7 +138,7 @@ DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayNam
 
 const DropdownMenuSubContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
-  React.DropdownMenuPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.SubContent
     ref={ref}

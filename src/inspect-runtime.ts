@@ -47,8 +47,6 @@ function isAllowedOrigin(origin: string): boolean {
   return ORIGIN_RE.test(origin) || origin.startsWith('http://localhost') || origin.startsWith('https://localhost');
 }
 
-function px(n: number): string { return `${Math.round(n)}px`; }
-
 function parsePixelValue(v: string): number {
   return parseFloat(v) || 0;
 }

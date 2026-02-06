@@ -93,7 +93,7 @@ const DEFAULT_TEAM_CHANNELS: SidebarNavigationItem[] = [
 export function AppSidebar({
   activePage,
   onNavigate,
-  onLogout,
+  onLogout: _onLogout,
   user = DEFAULT_USER,
   navigationItems = DEFAULT_NAVIGATION,
   showMessagingSection = true,
@@ -103,8 +103,8 @@ export function AppSidebar({
   onToggleCollapse: _onToggleCollapse,
   className = "",
   onCreateTeamChannel,
-  availableUsers = [],
-  customDashboardContent,
+  availableUsers: _availableUsers = [],
+  customDashboardContent: _customDashboardContent,
   isRightPanelOpen: _isRightPanelOpen = false,
   onToggleRightPanel,
 }: AppSidebarProps) {

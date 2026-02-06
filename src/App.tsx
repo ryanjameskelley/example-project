@@ -8,7 +8,6 @@
 import { useState } from 'react'
 import { SearchList, SearchListItem } from '@/components/molecules/SearchList'
 import { JourneysPage } from '@/components/pages/JourneysPage'
-import { Button } from '@/components/atoms/Button'
 
 interface Prototype {
   name: string

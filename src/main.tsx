@@ -1,4 +1,4 @@
-import React, { Suspense, ComponentType, Component, ReactNode, useState, useEffect } from 'react'
+import React, { Suspense, ComponentType, Component, ReactNode, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
