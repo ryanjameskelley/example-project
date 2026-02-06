@@ -23,6 +23,7 @@ import {
   PenLine,
   GitBranch,
   Clock,
+  PanelRight,
 } from 'lucide-react';
 import {
   FlowNode,
@@ -44,7 +45,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/components/molecules/DropdownMenu';
-import { AppSidebar } from '@/components/organisms/AppSidebar';
+import { AppLayout } from '@/components/atoms/AppLayout';
 import {
   JourneyStepNode,
   STEP_CONFIG,
@@ -103,6 +104,9 @@ export function JourneysPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [editingNodeData, setEditingNodeData] = useState<JourneyStepNodeData | null>(null);
+
+  const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
+  const [rightPanelWidth, setRightPanelWidth] = useState(320);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
@@ -185,11 +189,28 @@ export function JourneysPage() {
   const logicItems = stepMenuItems.filter((item) => item.category === 'Logic');
   const timingItems = stepMenuItems.filter((item) => item.category === 'Timing');
 
-  return (
-    <div className="h-screen w-full flex">
-      <AppSidebar />
+  const rightPanelContent = (
+    <div className="h-full flex flex-col">
+      <div className="p-4 border-b">
+        <h2 className="text-lg font-semibold">Panel</h2>
+      </div>
+      <div className="flex-1 p-4">
+        <p className="text-sm text-muted-foreground">Right panel content goes here.</p>
+      </div>
+    </div>
+  );
 
-      <div className="flex-1 relative" style={{ marginLeft: '254px' }}>
+  return (
+    <AppLayout
+      sidebar={{
+        className: 'bg-[#FFFFFF]',
+      }}
+      rightPanel={rightPanelContent}
+      isRightPanelOpen={isRightPanelOpen}
+      rightPanelWidth={rightPanelWidth}
+      onRightPanelResize={setRightPanelWidth}
+    >
+      <div className="h-screen w-full relative">
         <div className="absolute top-6 right-6 z-10">
           <ButtonGroup>
             <DropdownMenu>
@@ -247,6 +268,12 @@ export function JourneysPage() {
               Canvas
             </Button>
 
+            <Button
+              variant="outline"
+              leftIcon={<PanelRight className="w-4 h-4" />}
+              onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
+            />
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" leftIcon={<ChevronDown className="w-4 h-4" />} />
@@ -282,6 +309,6 @@ export function JourneysPage() {
         data={editingNodeData}
         onSave={handleSaveNodeConfig}
       />
-    </div>
+    </AppLayout>
   );
 }
