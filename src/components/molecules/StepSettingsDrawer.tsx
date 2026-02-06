@@ -9,6 +9,7 @@ import {
   DrawerClose,
 } from './Drawer';
 import { Button } from '@/components/atoms/Button';
+import { Field } from '@/components/atoms/Field';
 import { STEP_CONFIG, type JourneyStepNodeData, type StepField } from './JourneyStepNode';
 
 interface StepSettingsDrawerProps {
@@ -95,18 +96,14 @@ interface FieldRendererProps {
   onChange: (value: any) => void;
 }
 
-function FieldRenderer({ field, value, onChange }: FieldRendererProps) {
-  const baseInputClass =
-    'w-full px-3 py-2 text-sm border border-border rounded-[8px] bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1';
+const baseInputClass =
+  'w-full h-8 rounded-[10px] border border-[#E5E5E5] bg-white px-3.5 text-sm font-geist focus:outline-none focus:ring-2 focus:ring-[#EEEEEE]';
 
+function FieldRenderer({ field, value, onChange }: FieldRendererProps) {
   switch (field.type) {
     case 'text':
       return (
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">
-            {field.label}
-            {field.required && <span className="text-destructive ml-1">*</span>}
-          </label>
+        <Field label={field.label} required={field.required}>
           <input
             type="text"
             value={value}
@@ -114,32 +111,24 @@ function FieldRenderer({ field, value, onChange }: FieldRendererProps) {
             className={baseInputClass}
             placeholder={`Enter ${field.label.toLowerCase()}`}
           />
-        </div>
+        </Field>
       );
 
     case 'textarea':
       return (
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">
-            {field.label}
-            {field.required && <span className="text-destructive ml-1">*</span>}
-          </label>
+        <Field label={field.label} required={field.required}>
           <textarea
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className={`${baseInputClass} min-h-[100px] resize-none`}
+            className={`${baseInputClass} h-auto min-h-[100px] py-2 resize-none`}
             placeholder={`Enter ${field.label.toLowerCase()}`}
           />
-        </div>
+        </Field>
       );
 
     case 'number':
       return (
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">
-            {field.label}
-            {field.required && <span className="text-destructive ml-1">*</span>}
-          </label>
+        <Field label={field.label} required={field.required}>
           <input
             type="number"
             value={value}
@@ -147,16 +136,12 @@ function FieldRenderer({ field, value, onChange }: FieldRendererProps) {
             className={baseInputClass}
             placeholder={`Enter ${field.label.toLowerCase()}`}
           />
-        </div>
+        </Field>
       );
 
     case 'select':
       return (
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">
-            {field.label}
-            {field.required && <span className="text-destructive ml-1">*</span>}
-          </label>
+        <Field label={field.label} required={field.required}>
           <select
             value={value}
             onChange={(e) => onChange(e.target.value)}
@@ -169,7 +154,7 @@ function FieldRenderer({ field, value, onChange }: FieldRendererProps) {
               </option>
             ))}
           </select>
-        </div>
+        </Field>
       );
 
     default:

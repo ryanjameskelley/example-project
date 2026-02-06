@@ -178,11 +178,11 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
 
   return (
     <div
-      className="group relative min-w-[328px] min-h-[80px] flex items-center gap-3 px-3 border border-border bg-background rounded-[10px] overflow-hidden"
+      className="group relative min-w-[328px] min-h-[80px] flex items-center gap-3 px-3 border border-border bg-background rounded-[10px]"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Handle type="target" position={Position.Top} className="!bg-muted-foreground" />
+      <Handle type="target" position={Position.Top} className="!bg-muted-foreground !z-10" />
 
       <div className={cn("flex items-center justify-center", config.color)}>
         <Icon className="w-5 h-5" />
@@ -193,25 +193,28 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
         <span className="text-sm font-medium text-foreground">{data.label || config.label}</span>
       </div>
 
-      <div className="absolute inset-0 flex flex-col justify-between p-3 bg-background/70 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute inset-0 flex flex-col justify-between p-3 bg-background/70 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity rounded-[10px]">
         <div className="flex items-center gap-1">
-          <Button size="icon" variant="ghost" onClick={handleAddUser} className="h-7 w-7">
-            <UserRoundPlus className="w-4 h-4" />
+          <Button size="icon" variant="ghost" onClick={handleAddUser} className="h-9 w-9">
+            <UserRoundPlus className="w-5 h-5" />
           </Button>
-          <Button size="icon" variant="ghost" onClick={handleCopy} className="h-7 w-7">
-            <Copy className="w-4 h-4" />
+          <Button size="icon" variant="ghost" onClick={handleCopy} className="h-9 w-9">
+            <Copy className="w-5 h-5" />
           </Button>
-          <Button size="icon" variant="ghost" onClick={handleTerminal} className="h-7 w-7">
-            <Terminal className="w-4 h-4" />
+          <Button size="icon" variant="ghost" onClick={handleTerminal} className="h-9 w-9">
+            <Terminal className="w-5 h-5" />
           </Button>
-          <Button size="icon" variant="ghost" onClick={handleEdit} className="h-7 w-7">
-            <Pencil className="w-4 h-4" />
+          <Button size="icon" variant="ghost" onClick={handleEdit} className="h-9 w-9">
+            <Pencil className="w-5 h-5" />
           </Button>
         </div>
-        <span className="text-xs text-muted-foreground">{finished} of {total}</span>
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span>finished: {finished}</span>
+          <span>total: {total}</span>
+        </div>
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="!bg-muted-foreground" />
+      <Handle type="source" position={Position.Bottom} className="!bg-muted-foreground !z-10" />
     </div>
   );
 }
