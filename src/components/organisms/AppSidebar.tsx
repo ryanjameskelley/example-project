@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { Avatar, AvatarImage } from "./avatar";
-import { Button } from "./button";
-import { Separator } from "./separator";
-import { AccountDialog } from "./account-dialog";
-import { TeamChannelDialog } from "./team-channel-dialog";
-import { SystemText } from "./SystemText";
+import { Avatar, AvatarImage } from "../atoms/Avatar";
+import { Button } from "../atoms/Button";
+import { Separator } from "../atoms/Separator";
 import {
   ChevronsUpDown,
   LayoutDashboard,
@@ -111,17 +108,11 @@ export function AppSidebar({
   isRightPanelOpen: _isRightPanelOpen = false,
   onToggleRightPanel,
 }: AppSidebarProps) {
-  const [isAccountDialogOpen, setIsAccountDialogOpen] = useState(false);
-  const [isTeamChannelDialogOpen, setIsTeamChannelDialogOpen] = useState(false);
   const [isMessagingExpanded, setIsMessagingExpanded] = useState(true);
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
 
   const handleNavigation = (path: string) => {
     onNavigate?.(path);
-  };
-
-  const handleAccountClick = () => {
-    setIsAccountDialogOpen(true);
   };
 
   const renderNavigationItem = (item: SidebarNavigationItem, isChild = false) => {
@@ -137,13 +128,13 @@ export function AppSidebar({
           className={`w-full h-${isChild ? "9" : "8"} px-${isChild ? "3" : "2"} py-2 rounded-md ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
-          onClick={() => setIsTeamChannelDialogOpen(true)}
+          onClick={() => onCreateTeamChannel?.({ name: "", description: "", participants: [], isPublic: true })}
           title={isCollapsed ? item.label : ""}
         >
           {item.icon && <item.icon className={`h-4 w-4 text-sidebar-foreground ${!isCollapsed ? "mr-2" : ""}`} />}
           {!isCollapsed && (
             <span className={`text-sm ${isChild ? "font-medium" : ""} text-sidebar-foreground`}>
-              {item.translationKey ? <SystemText tKey={item.translationKey} fallback={item.label} /> : item.label}
+              {item.label}
             </span>
           )}
         </Button>
@@ -171,7 +162,7 @@ export function AppSidebar({
         {!isCollapsed && (
           <>
             <span className={`text-sm ${isChild ? "font-medium" : ""} text-sidebar-foreground`}>
-              {item.translationKey ? <SystemText tKey={item.translationKey} fallback={item.label} /> : item.label}
+              {item.label}
             </span>
             {item.badge && <span className="ml-auto text-sm font-medium">{item.badge}</span>}
             {item.id === "ai" && hoveredItemId === "ai" && (
@@ -208,13 +199,10 @@ export function AppSidebar({
       >
         {/* User Section */}
         <div className="px-2 py-2 border-b h-[52px] flex items-center">
-          <Button
-            variant="ghost"
-            className={`flex items-center gap-2 p-2 rounded-md w-full hover:bg-sidebar-accent ${
+          <div
+            className={`flex items-center gap-2 p-2 rounded-md w-full ${
               isCollapsed ? "justify-center" : "justify-start"
             }`}
-            onClick={handleAccountClick}
-            title={isCollapsed ? user.name : ""}
           >
             <div className="flex items-start">
               <Avatar className="h-8 w-8 rounded-lg bg-background">
@@ -223,16 +211,16 @@ export function AppSidebar({
             </div>
             {!isCollapsed && (
               <>
-                <div className="flex flex-col justify-center items-start gap-0.5 flex-1">
-                  <p className="text-sm font-semibold text-sidebar-foreground leading-none">{user.name}</p>
-                  <p className="text-xs text-sidebar-foreground leading-none">{user.email}</p>
+                <div className="flex flex-col justify-center items-start gap-0.5 flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-sidebar-foreground leading-none truncate w-full">{user.name}</p>
+                  <p className="text-xs text-sidebar-foreground leading-none truncate w-full">{user.email}</p>
                 </div>
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center flex-shrink-0">
                   <ChevronsUpDown className="h-4 w-4 text-sidebar-foreground" />
                 </div>
               </>
             )}
-          </Button>
+          </div>
         </div>
 
         {/* Main Navigation */}
@@ -250,9 +238,7 @@ export function AppSidebar({
                 <Inbox className={`h-4 w-4 text-sidebar-foreground ${!isCollapsed ? "mr-2" : ""}`} />
                 {!isCollapsed && (
                   <>
-                    <span className="text-sm text-sidebar-foreground">
-                      <SystemText tKey="navigation.messaging" fallback="Messaging" />
-                    </span>
+                    <span className="text-sm text-sidebar-foreground">Messaging</span>
                     {isMessagingExpanded ? (
                       <ChevronDown className="ml-auto h-4 w-4 text-sidebar-foreground" />
                     ) : (
@@ -282,25 +268,6 @@ export function AppSidebar({
           </>
         )}
       </div>
-
-      <AccountDialog
-        open={isAccountDialogOpen}
-        onOpenChange={setIsAccountDialogOpen}
-        defaultExpanded={false}
-        activeSection="Account"
-        showTrigger={false}
-        onLogout={onLogout}
-        customDashboardContent={customDashboardContent}
-      />
-
-      <TeamChannelDialog
-        open={isTeamChannelDialogOpen}
-        onOpenChange={setIsTeamChannelDialogOpen}
-        defaultExpanded={false}
-        showTrigger={false}
-        availableUsers={availableUsers}
-        onCreateChannel={onCreateTeamChannel}
-      />
     </>
   );
 }

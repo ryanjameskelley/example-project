@@ -32,7 +32,7 @@ export default function App() {
     const Page = prototypes[currentPage].component
     return (
       <div className="min-h-screen">
-        <div className="p-4 border-b">
+        <div className="p-4 border-b h-[52px] bg-white flex items-center">
           <Button onClick={() => setCurrentPage(null)} variant="ghost">
             ← Back to Gallery
           </Button>

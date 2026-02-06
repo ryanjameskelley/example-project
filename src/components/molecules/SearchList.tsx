@@ -35,13 +35,13 @@ export const SearchList = React.forwardRef<HTMLDivElement, SearchListProps>(
     }, [items, search])
 
     return (
-      <div ref={ref} className={cn('flex flex-col gap-4', className)}>
+      <div ref={ref} className={cn('flex flex-col gap-4 bg-white rounded-[10px] p-4 shadow-sm', className)}>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={placeholder}
-          className="h-8 rounded-[10px] border border-[#E5E5E5] px-3.5 text-sm font-geist focus:outline-none focus:ring-2 focus:ring-[#EEEEEE]"
+          className="h-8 rounded-[10px] border border-[#E5E5E5] bg-white px-3.5 text-sm font-geist focus:outline-none focus:ring-2 focus:ring-[#EEEEEE]"
         />
 
         <div className="flex flex-col gap-2">
