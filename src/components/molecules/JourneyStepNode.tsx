@@ -172,6 +172,7 @@ export interface JourneyStepNodeData {
   config?: Record<string, any>;
   finished?: number;
   total?: number;
+  highlighted?: boolean;
 }
 
 interface JourneyStepNodeProps {
@@ -221,13 +222,25 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
 
   return (
     <div
-      className="group relative min-w-[328px] min-h-[80px] flex items-center gap-3 px-3 border border-border bg-background rounded-[10px]"
+      className={cn(
+        "group relative min-w-[328px] min-h-[80px] flex items-center gap-3 px-3 border rounded-[10px] transition-colors",
+        data.highlighted
+          ? "border-green-500 bg-green-50"
+          : "border-border bg-background"
+      )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <Handle type="target" position={Position.Top} className="!bg-border !w-3 !h-3 !-top-[7px] !z-10" />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className={cn(
+          "!w-3 !h-3 !-top-[7px] !z-10",
+          data.highlighted ? "!bg-green-500" : "!bg-border"
+        )}
+      />
 
-      <div className={cn("flex items-center justify-center", config.color)}>
+      <div className={cn("flex items-center justify-center", data.highlighted ? "text-green-600" : config.color)}>
         <Icon className="w-5 h-5" />
       </div>
 
@@ -264,7 +277,14 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
         </div>
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="!bg-border !w-3 !h-3 !-bottom-[7px] !z-10" />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className={cn(
+          "!w-3 !h-3 !-bottom-[7px] !z-10",
+          data.highlighted ? "!bg-green-500" : "!bg-border"
+        )}
+      />
     </div>
   );
 }

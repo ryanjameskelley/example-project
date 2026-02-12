@@ -8,6 +8,7 @@
 import { useState } from 'react'
 import { SearchList, SearchListItem } from '@/components/molecules/SearchList'
 import { JourneysPage } from '@/components/pages/JourneysPage'
+import { VitalsPage } from '@/components/pages/VitalsPage'
 
 interface Prototype {
   name: string
@@ -20,6 +21,11 @@ const prototypes: Record<string, Prototype> = {
     name: 'Journeys Page',
     description: 'User journey prototypes',
     component: JourneysPage,
+  },
+  vitals: {
+    name: 'Vitals',
+    description: 'Healthcare vitals monitoring table',
+    component: VitalsPage,
   },
   // Add more prototypes here
 }

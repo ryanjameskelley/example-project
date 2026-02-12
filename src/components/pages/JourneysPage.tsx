@@ -24,6 +24,8 @@ import {
   GitBranch,
   Clock,
   Zap,
+  Copy,
+  Route,
 } from 'lucide-react';
 import {
   FlowNode,
@@ -53,7 +55,16 @@ import {
   type JourneyStepNodeData,
 } from '@/components/molecules/JourneyStepNode';
 import { StepSettingsDrawer } from '@/components/molecules/StepSettingsDrawer';
-import { TestRoutesDialog } from '@/components/molecules/TestRoutesDialog';
+import { TestWorkflowDrawer } from '@/components/molecules/TestWorkflowDrawer';
+import { EditJourneyDialog } from '@/components/molecules/EditJourneyDialog';
+import { CopyJourneyDialog } from '@/components/molecules/CopyJourneyDialog';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from '@/components/molecules/NoJourney';
 
 const CustomNode = ({ data }: any) => {
   return (
@@ -107,7 +118,88 @@ export function JourneysPage() {
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
   const [rightPanelWidth, setRightPanelWidth] = useState(320);
   const [stepUnlocked, setStepUnlocked] = useState(false);
-  const [testDialogOpen, setTestDialogOpen] = useState(false);
+  const [testDrawerOpen, setTestDrawerOpen] = useState(false);
+  const [editJourneyDialogOpen, setEditJourneyDialogOpen] = useState(false);
+  const [copyJourneyDialogOpen, setCopyJourneyDialogOpen] = useState(false);
+  const [selectedTestNodeIds, setSelectedTestNodeIds] = useState<string[]>([]);
+  const [selectedTestEdgeIds, setSelectedTestEdgeIds] = useState<string[]>([]);
+  const [hasJourneys, setHasJourneys] = useState(false);
+
+  // Handlers that close other drawers when opening one
+  const handleSetDrawerOpen = (open: boolean) => {
+    if (open) {
+      setTestDrawerOpen(false);
+    }
+    setDrawerOpen(open);
+
+    // Ensure body pointer events are restored when closing
+    if (!open) {
+      setTimeout(() => {
+        document.body.style.pointerEvents = '';
+      }, 100);
+    }
+  };
+
+  const handleSetTestDrawerOpen = (open: boolean) => {
+    if (open) {
+      setDrawerOpen(false);
+    }
+    setTestDrawerOpen(open);
+
+    // Ensure body pointer events are restored when closing
+    if (!open) {
+      setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+        // Force remove any vaul-specific attributes
+        document.body.removeAttribute('data-vaul-drawer-visible');
+        document.body.removeAttribute('vaul-drawer-visible');
+      }, 150);
+    }
+  };
+
+  const handleRouteSelectionChange = useCallback((nodeIds: string[], edgeIds: string[]) => {
+    setSelectedTestNodeIds(nodeIds);
+    setSelectedTestEdgeIds(edgeIds);
+
+    // Update node styles
+    setNodes((nds: Node[]) =>
+      nds.map((node: Node) => {
+        const isHighlighted = nodeIds.includes(node.id);
+        const hasSelection = nodeIds.length > 0;
+        return {
+          ...node,
+          style: {
+            ...node.style,
+            opacity: !hasSelection ? 1 : isHighlighted ? 1 : 0.3,
+            pointerEvents: 'all',
+          },
+          data: {
+            ...node.data,
+            highlighted: isHighlighted,
+          },
+          draggable: true,
+        };
+      })
+    );
+
+    // Update edge styles
+    setEdges((eds: Edge[]) =>
+      eds.map((edge: Edge) => {
+        const isHighlighted = edgeIds.includes(edge.id);
+        const hasSelection = edgeIds.length > 0;
+        return {
+          ...edge,
+          style: {
+            strokeDasharray: '5, 5',
+            stroke: isHighlighted ? '#22c55e' : '#94a3b8',
+            strokeWidth: isHighlighted ? 3 : 2,
+            opacity: !hasSelection ? 1 : isHighlighted ? 1 : 0.3,
+          },
+        };
+      })
+    );
+  }, [setNodes, setEdges]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
@@ -182,7 +274,7 @@ export function JourneysPage() {
     const handleEditEvent = (e: CustomEvent<{ id: string; data: JourneyStepNodeData }>) => {
       setEditingNodeId(e.detail.id);
       setEditingNodeData(e.detail.data);
-      setDrawerOpen(true);
+      handleSetDrawerOpen(true);
     };
 
     const handleCopyEvent = (e: CustomEvent<{ id: string; data: JourneyStepNodeData }>) => {
@@ -198,8 +290,8 @@ export function JourneysPage() {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't handle delete if dialog is open or if focused on an input
-      if (testDialogOpen || drawerOpen) return;
+      // Don't handle delete if drawer is open or if focused on an input
+      if (testDrawerOpen || drawerOpen) return;
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
 
@@ -224,7 +316,7 @@ export function JourneysPage() {
       window.removeEventListener('journey-step-sparkle', handleSparkleEvent as EventListener);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleCopyNode, handleDeleteNode, nodes, testDialogOpen, drawerOpen]);
+  }, [handleCopyNode, handleDeleteNode, nodes, testDrawerOpen, drawerOpen]);
 
   const actionItems = stepMenuItems.filter((item) => item.category === 'Actions');
   const logicItems = stepMenuItems.filter((item) => item.category === 'Logic');
@@ -264,8 +356,47 @@ export function JourneysPage() {
       rightPanelWidth={rightPanelWidth}
       onRightPanelResize={setRightPanelWidth}
     >
+      {!hasJourneys ? (
+        <div className="h-screen w-full flex items-center justify-center">
+          <Empty>
+            <div className="flex items-center justify-center w-8 h-8 rounded-[14px] bg-[#ffffff] text-muted-foreground mb-4">
+              <Route className="w-4 h-4" />
+            </div>
+            <EmptyHeader>
+              <EmptyContent>
+                <EmptyTitle>No Journeys Yet</EmptyTitle>
+                <EmptyDescription>
+                  You haven't created any journeys yet. Get started by creating your first project.
+                </EmptyDescription>
+              </EmptyContent>
+            </EmptyHeader>
+            <div className="flex items-center gap-3">
+              <Button onClick={() => setHasJourneys(true)}>
+                Create Journey
+              </Button>
+              <Button variant="outline" onClick={() => setHasJourneys(true)}>
+                Create Journey with AI
+              </Button>
+            </div>
+          </Empty>
+        </div>
+      ) : (
       <div className="h-screen w-full relative">
-        <div className="absolute top-6 right-6 z-10">
+        <div className="absolute top-6 left-6 right-6 z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Button variant="outline">View all</Button>
+            <span
+              className="text-sm font-medium text-[#0E0E0E] cursor-pointer hover:underline"
+              onClick={() => setEditJourneyDialogOpen(true)}
+            >
+              Journey J92834923499283748
+            </span>
+            <Button variant="ghost" className="!h-9 !w-9 !p-0" onClick={() => setCopyJourneyDialogOpen(true)}>
+              <Copy className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div>
           <ButtonGroup>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -349,16 +480,17 @@ export function JourneysPage() {
                   <Grid2X2 className="w-4 h-4" />
                   Canvas
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2" onClick={() => setTestDialogOpen(true)}>
+                <DropdownMenuItem className="gap-2" onClick={() => handleSetTestDrawerOpen(true)}>
                   <Play className="w-4 h-4" />
                   Test workflow
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>
+          </div>
         </div>
 
-        <div className="h-full">
+        <div className="h-full relative">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -369,27 +501,44 @@ export function JourneysPage() {
             defaultEdgeOptions={{
               style: { strokeWidth: 2, strokeDasharray: '5, 5' },
             }}
+            minZoom={0.1}
+            maxZoom={4}
             fitView
           >
             <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
           </ReactFlow>
         </div>
       </div>
+      )}
 
       <StepSettingsDrawer
         open={drawerOpen}
-        onOpenChange={setDrawerOpen}
+        onOpenChange={handleSetDrawerOpen}
         nodeId={editingNodeId}
         data={editingNodeData}
         onSave={handleSaveNodeConfig}
         rightOffset={isRightPanelOpen ? rightPanelWidth : 0}
       />
 
-      <TestRoutesDialog
-        open={testDialogOpen}
-        onOpenChange={setTestDialogOpen}
+      <TestWorkflowDrawer
+        open={testDrawerOpen}
+        onOpenChange={handleSetTestDrawerOpen}
         nodes={nodes}
         edges={edges}
+        rightOffset={isRightPanelOpen ? rightPanelWidth : 0}
+        onRouteSelectionChange={handleRouteSelectionChange}
+      />
+
+      <EditJourneyDialog
+        open={editJourneyDialogOpen}
+        onOpenChange={setEditJourneyDialogOpen}
+        journeyTitle="Journey J92834923499283748"
+        journeyDescription=""
+      />
+
+      <CopyJourneyDialog
+        open={copyJourneyDialogOpen}
+        onOpenChange={setCopyJourneyDialogOpen}
       />
     </AppLayout>
   );

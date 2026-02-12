@@ -16,6 +16,9 @@ import {
   PanelRight,
   LucideIcon,
   Route,
+  Phone,
+  Video,
+  HeartPulse,
 } from "lucide-react";
 
 export interface SidebarNavigationItem {
@@ -76,6 +79,7 @@ const DEFAULT_NAVIGATION: SidebarNavigationItem[] = [
   { id: "contacts", icon: UsersRound, label: "Contacts", translationKey: "navigation.contacts", path: "/contacts" },
   { id: "tickets", icon: Ticket, label: "Tickets", translationKey: "navigation.tickets", path: "/tickets" },
   { id: "journeys", icon: Route, label: "Journeys", translationKey: "navigation.journeys", path: "/journeys" },
+  { id: "vitals", icon: HeartPulse, label: "Vitals", translationKey: "navigation.vitals", path: "/vitals" },
 ];
 
 const DEFAULT_MESSAGING_ITEMS: SidebarNavigationItem[] = [
@@ -90,6 +94,23 @@ const DEFAULT_TEAM_CHANNELS: SidebarNavigationItem[] = [
   { id: "data-channel", emoji: "🍳", label: "Data cleanliness", translationKey: "navigation.data_channel" },
   { id: "service-channel", emoji: "💪", label: "Customer service", translationKey: "navigation.service_channel" },
   { id: "resources-channel", emoji: "📚", label: "Resources", translationKey: "navigation.resources_channel" },
+  { id: "dev-channel", emoji: "💻", label: "Development", translationKey: "navigation.dev_channel" },
+  { id: "design-channel", emoji: "🎨", label: "Design Team", translationKey: "navigation.design_channel" },
+  { id: "marketing-channel", emoji: "📢", label: "Marketing", translationKey: "navigation.marketing_channel" },
+  { id: "sales-channel", emoji: "💼", label: "Sales", translationKey: "navigation.sales_channel" },
+  { id: "support-channel", emoji: "🆘", label: "Support", translationKey: "navigation.support_channel" },
+  { id: "hr-channel", emoji: "👥", label: "Human Resources", translationKey: "navigation.hr_channel" },
+  { id: "finance-channel", emoji: "💰", label: "Finance", translationKey: "navigation.finance_channel" },
+  { id: "product-channel", emoji: "🚀", label: "Product Management", translationKey: "navigation.product_channel" },
+  { id: "qa-channel", emoji: "🧪", label: "Quality Assurance", translationKey: "navigation.qa_channel" },
+  { id: "ops-channel", emoji: "⚙️", label: "Operations", translationKey: "navigation.ops_channel" },
+  { id: "legal-channel", emoji: "⚖️", label: "Legal", translationKey: "navigation.legal_channel" },
+  { id: "strategy-channel", emoji: "🎯", label: "Strategy", translationKey: "navigation.strategy_channel" },
+  { id: "analytics-channel", emoji: "📈", label: "Analytics", translationKey: "navigation.analytics_channel" },
+  { id: "partnerships-channel", emoji: "🤝", label: "Partnerships", translationKey: "navigation.partnerships_channel" },
+  { id: "research-channel", emoji: "🔬", label: "Research", translationKey: "navigation.research_channel" },
+  { id: "training-channel", emoji: "🎓", label: "Training", translationKey: "navigation.training_channel" },
+  { id: "community-channel", emoji: "🌐", label: "Community", translationKey: "navigation.community_channel" },
 ];
 
 export function AppSidebar({
@@ -151,7 +172,7 @@ export function AppSidebar({
           isCollapsed ? "justify-center" : "justify-start"
         } ${
           isActive
-            ? "bg-[#F5F5F5] text-sidebar-accent-foreground hover:bg-[#F5F5F5] hover:text-sidebar-accent-foreground"
+            ? "bg-[#FFFFFF] text-sidebar-accent-foreground hover:bg-[#FFFFFF] hover:text-sidebar-accent-foreground"
             : ""
         }`}
         onClick={item.path ? () => handleNavigation(item.path!) : hasChildren ? () => {} : undefined}
@@ -195,12 +216,12 @@ export function AppSidebar({
   return (
     <>
       <div
-        className={`absolute left-0 top-0 h-screen bg-sidebar text-sidebar-foreground border-r transition-all duration-300 z-50 ${
+        className={`absolute left-0 top-0 h-screen bg-gray-50 text-sidebar-foreground border-r transition-all duration-300 z-50 flex flex-col ${
           isCollapsed ? "w-16" : "w-[254px]"
         } ${className}`}
       >
         {/* User Section */}
-        <div className="px-2 py-2 border-b h-[52px] flex items-center">
+        <div className="px-2 py-2 border-b h-[52px] flex items-center flex-shrink-0">
           <div
             className={`flex items-center gap-2 p-2 rounded-md w-full ${
               isCollapsed ? "justify-center" : "justify-start"
@@ -225,8 +246,8 @@ export function AppSidebar({
           </div>
         </div>
 
-        {/* Main Navigation */}
-        <div className="pt-2 px-2">
+        {/* Main Navigation - Fixed */}
+        <div className="pt-2 px-2 flex-shrink-0">
           <div className="space-y-1">
             {navigationItems.map((item) => renderNavigationItem(item))}
 
@@ -253,22 +274,39 @@ export function AppSidebar({
           </div>
         </div>
 
-        {/* Messaging Section */}
+        {/* Messaging Section - Fixed */}
         {showMessagingSection && isMessagingExpanded && !isCollapsed && (
           <>
-            <div className="px-2 py-2">
+            <div className="px-2 py-2 flex-shrink-0">
               <div className="space-y-1">{messagingItems.map((item) => renderNavigationItem(item, true))}</div>
             </div>
 
-            <div className="px-2">
+            <div className="px-2 flex-shrink-0">
               <Separator />
             </div>
 
-            <div className="px-2 py-2">
-              <div className="space-y-1">{teamChannels.map((item) => renderNavigationItem(item))}</div>
+            {/* Team Channels - Independently scrollable */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
+              <div className="px-2 py-2">
+                <div className="space-y-1">{teamChannels.map((item) => renderNavigationItem(item))}</div>
+              </div>
             </div>
           </>
         )}
+
+        {/* Call buttons fixed at bottom with 12px from bottom */}
+        <div className="px-2 pb-3 pt-2 border-t flex-shrink-0">
+          <div className="flex gap-2">
+            <Button variant="outline" className="flex-1 h-9">
+              <Phone className="h-4 w-4 mr-2" />
+              {!isCollapsed && <span className="text-sm">Call</span>}
+            </Button>
+            <Button variant="outline" className="flex-1 h-9">
+              <Video className="h-4 w-4 mr-2" />
+              {!isCollapsed && <span className="text-sm">Video Call</span>}
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   );
