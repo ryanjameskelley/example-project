@@ -8,7 +8,7 @@
 import { useState, useMemo } from 'react'
 import { Button } from '@/components/atoms/Button'
 import { Field } from '@/components/atoms/Field'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/molecules/StandardTabs'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/molecules/Tabs'
 import {
   Table,
   TableBody,
@@ -27,15 +27,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/molecules/Dialog'
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/molecules/Drawer'
 import { Label } from '@/components/atoms/Label'
 import { Checkbox } from '@/components/atoms/Checkbox'
 import {
@@ -65,21 +56,15 @@ import {
   X,
   Trash2,
   Check,
-  Flag,
   ChevronDown,
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  Settings,
-  Pencil,
-  Plus,
   GripVertical,
 } from 'lucide-react'
-import { Switch } from '@/components/atoms/switch'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/molecules/popover'
 import { MultiFieldItem } from '@/components/molecules/MultiFieldItem'
-import { Item, ItemContent, ItemTitle, ItemDescription } from '@/components/molecules/Item'
 import { format } from 'date-fns'
-import { ArrowLeft, Info } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -439,12 +424,6 @@ const getSegmentStatusFromColor = (color?: 'green' | 'yellow' | 'red' | 'orange'
   }
 }
 
-interface ProgramItem {
-  id: string
-  title: string
-  vitalsThresholds: string[]
-}
-
 interface ColumnSortItem {
   id: string
   label: string
@@ -462,10 +441,6 @@ const defaultColumnSort: ColumnSortItem[] = [
   { id: 'reviewed', label: 'Reviewed', direction: 'asc', active: true },
 ]
 
-// Static options — defined at module level so they are never recreated on re-render
-const targetOptions = ['High', 'Low', 'Very High', 'Very Low', 'Critical High', 'Critical Low']
-const operatorOptions = ['Less Than', 'Greater Than', 'Between']
-const trendOptions = Array.from({ length: 365 }, (_, i) => `Within ${i + 1} day${i === 0 ? '' : 's'}`)
 const patients = Array.from(new Set(mockData.map((d) => d.name))).sort()
 const careTeamOptions = [
   'Dr. Sarah Miller', 'Max', 'Dr. James Patterson', 'Nurse Emily Chen',
@@ -496,183 +471,6 @@ const getActiveFlags = (record: VitalsRecord) => {
     flags.push({ type: 'irregularHeartbeat', label: record.irregularHeartbeat ? 'Irregular' : 'Regular', value: record.irregularHeartbeat })
   }
   return flags
-}
-
-interface SortableProgramItemProps {
-  item: ProgramItem
-  onDelete: () => void
-  onUpdate: (id: string, field: 'title' | 'vitalsThresholds', value: string | string[]) => void
-  toggleThreshold: (programId: string, threshold: string) => void
-  thresholdOptions: string[]
-}
-
-interface SortableRangeItemProps {
-  item: {
-    id: string
-    target: string
-    operator: string
-    value: string
-    trend: string
-  }
-  onDelete: () => void
-  onUpdate: (id: string, field: string, value: string) => void
-  targetOptions: string[]
-  operatorOptions: string[]
-  trendOptions: string[]
-}
-
-function SortableRangeItem({ item, onDelete, onUpdate, targetOptions, operatorOptions, trendOptions }: SortableRangeItemProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: item.id })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  }
-
-  return (
-    <div ref={setNodeRef} style={style} className="mb-4">
-      <div className="flex items-center gap-2 rounded-[10px] border border-border p-2 bg-background">
-        <button
-          type="button"
-          className="cursor-grab active:cursor-grabbing focus:outline-none"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
-        </button>
-        <div className="flex-1 grid grid-cols-4 gap-2">
-          <Select value={item.target} onValueChange={(value) => onUpdate(item.id, 'target', value)}>
-            <SelectTrigger className="h-8">
-              <SelectValue placeholder="Target" />
-            </SelectTrigger>
-            <SelectContent>
-              {targetOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={item.operator} onValueChange={(value) => onUpdate(item.id, 'operator', value)}>
-            <SelectTrigger className="h-8">
-              <SelectValue placeholder="Operator" />
-            </SelectTrigger>
-            <SelectContent>
-              {operatorOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <input
-            type="text"
-            value={item.value}
-            onChange={(e) => onUpdate(item.id, 'value', e.target.value)}
-            placeholder="Value"
-            className="flex h-8 rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          <Select value={item.trend} onValueChange={(value) => onUpdate(item.id, 'trend', value)}>
-            <SelectTrigger className="h-8">
-              <SelectValue placeholder="Trend" />
-            </SelectTrigger>
-            <SelectContent className="max-h-60">
-              {trendOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="focus:outline-none"
-        >
-          <X className="h-4 w-4 text-muted-foreground" />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function SortableProgramItem({ item, onDelete, onUpdate, toggleThreshold, thresholdOptions }: SortableProgramItemProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: item.id })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  }
-
-  return (
-    <div ref={setNodeRef} style={style} className="mb-4">
-      <div
-        className="flex items-center gap-2 rounded-[10px] border border-border p-2 bg-background"
-      >
-        <button
-          type="button"
-          className="cursor-grab active:cursor-grabbing focus:outline-none"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
-        </button>
-        <div className="flex-1 flex gap-2">
-          <input
-            type="text"
-            value={item.title}
-            onChange={(e) => onUpdate(item.id, 'title', e.target.value)}
-            placeholder="Program title"
-            className="flex h-8 flex-1 rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          <div className="relative flex-1">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between h-8">
-                  {item.vitalsThresholds.length === 0
-                    ? "Select vitals thresholds"
-                    : item.vitalsThresholds.join(', ')}
-                  <ChevronDown className="h-4 w-4 opacity-50" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" onCloseAutoFocus={(e) => e.preventDefault()}>
-                {thresholdOptions.map((threshold) => (
-                  <DropdownMenuCheckboxItem
-                    key={threshold}
-                    checked={item.vitalsThresholds.includes(threshold)}
-                    onCheckedChange={() => toggleThreshold(item.id, threshold)}
-                    onSelect={(e) => e.preventDefault()}
-                  >
-                    {threshold}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="focus:outline-none"
-        >
-          <X className="h-4 w-4 text-muted-foreground" />
-        </button>
-      </div>
-    </div>
-  )
 }
 
 interface SortableColumnItemProps {
@@ -728,86 +526,86 @@ function SortableColumnItem({ item, onToggleActive, onToggleDirection }: Sortabl
 interface FlagCellProps {
   record: VitalsRecord
   setData: (updater: (prev: VitalsRecord[]) => VitalsRecord[]) => void
-  setSelectedRecordId: (id: string | null) => void
-  setFlagsModalOpen: (open: boolean) => void
 }
 
-function FlagCell({ record, setData, setSelectedRecordId, setFlagsModalOpen }: FlagCellProps) {
+function FlagCell({ record, setData }: FlagCellProps) {
   const activeFlags = getActiveFlags(record)
 
   if (activeFlags.length === 0) {
     return <span className="text-gray-400 text-sm">-</span>
   }
 
-  if (activeFlags.length === 1) {
-    const flag = activeFlags[0]
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="default" className="h-8 border">
-            {flag.label}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          {flag.type === 'beforeMeal' && (
-            <>
-              <DropdownMenuLabel>Meal Timing</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, beforeMeal: true } : r))}>
-                Before Meal
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, beforeMeal: false } : r))}>
-                After Meal
-              </DropdownMenuItem>
-            </>
-          )}
-          {flag.type === 'medStatus' && (
-            <>
-              <DropdownMenuLabel>Medication Status</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, medStatus: 'Unknown' as const } : r))}>
-                Unknown
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, medStatus: 'Before Meds' as const } : r))}>
-                Before Meds
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, medStatus: 'After Meds' as const } : r))}>
-                After Meds
-              </DropdownMenuItem>
-            </>
-          )}
-          {flag.type === 'irregularHeartbeat' && (
-            <>
-              <DropdownMenuLabel>Heart Rhythm</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, irregularHeartbeat: true } : r))}>
-                Irregular
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, irregularHeartbeat: false } : r))}>
-                Regular
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
-  }
-
   return (
-    <Button
-      variant="outline"
-      size="default"
-      className="h-8 border gap-1"
-      onClick={() => {
-        setSelectedRecordId(record.id)
-        setFlagsModalOpen(true)
-      }}
-    >
-      <Flag className="h-4 w-4" />
-      <Badge variant="secondary" className="ml-1 px-1.5 py-0">
-        {activeFlags.length}
-      </Badge>
-    </Button>
+    <div className="flex flex-wrap gap-1">
+      {activeFlags.map((flag) => (
+        <Popover key={flag.type}>
+          <PopoverTrigger className="inline-flex items-center rounded-full border border-border bg-background text-foreground px-2 h-6 text-xs font-normal hover:bg-muted transition-colors">
+            {flag.label}
+          </PopoverTrigger>
+          <PopoverContent className="p-3 rounded-[10px] min-w-[240px] w-auto" align="start">
+            {flag.type === 'medStatus' && (
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold">Medication Status</Label>
+                <div className="flex flex-col gap-1.5">
+                  {(['Unknown', 'Before Meds', 'After Meds'] as const).map((status) => (
+                    <Button
+                      key={status}
+                      variant={record.medStatus === status ? 'default' : 'outline'}
+                      className="justify-start px-4 py-2"
+                      onClick={() => setData(prev => prev.map(r => r.id === record.id ? { ...r, medStatus: status } : r))}
+                    >
+                      {status}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {flag.type === 'irregularHeartbeat' && (
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold">Heart Rhythm</Label>
+                <div className="flex flex-col gap-1.5">
+                  <Button
+                    variant={record.irregularHeartbeat === false ? 'default' : 'outline'}
+                    className="justify-start px-4 py-2"
+                    onClick={() => setData(prev => prev.map(r => r.id === record.id ? { ...r, irregularHeartbeat: false } : r))}
+                  >
+                    Regular
+                  </Button>
+                  <Button
+                    variant={record.irregularHeartbeat === true ? 'default' : 'outline'}
+                    className="justify-start px-4 py-2"
+                    onClick={() => setData(prev => prev.map(r => r.id === record.id ? { ...r, irregularHeartbeat: true } : r))}
+                  >
+                    Irregular
+                  </Button>
+                </div>
+              </div>
+            )}
+            {flag.type === 'beforeMeal' && (
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold">Meal Timing</Label>
+                <div className="flex flex-col gap-1.5">
+                  <Button
+                    variant={record.beforeMeal === true ? 'default' : 'outline'}
+                    className="justify-start px-4 py-2"
+                    onClick={() => setData(prev => prev.map(r => r.id === record.id ? { ...r, beforeMeal: true } : r))}
+                  >
+                    Before Meal
+                  </Button>
+                  <Button
+                    variant={record.beforeMeal === false ? 'default' : 'outline'}
+                    className="justify-start px-4 py-2"
+                    onClick={() => setData(prev => prev.map(r => r.id === record.id ? { ...r, beforeMeal: false } : r))}
+                  >
+                    After Meal
+                  </Button>
+                </div>
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
+      ))}
+    </div>
   )
 }
 
@@ -817,134 +615,8 @@ export default function Vitals() {
   const [data, setData] = useState(mockData)
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
   const [saveViewDialogOpen, setSaveViewDialogOpen] = useState(false)
-  const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false)
-  const [flagsModalOpen, setFlagsModalOpen] = useState(false)
-  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null)
   const [viewName, setViewName] = useState('')
   const [savedViews, setSavedViews] = useState<SavedView[]>([])
-
-  // Settings state
-  const [drawerView, setDrawerView] = useState<'settings' | 'edit-programs' | 'create-config'>('settings')
-  const [showVitalsTab, setShowVitalsTab] = useState(true)
-  const [requireInvalidationReason, setRequireInvalidationReason] = useState(false)
-  const [delayedReadingInterval, setDelayedReadingInterval] = useState('15')
-  const [newInvalidationReason, setNewInvalidationReason] = useState('')
-  const [invalidationReasons, setInvalidationReasons] = useState<string[]>(['Device malfunction', 'Patient error', 'Data entry error'])
-  const [vitalsConfigurations, setVitalsConfigurations] = useState([
-    { id: '1', name: 'Blood Glucose' },
-    { id: '2', name: 'DBP' }
-  ])
-
-  // Program items state
-  const [programItems, setProgramItems] = useState<ProgramItem[]>([
-    { id: '1', title: 'Hypertension Management', vitalsThresholds: ['Critical', 'Warning'] },
-    { id: '2', title: 'Diabetes Care', vitalsThresholds: ['Critical'] }
-  ])
-  const [originalProgramItems, setOriginalProgramItems] = useState<ProgramItem[]>([
-    { id: '1', title: 'Hypertension Management', vitalsThresholds: ['Critical', 'Warning'] },
-    { id: '2', title: 'Diabetes Care', vitalsThresholds: ['Critical'] }
-  ])
-
-  // Vital configuration state
-  interface RangeItem {
-    id: string
-    target: string
-    operator: string
-    value: string
-    trend: string
-  }
-  const [configTitle, setConfigTitle] = useState('')
-  const [configUnit, setConfigUnit] = useState('')
-  const [rangeItems, setRangeItems] = useState<RangeItem[]>([])
-  const [editingConfigId, setEditingConfigId] = useState<string | null>(null)
-  const [originalConfigState, setOriginalConfigState] = useState({
-    configTitle: '',
-    configUnit: '',
-    rangeItems: [] as RangeItem[]
-  })
-
-  // Original settings for comparison
-  const [originalSettings, setOriginalSettings] = useState({
-    showVitalsTab: true,
-    requireInvalidationReason: false,
-    delayedReadingInterval: '15',
-    invalidationReasons: ['Device malfunction', 'Patient error', 'Data entry error'],
-    vitalsConfigurations: [
-      { id: '1', name: 'Blood Glucose' },
-      { id: '2', name: 'DBP' }
-    ]
-  })
-
-  const hasSettingsChanged =
-    showVitalsTab !== originalSettings.showVitalsTab ||
-    requireInvalidationReason !== originalSettings.requireInvalidationReason ||
-    delayedReadingInterval !== originalSettings.delayedReadingInterval ||
-    JSON.stringify(invalidationReasons) !== JSON.stringify(originalSettings.invalidationReasons) ||
-    JSON.stringify(vitalsConfigurations) !== JSON.stringify(originalSettings.vitalsConfigurations)
-
-  const hasProgramsChanged =
-    JSON.stringify(programItems) !== JSON.stringify(originalProgramItems)
-
-  const saveSettings = () => {
-    setOriginalSettings({
-      showVitalsTab,
-      requireInvalidationReason,
-      delayedReadingInterval,
-      invalidationReasons,
-      vitalsConfigurations
-    })
-    setSettingsDrawerOpen(false)
-    setDrawerView('settings')
-  }
-
-  const savePrograms = () => {
-    setOriginalProgramItems(programItems)
-    setDrawerView('settings')
-  }
-
-  const addProgramItem = () => {
-    const newItem: ProgramItem = {
-      id: Date.now().toString(),
-      title: '',
-      vitalsThresholds: []
-    }
-    setProgramItems([...programItems, newItem])
-  }
-
-  const updateProgramItem = (id: string, field: 'title' | 'vitalsThresholds', value: string | string[]) => {
-    setProgramItems(programItems.map(item =>
-      item.id === id ? { ...item, [field]: value } : item
-    ))
-  }
-
-  const deleteProgramItem = (id: string) => {
-    setProgramItems(programItems.filter(item => item.id !== id))
-  }
-
-  const toggleProgramThreshold = (programId: string, threshold: string) => {
-    setProgramItems(programItems.map(item =>
-      item.id === programId
-        ? {
-            ...item,
-            vitalsThresholds: item.vitalsThresholds.includes(threshold)
-              ? item.vitalsThresholds.filter(t => t !== threshold)
-              : [...item.vitalsThresholds, threshold]
-          }
-        : item
-    ))
-  }
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-
-    if (over && active.id !== over.id) {
-      setProgramItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id)
-        const newIndex = items.findIndex((item) => item.id === over.id)
-        return arrayMove(items, oldIndex, newIndex)
-      })
-    }
-  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -952,44 +624,6 @@ export default function Vitals() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
-
-  const hasConfigChanged =
-    configTitle !== originalConfigState.configTitle ||
-    configUnit !== originalConfigState.configUnit ||
-    JSON.stringify(rangeItems) !== JSON.stringify(originalConfigState.rangeItems)
-
-  const addRangeItem = () => {
-    const newItem: RangeItem = {
-      id: Date.now().toString(),
-      target: '',
-      operator: '',
-      value: '',
-      trend: ''
-    }
-    setRangeItems([...rangeItems, newItem])
-  }
-
-  const updateRangeItem = (id: string, field: keyof RangeItem, value: string) => {
-    setRangeItems(rangeItems.map(item =>
-      item.id === id ? { ...item, [field]: value } : item
-    ))
-  }
-
-  const deleteRangeItem = (id: string) => {
-    setRangeItems(rangeItems.filter(item => item.id !== id))
-  }
-
-  const handleRangeDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
-
-    if (over && active.id !== over.id) {
-      setRangeItems((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id)
-        const newIndex = items.findIndex((item) => item.id === over.id)
-        return arrayMove(items, oldIndex, newIndex)
-      })
-    }
-  }
 
   const handleColumnSortDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -999,41 +633,6 @@ export default function Vitals() {
         const newIndex = items.findIndex((item) => item.id === over.id)
         return arrayMove(items, oldIndex, newIndex)
       })
-    }
-  }
-
-  const saveConfiguration = () => {
-    if (editingConfigId) {
-      // Update existing configuration
-      setVitalsConfigurations(vitalsConfigurations.map(config =>
-        config.id === editingConfigId ? { ...config, name: configTitle } : config
-      ))
-      setEditingConfigId(null)
-    }
-    setOriginalConfigState({
-      configTitle,
-      configUnit,
-      rangeItems
-    })
-    setConfigTitle('')
-    setConfigUnit('')
-    setRangeItems([])
-    setDrawerView('settings')
-  }
-
-  const openEditConfiguration = (configId: string) => {
-    const config = vitalsConfigurations.find(c => c.id === configId)
-    if (config) {
-      setConfigTitle(config.name)
-      setConfigUnit('mmHg') // Default unit, could be stored with config
-      setRangeItems([]) // Would load actual ranges if stored
-      setEditingConfigId(configId)
-      setOriginalConfigState({
-        configTitle: config.name,
-        configUnit: 'mmHg',
-        rangeItems: []
-      })
-      setDrawerView('create-config')
     }
   }
 
@@ -1068,15 +667,6 @@ export default function Vitals() {
     )
   }
 
-  const setMedStatus = (recordId: string, status: 'Unknown' | 'Before Meds' | 'After Meds') => {
-    setData(prevData =>
-      prevData.map(record =>
-        record.id === recordId
-          ? { ...record, medStatus: status }
-          : record
-      )
-    )
-  }
 
   const toggleIrregularHeartbeat = (recordId: string) => {
     setData(prevData =>
@@ -1295,7 +885,7 @@ export default function Vitals() {
         <div className="rounded-lg">
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={loadView} className="w-full">
-            <div className="pt-6">
+            <div>
               <TabsList className="gap-4">
                 <TabsTrigger value="all" className="px-1 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=inactive]:bg-gray-100 data-[state=inactive]:text-gray-700">
                   All
@@ -1329,13 +919,6 @@ export default function Vitals() {
                     className="flex h-8 w-full rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10"
                   />
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setSettingsDrawerOpen(true)}
-                  className="gap-2"
-                >
-                  <Settings className="h-4 w-4" />
-                </Button>
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -1443,8 +1026,6 @@ export default function Vitals() {
                             <FlagCell
                               record={record}
                               setData={setData}
-                              setSelectedRecordId={setSelectedRecordId}
-                              setFlagsModalOpen={setFlagsModalOpen}
                             />
                           </TableCell>
                           <TableCell>
@@ -2019,445 +1600,7 @@ export default function Vitals() {
         </DialogContent>
       </Dialog>
 
-      {/* Settings Drawer */}
-      <Drawer
-        open={settingsDrawerOpen}
-        dismissible={false}
-        onOpenChange={(open) => {
-          setSettingsDrawerOpen(open)
-          if (!open) {
-            setDrawerView('settings')
-          }
-        }}
-      >
-        <DrawerContent
-          hideHandle={true}
-          onOverlayClick={() => {
-            setSettingsDrawerOpen(false)
-            setDrawerView('settings')
-          }}
-        >
-          <DrawerHeader>
-            <div className="flex items-center gap-2">
-              {(drawerView === 'edit-programs' || drawerView === 'create-config') && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() => setDrawerView('settings')}
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-              )}
-              <div className="flex-1">
-                <DrawerTitle>
-                  {drawerView === 'settings' ? 'Settings' : drawerView === 'edit-programs' ? 'Edit Programs' : editingConfigId ? 'Edit Vital Configuration' : 'Create Vital Configuration'}
-                </DrawerTitle>
-                <DrawerDescription>
-                  {drawerView === 'settings'
-                    ? 'Configure your vitals monitoring preferences'
-                    : drawerView === 'edit-programs'
-                    ? 'Manage program titles and vitals thresholds'
-                    : 'Define configuration parameters and ranges'}
-                </DrawerDescription>
-              </div>
-            </div>
-          </DrawerHeader>
-          <div className="p-6 pb-0 space-y-6" style={{ maxHeight: '60vh', display: 'flex', flexDirection: 'column' }}>
-            {drawerView === 'settings' ? (
-              <div className="overflow-y-auto space-y-6">
-                {/* Switches Section */}
-                <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label className="text-base">Show Vitals Tab</Label>
-                  <p className="text-sm text-muted-foreground">Display vitals tab in the interface</p>
-                </div>
-                <Switch
-                  checked={showVitalsTab}
-                  onCheckedChange={setShowVitalsTab}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label className="text-base">Require Reason When Invalidating Observations</Label>
-                  <p className="text-sm text-muted-foreground">Users must provide a reason to invalidate data</p>
-                </div>
-                <Switch
-                  checked={requireInvalidationReason}
-                  onCheckedChange={setRequireInvalidationReason}
-                />
-              </div>
-            </div>
-
-            {/* Delayed Reading Interval */}
-            <div className="space-y-2">
-              <Label htmlFor="delayed-interval">Delayed Reading Interval (minutes)</Label>
-              <input
-                id="delayed-interval"
-                type="number"
-                value={delayedReadingInterval}
-                onChange={(e) => setDelayedReadingInterval(e.target.value)}
-                className="flex h-8 w-full rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="15"
-              />
-            </div>
-
-            {/* Invalidation Reasons */}
-            <div className="space-y-2">
-              <Label>Invalidation Reason</Label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={newInvalidationReason}
-                  onChange={(e) => setNewInvalidationReason(e.target.value)}
-                  className="flex h-8 flex-1 rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Type to add reason..."
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && newInvalidationReason.trim()) {
-                      setInvalidationReasons([...invalidationReasons, newInvalidationReason.trim()])
-                      setNewInvalidationReason('')
-                    }
-                  }}
-                />
-                <Button
-                  variant="outline"
-                  size="default"
-                  className="h-8"
-                  onClick={() => {
-                    if (newInvalidationReason.trim()) {
-                      setInvalidationReasons([...invalidationReasons, newInvalidationReason.trim()])
-                      setNewInvalidationReason('')
-                    }
-                  }}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {invalidationReasons.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {invalidationReasons.map((reason, index) => (
-                    <Badge
-                      key={index}
-                      variant="secondary"
-                      className="text-xs gap-1"
-                    >
-                      {reason}
-                      <button
-                        onClick={() => setInvalidationReasons(invalidationReasons.filter((_, i) => i !== index))}
-                        className="ml-1 hover:bg-gray-300 rounded-full"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Vitals Configurations */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-base">Active Vitals Configurations</Label>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => setDrawerView('edit-programs')}>
-                    Edit Programs
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => {
-                    setConfigTitle('')
-                    setConfigUnit('')
-                    setRangeItems([])
-                    setEditingConfigId(null)
-                    setDrawerView('create-config')
-                  }}>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add Configuration
-                  </Button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                {vitalsConfigurations.map((config) => (
-                  <div
-                    key={config.id}
-                    className="flex items-center justify-between p-3 border border-border rounded-lg hover:bg-accent"
-                  >
-                    <span className="text-sm font-medium">{config.name}</span>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openEditConfiguration(config.id)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
-                        onClick={() => setVitalsConfigurations(vitalsConfigurations.filter(c => c.id !== config.id))}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-              </div>
-            ) : drawerView === 'edit-programs' ? (
-              <>
-                {/* Edit Programs View */}
-                <div className="overflow-y-auto flex-1 min-h-0">
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                  >
-                    <SortableContext
-                      items={programItems.map(item => item.id)}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      <div className="min-h-0">
-                        {programItems.map((item) => (
-                          <SortableProgramItem
-                            key={item.id}
-                            item={item}
-                            onDelete={() => deleteProgramItem(item.id)}
-                            onUpdate={updateProgramItem}
-                            toggleThreshold={toggleProgramThreshold}
-                            thresholdOptions={thresholdOptions}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                </div>
-                <div className="flex-shrink-0 pt-4">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={addProgramItem}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Program Item
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Create Configuration View */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Configuration Title</Label>
-                    <input
-                      type="text"
-                      value={configTitle}
-                      onChange={(e) => setConfigTitle(e.target.value)}
-                      placeholder="e.g., Blood Pressure"
-                      className="flex h-8 w-full rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Unit of Measurement</Label>
-                    <input
-                      type="text"
-                      value={configUnit}
-                      onChange={(e) => setConfigUnit(e.target.value)}
-                      placeholder="e.g., mmHg"
-                      className="flex h-8 w-full rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-
-                  <Item variant="muted" className="flex-col items-start">
-                    <div className="flex items-start gap-2 w-full">
-                      <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <ItemContent>
-                        <ItemTitle>Range Tips</ItemTitle>
-                        <ItemDescription className="space-y-1">
-                          <div>• Ranges are evaluated in order from top to bottom until a match is found. Order according to priority.</div>
-                          <div>• With trends, a positive value represents an increase over time. For example, use "Greater Than 5" to represent an increase of 6 or more.</div>
-                          <div>• With trends, a negative value represents a decrease over time. For example, "Less Than -5" to represent a decrease of 6 or more. To enter a negative number, first type the desired number and then add a minus sign at the start.</div>
-                        </ItemDescription>
-                      </ItemContent>
-                    </div>
-                  </Item>
-                </div>
-
-                <div className="overflow-y-auto flex-1 min-h-0">
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleRangeDragEnd}
-                  >
-                    <SortableContext
-                      items={rangeItems.map(item => item.id)}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      <div className="min-h-0">
-                        {rangeItems.map((item) => (
-                          <SortableRangeItem
-                            key={item.id}
-                            item={item}
-                            onDelete={() => deleteRangeItem(item.id)}
-                            onUpdate={updateRangeItem}
-                            targetOptions={targetOptions}
-                            operatorOptions={operatorOptions}
-                            trendOptions={trendOptions}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                </div>
-                <div className="flex-shrink-0 pt-4">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={addRangeItem}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Range
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-          <DrawerFooter>
-            <div className="flex gap-2 w-full">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => {
-                  setSettingsDrawerOpen(false)
-                  setDrawerView('settings')
-                }}
-              >
-                Close
-              </Button>
-              <Button
-                className="flex-1"
-                onClick={drawerView === 'settings' ? saveSettings : drawerView === 'edit-programs' ? savePrograms : saveConfiguration}
-                disabled={drawerView === 'settings' ? !hasSettingsChanged : drawerView === 'edit-programs' ? !hasProgramsChanged : !hasConfigChanged}
-              >
-                Save
-              </Button>
-            </div>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-
-      {/* Flags Modal - for editing multiple flags */}
-      <Dialog open={flagsModalOpen} onOpenChange={setFlagsModalOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Edit Flags</DialogTitle>
-            <DialogDescription>
-              Edit all flags for this observation
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4 px-4">
-            <div className="space-y-4">
-              {selectedRecordId && (() => {
-                const record = data.find(r => r.id === selectedRecordId)
-                if (!record) return null
-
-                return (
-                  <>
-                    {/* Med Status flag - only for blood pressure */}
-                    {typeof record.medStatus === 'string' && (
-                      <div className="space-y-2">
-                        <Label className="text-sm font-semibold">Medication Status</Label>
-                        <div className="flex flex-col gap-2">
-                          {(['Unknown', 'Before Meds', 'After Meds'] as const).map((status) => (
-                            <Button
-                              key={status}
-                              variant={record.medStatus === status ? 'default' : 'outline'}
-                              className="h-9 justify-start"
-                              onClick={() => setMedStatus(record.id, status)}
-                            >
-                              {status}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Irregular Heartbeat flag - only for BPM */}
-                    {typeof record.irregularHeartbeat === 'boolean' && (
-                      <div className="space-y-2">
-                        <Label className="text-sm font-semibold">Heart Rhythm</Label>
-                        <div className="flex gap-2">
-                          <Button
-                            variant={record.irregularHeartbeat === false ? 'default' : 'outline'}
-                            className="flex-1 h-9"
-                            onClick={() => {
-                              setData(prevData =>
-                                prevData.map(r =>
-                                  r.id === record.id ? { ...r, irregularHeartbeat: false } : r
-                                )
-                              )
-                            }}
-                          >
-                            Regular
-                          </Button>
-                          <Button
-                            variant={record.irregularHeartbeat === true ? 'default' : 'outline'}
-                            className="flex-1 h-9"
-                            onClick={() => {
-                              setData(prevData =>
-                                prevData.map(r =>
-                                  r.id === record.id ? { ...r, irregularHeartbeat: true } : r
-                                )
-                              )
-                            }}
-                          >
-                            Irregular
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Before Meal flag - only for glucose */}
-                    {typeof record.beforeMeal === 'boolean' && (
-                      <div className="space-y-2">
-                        <Label className="text-sm font-semibold">Meal Timing</Label>
-                        <div className="flex gap-2">
-                          <Button
-                            variant={record.beforeMeal === true ? 'default' : 'outline'}
-                            className="flex-1 h-9"
-                            onClick={() => {
-                              setData(prevData =>
-                                prevData.map(r =>
-                                  r.id === record.id ? { ...r, beforeMeal: true } : r
-                                )
-                              )
-                            }}
-                          >
-                            Before Meal
-                          </Button>
-                          <Button
-                            variant={record.beforeMeal === false ? 'default' : 'outline'}
-                            className="flex-1 h-9"
-                            onClick={() => {
-                              setData(prevData =>
-                                prevData.map(r =>
-                                  r.id === record.id ? { ...r, beforeMeal: false } : r
-                                )
-                              )
-                            }}
-                          >
-                            After Meal
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )
-              })()}
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setFlagsModalOpen(false)}>Done</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
+

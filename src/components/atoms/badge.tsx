@@ -27,9 +27,9 @@ export interface BadgeProps
   onDelete?: () => void
 }
 
-function Badge({ className, variant, onDelete, children, ...props }: BadgeProps) {
-  return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props}>
+const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
+  ({ className, variant, onDelete, children, ...props }, ref) => (
+    <div ref={ref} className={cn(badgeVariants({ variant }), className)} {...props}>
       {children}
       {onDelete && (
         <button
@@ -42,6 +42,6 @@ function Badge({ className, variant, onDelete, children, ...props }: BadgeProps)
       )}
     </div>
   )
-}
+)
 
 export { Badge, badgeVariants }

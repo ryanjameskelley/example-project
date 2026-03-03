@@ -13,7 +13,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/molecules/Tabs";
+} from "@/components/molecules/PageTabs";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon, Code } from "lucide-react";
 
