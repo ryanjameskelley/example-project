@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Node, Edge } from 'reactflow';
 import {
   Drawer,
@@ -18,6 +18,57 @@ import {
   ItemDescription,
 } from './Item';
 import { STEP_CONFIG, type JourneyStepNodeData } from './JourneyStepNode';
+import { CheckCircle2, XCircle, Loader2, Clock, AlertCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogClose,
+  DialogTitle,
+  DialogDescription,
+} from './dialog';
+
+type Phase = 'select' | 'testing' | 'results';
+type RouteTestStatus = 'pending' | 'running' | 'passed' | 'failed';
+
+interface FailureReport {
+  routeName: string;
+  testPatientId: string;
+  failedStep: string;
+  errorCode: string;
+  errorMessage: string;
+  timeline: { step: string; status: 'passed' | 'failed' | 'skipped' }[];
+  timestamp: string;
+}
+
+const FAILURE_SCENARIOS = [
+  { code: 'ERR_SMTP_TIMEOUT', message: 'SMTP connection timeout after 30s — mail server unreachable during test execution.' },
+  { code: 'ERR_INVALID_PHONE', message: 'Invalid phone number format for test patient — E.164 format required.' },
+  { code: 'ERR_VALIDATION', message: "Validation failed: required field 'priority' is missing from test patient payload." },
+  { code: 'ERR_FIELD_NOT_FOUND', message: "Condition evaluation error: field 'score' not found in test patient data." },
+  { code: 'ERR_TIMEOUT', message: 'Test execution timeout exceeded maximum allowed duration (5s).' },
+  { code: 'ERR_READONLY_FIELD', message: "Field 'status' is read-only in the test environment and cannot be written." },
+];
+
+const generateFailureReport = (route: Route): FailureReport => {
+  const scenario = FAILURE_SCENARIOS[Math.floor(Math.random() * FAILURE_SCENARIOS.length)];
+  const failIndex = Math.min(Math.floor(Math.random() * route.steps.length), route.steps.length - 1);
+  const timeline = route.steps.map((step, i) => ({
+    step,
+    status: i < failIndex ? 'passed' : i === failIndex ? 'failed' : 'skipped',
+  })) as { step: string; status: 'passed' | 'failed' | 'skipped' }[];
+  return {
+    routeName: route.name,
+    testPatientId: route.testPatientId,
+    failedStep: route.steps[failIndex] ?? 'Unknown step',
+    errorCode: scenario.code,
+    errorMessage: scenario.message,
+    timeline,
+    timestamp: new Date().toISOString(),
+  };
+};
 
 interface Route {
   id: string;
@@ -26,6 +77,7 @@ interface Route {
   steps: string[];
   nodeIds: string[];
   edgeIds: string[];
+  testPatientId: string;
 }
 
 interface TestWorkflowDrawerProps {
@@ -35,15 +87,14 @@ interface TestWorkflowDrawerProps {
   edges: Edge[];
   rightOffset?: number;
   onRouteSelectionChange?: (selectedNodeIds: string[], selectedEdgeIds: string[]) => void;
+  onTestNodeStatusChange?: (nodeStatuses: Record<string, 'testing' | 'passed' | 'failed'>) => void;
 }
 
-export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffset = 0, onRouteSelectionChange }: TestWorkflowDrawerProps) {
-  // Generate routes by traversing the flow from trigger nodes
+export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffset = 0, onRouteSelectionChange, onTestNodeStatusChange }: TestWorkflowDrawerProps) {
   const generateRoutes = (): Route[] => {
     const allRoutes: Route[] = [];
     let routeCounter = 0;
 
-    // Find trigger nodes
     const triggerNodes = nodes.filter((node: Node) => {
       const nodeData = node.data as JourneyStepNodeData;
       const config = STEP_CONFIG[nodeData?.stepType];
@@ -54,9 +105,7 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
       return [];
     }
 
-    // For each trigger, traverse the flow to build routes
     triggerNodes.forEach((triggerNode) => {
-      // DFS traversal that creates separate routes for each branch
       const traversePaths = (
         nodeId: string,
         currentPath: string[],
@@ -73,29 +122,12 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
         const newPath = [...currentPath, label];
         const newNodeIds = [...currentNodeIds, nodeId];
 
-        // Find connected nodes
         const connectedEdges = edges.filter((e: Edge) => e.source === nodeId);
 
-        // If no more connections, return the current path
         if (connectedEdges.length === 0) {
           return [{ steps: newPath, nodeIds: newNodeIds, edgeIds: currentEdgeIds }];
         }
 
-        // Check if this is a conditional (branching) node
-        const isConditional = config?.category === 'Logic';
-
-        // If multiple edges from a non-conditional node, create separate routes
-        if (connectedEdges.length > 1 && !isConditional) {
-          const allPaths: Array<{ steps: string[]; nodeIds: string[]; edgeIds: string[] }> = [];
-          connectedEdges.forEach((edge: Edge) => {
-            const newEdgeIds = [...currentEdgeIds, edge.id];
-            const subPaths = traversePaths(edge.target, newPath, newNodeIds, newEdgeIds);
-            allPaths.push(...subPaths);
-          });
-          return allPaths;
-        }
-
-        // For conditional or single edge, continue traversal
         const allPaths: Array<{ steps: string[]; nodeIds: string[]; edgeIds: string[] }> = [];
         connectedEdges.forEach((edge: Edge) => {
           const newEdgeIds = [...currentEdgeIds, edge.id];
@@ -107,7 +139,6 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
 
       const paths = traversePaths(triggerNode.id, [], [], []);
 
-      // Create a route for each path
       paths.forEach((pathData) => {
         routeCounter++;
         allRoutes.push({
@@ -117,6 +148,7 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
           steps: pathData.steps,
           nodeIds: pathData.nodeIds,
           edgeIds: pathData.edgeIds,
+          testPatientId: `PT-TEST-${Math.floor(1000 + Math.random() * 9000)}`,
         });
       });
     });
@@ -125,10 +157,25 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
   };
 
   const [routes, setRoutes] = useState<Route[]>([]);
+  const [phase, setPhase] = useState<Phase>('select');
+  const [routeStatuses, setRouteStatuses] = useState<Record<string, RouteTestStatus>>({});
+  const [routeReports, setRouteReports] = useState<Record<string, FailureReport>>({});
+  const [reportRouteId, setReportRouteId] = useState<string | null>(null);
+  const [expandedRoutes, setExpandedRoutes] = useState<Set<string>>(new Set());
+  const testAbortRef = useRef(false);
+
+  const toggleExpanded = (routeId: string) => {
+    setExpandedRoutes(prev => {
+      const next = new Set(prev);
+      if (next.has(routeId)) next.delete(routeId); else next.add(routeId);
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (open) {
-      // Only regenerate routes if we don't have any yet
+      setPhase('select');
+      setRouteStatuses({});
       setRoutes((prev) => {
         if (prev.length === 0) {
           return generateRoutes();
@@ -136,26 +183,27 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
         return prev;
       });
     } else {
-      // Clear selections when drawer closes
+      testAbortRef.current = true;
       setRoutes([]);
-      if (onRouteSelectionChange) {
-        onRouteSelectionChange([], []);
-      }
+      setPhase('select');
+      setRouteStatuses({});
+      onRouteSelectionChange?.([], []);
+      onTestNodeStatusChange?.({});
 
-      // Ensure body styles are cleaned up
       setTimeout(() => {
         document.body.style.pointerEvents = '';
         document.body.style.overflow = '';
-        // Force remove any vaul-specific attributes
         document.body.removeAttribute('data-vaul-drawer-visible');
         document.body.removeAttribute('vaul-drawer-visible');
       }, 150);
     }
   }, [open]);
 
-  const selectedCount = routes.filter((r) => r.selected).length;
+  const selectedRoutes = routes.filter((r) => r.selected);
+  const selectedCount = selectedRoutes.length;
   const totalRoutes = routes.length;
   const coveragePercentage = totalRoutes > 0 ? Math.round((selectedCount / totalRoutes) * 100) : 0;
+  const passedCount = selectedRoutes.filter(r => routeStatuses[r.id] === 'passed').length;
 
   const handleToggleRoute = (routeId: string) => {
     setRoutes((prev) => {
@@ -163,7 +211,6 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
         route.id === routeId ? { ...route, selected: !route.selected } : route
       );
 
-      // Collect all selected node and edge IDs
       const selectedNodeIds = new Set<string>();
       const selectedEdgeIds = new Set<string>();
 
@@ -174,83 +221,266 @@ export function TestWorkflowDrawer({ open, onOpenChange, nodes, edges, rightOffs
         }
       });
 
-      // Notify parent of selection changes
-      if (onRouteSelectionChange) {
-        onRouteSelectionChange(Array.from(selectedNodeIds), Array.from(selectedEdgeIds));
-      }
-
+      onRouteSelectionChange?.(Array.from(selectedNodeIds), Array.from(selectedEdgeIds));
       return updatedRoutes;
     });
   };
 
-  const handleRenameRoute = (routeId: string, newName: string) => {
-    setRoutes((prev) =>
-      prev.map((route) => (route.id === routeId ? { ...route, name: newName } : route))
-    );
+  const handleStartTest = async () => {
+    if (selectedRoutes.length === 0) return;
+
+    testAbortRef.current = false;
+    setPhase('testing');
+
+    const initialStatuses: Record<string, RouteTestStatus> = {};
+    selectedRoutes.forEach(r => { initialStatuses[r.id] = 'pending'; });
+    setRouteStatuses(initialStatuses);
+
+    const nodeStatuses: Record<string, 'testing' | 'passed' | 'failed'> = {};
+
+    for (const route of selectedRoutes) {
+      if (testAbortRef.current) break;
+
+      setRouteStatuses(prev => ({ ...prev, [route.id]: 'running' }));
+      route.nodeIds.forEach(nid => { nodeStatuses[nid] = 'testing'; });
+      onTestNodeStatusChange?.({ ...nodeStatuses });
+
+      await new Promise<void>(resolve => setTimeout(resolve, 1200));
+      if (testAbortRef.current) break;
+
+      const passed = Math.random() > 0.2;
+      const finalStatus: RouteTestStatus = passed ? 'passed' : 'failed';
+
+      setRouteStatuses(prev => ({ ...prev, [route.id]: finalStatus }));
+      route.nodeIds.forEach(nid => { nodeStatuses[nid] = passed ? 'passed' : 'failed'; });
+      onTestNodeStatusChange?.({ ...nodeStatuses });
+
+      if (!passed) {
+        setRouteReports(prev => ({ ...prev, [route.id]: generateFailureReport(route) }));
+      }
+
+      await new Promise<void>(resolve => setTimeout(resolve, 400));
+    }
+
+    if (!testAbortRef.current) {
+      setPhase('results');
+    }
   };
 
+  const getStatusIcon = (status: RouteTestStatus) => {
+    switch (status) {
+      case 'pending': return <Clock className="w-4 h-4 text-muted-foreground" />;
+      case 'running': return <Loader2 className="w-4 h-4 text-orange-500 animate-spin" />;
+      case 'passed': return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+      case 'failed': return <XCircle className="w-4 h-4 text-red-500" />;
+    }
+  };
+
+  const report = reportRouteId ? routeReports[reportRouteId] : null;
+
   return (
+    <>
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent rightOffset={rightOffset}>
         <DrawerHeader>
-          <DrawerTitle>Select test route</DrawerTitle>
-          <DrawerDescription>Choose a branching path to test</DrawerDescription>
+          <DrawerTitle>
+            {phase === 'select' ? 'Select test route' :
+             phase === 'testing' ? 'Running test...' :
+             'Test complete'}
+          </DrawerTitle>
+          <DrawerDescription>
+            {phase === 'select' ? 'Choose a branching path to test' :
+             phase === 'testing' ? 'Testing selected routes...' :
+             `${passedCount} of ${selectedRoutes.length} routes passed`}
+          </DrawerDescription>
         </DrawerHeader>
 
-        <div className="p-4 pb-0">
-          <Item variant="muted">
-            <ItemContent>
-              <ItemTitle>
-                {selectedCount} of {totalRoutes} routes selected
-              </ItemTitle>
-              <ItemDescription>{coveragePercentage}% test coverage</ItemDescription>
-            </ItemContent>
-          </Item>
-        </div>
-
-        <div className="px-4 pb-4 pt-4 space-y-2 max-h-[50vh] overflow-y-auto">
-            {routes.map((route) => (
-              <Item
-                key={route.id}
-                variant="outline"
-                clickable
-                onClick={() => handleToggleRoute(route.id)}
-                className={`cursor-pointer !items-start transition-colors ${
-                  route.selected
-                    ? 'bg-green-50 border-green-500 hover:bg-green-100'
-                    : ''
-                }`}
-              >
-                <div onClick={(e) => e.stopPropagation()}>
-                  <Checkbox
-                    checked={route.selected}
-                    onCheckedChange={() => handleToggleRoute(route.id)}
-                    className="mt-0.5"
-                  />
-                </div>
+        {phase === 'select' && (
+          <>
+            <div className="p-4 pb-0">
+              <Item variant="muted">
                 <ItemContent>
-                  <ItemTitle className={route.selected ? 'text-green-700' : ''}>
-                    {route.name}
+                  <ItemTitle>
+                    {selectedCount} of {totalRoutes} routes selected
                   </ItemTitle>
-                  <div className="mt-1 space-y-0.5 text-xs text-muted-foreground">
-                    {route.steps.map((step, index) => (
-                      <div key={index}>{step}</div>
-                    ))}
-                  </div>
+                  <ItemDescription>{coveragePercentage}% test coverage</ItemDescription>
                 </ItemContent>
               </Item>
-            ))}
-        </div>
+            </div>
 
-        <DrawerFooter className="flex flex-row justify-end gap-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-          <Button onClick={() => onOpenChange(false)}>
-            Start test ({selectedCount} {selectedCount === 1 ? 'route' : 'routes'})
-          </Button>
-        </DrawerFooter>
+            <div className="px-4 pb-4 pt-4 space-y-2 max-h-[50vh] overflow-y-auto">
+              {routes.map((route) => (
+                <Item
+                  key={route.id}
+                  variant="outline"
+                  clickable
+                  onClick={() => handleToggleRoute(route.id)}
+                  className={`cursor-pointer !items-start transition-colors ${
+                    route.selected
+                      ? 'bg-green-50 border-green-500 hover:bg-green-100'
+                      : ''
+                  }`}
+                >
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      checked={route.selected}
+                      onCheckedChange={() => handleToggleRoute(route.id)}
+                      className="mt-0.5"
+                    />
+                  </div>
+                  <ItemContent>
+                    <ItemTitle className={route.selected ? 'text-green-700' : ''}>
+                      {route.name}
+                    </ItemTitle>
+                    <div className="mt-1 space-y-0.5 text-xs text-muted-foreground">
+                      {(expandedRoutes.has(route.id) ? route.steps : route.steps.slice(0, 3)).map((step, index) => (
+                        <div key={index}>{step}</div>
+                      ))}
+                      {route.steps.length > 3 && (
+                        <a href="#" onClick={(e) => { e.stopPropagation(); e.preventDefault(); toggleExpanded(route.id); }} className="text-blue-500 hover:text-blue-700 hover:underline">
+                          {expandedRoutes.has(route.id) ? 'show less' : `and ${route.steps.length - 3} more`}
+                        </a>
+                      )}
+                    </div>
+                  </ItemContent>
+                </Item>
+              ))}
+            </div>
+
+            <DrawerFooter className="flex flex-row justify-end gap-2">
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+              <Button onClick={handleStartTest} disabled={selectedCount === 0}>
+                Start test ({selectedCount} {selectedCount === 1 ? 'route' : 'routes'})
+              </Button>
+            </DrawerFooter>
+          </>
+        )}
+
+        {(phase === 'testing' || phase === 'results') && (
+          <>
+            <div className="px-4 pb-4 pt-4 space-y-2 max-h-[50vh] overflow-y-auto">
+              {selectedRoutes.map((route) => {
+                const status = routeStatuses[route.id] ?? 'pending';
+                return (
+                  <Item
+                    key={route.id}
+                    variant="outline"
+                    className={cn(
+                      '!items-start transition-colors',
+                      status === 'running' && 'border-orange-300 bg-orange-50',
+                      status === 'passed' && 'border-green-500 bg-green-50',
+                      status === 'failed' && 'border-red-400 bg-red-50',
+                    )}
+                  >
+                    <div className="mt-0.5">{getStatusIcon(status)}</div>
+                    <ItemContent>
+                      <ItemTitle className={cn(
+                        status === 'running' && 'text-orange-700',
+                        status === 'passed' && 'text-green-700',
+                        status === 'failed' && 'text-red-700',
+                      )}>
+                        {route.name}
+                      </ItemTitle>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2 mb-1">
+                          <a
+                            href="#"
+                            onClick={(e) => e.preventDefault()}
+                            className="text-blue-500 hover:text-blue-700 hover:underline"
+                          >
+                            Test patient: {route.testPatientId}
+                          </a>
+                          {status === 'failed' && routeReports[route.id] && (
+                            <a
+                              href="#"
+                              onClick={(e) => { e.preventDefault(); setReportRouteId(route.id); }}
+                              className="flex items-center gap-1 text-red-500 hover:text-red-700 hover:underline"
+                            >
+                              <AlertCircle className="w-3 h-3" />
+                              View failure report
+                            </a>
+                          )}
+                        </div>
+                        <div className="space-y-0.5">
+                          {(expandedRoutes.has(route.id) ? route.steps : route.steps.slice(0, 3)).map((step, index) => (
+                            <div key={index}>{step}</div>
+                          ))}
+                          {route.steps.length > 3 && (
+                            <a href="#" onClick={(e) => { e.preventDefault(); toggleExpanded(route.id); }} className="text-blue-500 hover:text-blue-700 hover:underline">
+                              {expandedRoutes.has(route.id) ? 'show less' : `and ${route.steps.length - 3} more`}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </ItemContent>
+                  </Item>
+                );
+              })}
+            </div>
+
+            {phase === 'results' && (
+              <DrawerFooter className="flex flex-row justify-end gap-2">
+                <DrawerClose asChild>
+                  <Button variant="outline">Close</Button>
+                </DrawerClose>
+                <Button onClick={handleStartTest}>
+                  Re-run
+                </Button>
+              </DrawerFooter>
+            )}
+          </>
+        )}
       </DrawerContent>
     </Drawer>
+
+    {report && (
+      <Dialog open={!!reportRouteId} onOpenChange={(open) => { if (!open) setReportRouteId(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              Failure Report — {report.routeName}
+            </DialogTitle>
+            <DialogDescription>
+              Test patient: {report.testPatientId} · {new Date(report.timestamp).toLocaleTimeString()}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="px-4 pb-4 space-y-4 text-sm">
+            <div>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Step timeline</p>
+              <div className="space-y-1.5">
+                {report.timeline.map((entry, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm">
+                    {entry.status === 'passed' && <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />}
+                    {entry.status === 'failed' && <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />}
+                    {entry.status === 'skipped' && <div className="w-4 h-4 rounded-full border-2 border-muted flex-shrink-0" />}
+                    <span className={cn(
+                      entry.status === 'failed' && 'text-red-700 font-medium',
+                      entry.status === 'skipped' && 'text-muted-foreground',
+                    )}>
+                      {entry.step}
+                      {entry.status === 'skipped' && <span className="ml-1 text-xs">(skipped)</span>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-md bg-red-50 border border-red-200 p-3 space-y-1">
+              <p className="font-medium text-red-700">{report.errorCode}</p>
+              <p className="text-red-600">{report.errorMessage}</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setReportRouteId(null)}>Close</Button>
+            <Button variant="default" onClick={() => setReportRouteId(null)}>
+              Pause Journey for All Users
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    )}
+    </>
   );
 }

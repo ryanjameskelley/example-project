@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from './Dialog';
+} from './dialog';
 import { Button } from '@/components/atoms/Button';
 import { Checkbox } from '@/components/atoms/Checkbox';
 import {

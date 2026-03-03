@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
-} from './Dialog';
+} from './dialog';
 import { Button } from '@/components/atoms/Button';
 import { Field } from '@/components/atoms/Field';
 import {

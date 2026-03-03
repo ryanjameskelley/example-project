@@ -5,10 +5,10 @@
  * Changes are applied instantly via Hot Module Replacement (HMR).
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Button } from '@/components/atoms/Button'
 import { Field } from '@/components/atoms/Field'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/molecules/Tabs'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/molecules/StandardTabs'
 import {
   Table,
   TableBody,
@@ -37,7 +37,7 @@ import {
   DrawerTitle,
 } from '@/components/molecules/Drawer'
 import { Label } from '@/components/atoms/Label'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Checkbox } from '@/components/atoms/Checkbox'
 import {
   Select,
   SelectContent,
@@ -445,6 +445,59 @@ interface ProgramItem {
   vitalsThresholds: string[]
 }
 
+interface ColumnSortItem {
+  id: string
+  label: string
+  direction: 'asc' | 'desc'
+  active: boolean
+}
+
+const defaultColumnSort: ColumnSortItem[] = [
+  { id: 'name', label: 'Name', direction: 'asc', active: true },
+  { id: 'timestamp', label: 'Timestamp', direction: 'asc', active: true },
+  { id: 'flags', label: 'Flags', direction: 'asc', active: true },
+  { id: 'values', label: 'Values', direction: 'asc', active: true },
+  { id: 'classification', label: 'Classification', direction: 'asc', active: true },
+  { id: 'source', label: 'Source', direction: 'asc', active: true },
+  { id: 'reviewed', label: 'Reviewed', direction: 'asc', active: true },
+]
+
+// Static options — defined at module level so they are never recreated on re-render
+const targetOptions = ['High', 'Low', 'Very High', 'Very Low', 'Critical High', 'Critical Low']
+const operatorOptions = ['Less Than', 'Greater Than', 'Between']
+const trendOptions = Array.from({ length: 365 }, (_, i) => `Within ${i + 1} day${i === 0 ? '' : 's'}`)
+const patients = Array.from(new Set(mockData.map((d) => d.name))).sort()
+const careTeamOptions = [
+  'Dr. Sarah Miller', 'Max', 'Dr. James Patterson', 'Nurse Emily Chen',
+  'Dr. Rachel Green', 'PA Michael Torres', 'Pod A', 'Pod B', 'Pod C',
+  'After Hours', 'Day Shift', 'Night Shift',
+]
+const programOptions = ['Diabetes Management', 'Cardiac Care', 'General Wellness', 'Post-Op Recovery']
+const thresholdOptions = ['Critical', 'Warning', 'Normal', 'All']
+const classificationOptions = Array.from(new Set(mockData.map((d) => d.classification))).sort()
+const sourceOptions = ['Healthie', 'Vital', 'Elation', 'Canvas']
+
+// Pure function — no dependency on component state, safe at module level
+const getActiveFlags = (record: VitalsRecord) => {
+  const flags: Array<{
+    type: 'beforeMeal' | 'medStatus' | 'irregularHeartbeat'
+    label: string
+    value: boolean | string
+  }> = []
+
+  if (typeof record.beforeMeal === 'boolean') {
+    flags.push({ type: 'beforeMeal', label: record.beforeMeal ? 'Before Meal' : 'After Meal', value: record.beforeMeal })
+  }
+  if (typeof record.medStatus === 'string') {
+    flags.push({ type: 'medStatus', label: record.medStatus, value: record.medStatus })
+  }
+  const hasBPM = record.unit1 === 'BPM' || record.unit2 === 'BPM' || record.unit3 === 'BPM'
+  if (hasBPM && typeof record.irregularHeartbeat === 'boolean') {
+    flags.push({ type: 'irregularHeartbeat', label: record.irregularHeartbeat ? 'Irregular' : 'Regular', value: record.irregularHeartbeat })
+  }
+  return flags
+}
+
 interface SortableProgramItemProps {
   item: ProgramItem
   onDelete: () => void
@@ -619,6 +672,142 @@ function SortableProgramItem({ item, onDelete, onUpdate, toggleThreshold, thresh
         </button>
       </div>
     </div>
+  )
+}
+
+interface SortableColumnItemProps {
+  item: ColumnSortItem
+  onToggleActive: (id: string) => void
+  onToggleDirection: (id: string) => void
+}
+
+function SortableColumnItem({ item, onToggleActive, onToggleDirection }: SortableColumnItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: item.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center gap-2 rounded-[10px] border border-border p-2 bg-background mb-2">
+      <button
+        type="button"
+        className="cursor-grab active:cursor-grabbing focus:outline-none"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      </button>
+      <span className="flex-1 text-sm">{item.label}</span>
+      <button
+        type="button"
+        onClick={() => item.active && onToggleDirection(item.id)}
+        className={`p-1 rounded transition-colors ${item.active ? 'hover:bg-accent cursor-pointer' : 'opacity-30 cursor-default'}`}
+      >
+        {item.direction === 'asc' ? (
+          <ArrowUp className="h-3.5 w-3.5 text-muted-foreground" />
+        ) : (
+          <ArrowDown className="h-3.5 w-3.5 text-muted-foreground" />
+        )}
+      </button>
+      <Checkbox
+        checked={item.active}
+        onCheckedChange={() => onToggleActive(item.id)}
+      />
+    </div>
+  )
+}
+
+interface FlagCellProps {
+  record: VitalsRecord
+  setData: (updater: (prev: VitalsRecord[]) => VitalsRecord[]) => void
+  setSelectedRecordId: (id: string | null) => void
+  setFlagsModalOpen: (open: boolean) => void
+}
+
+function FlagCell({ record, setData, setSelectedRecordId, setFlagsModalOpen }: FlagCellProps) {
+  const activeFlags = getActiveFlags(record)
+
+  if (activeFlags.length === 0) {
+    return <span className="text-gray-400 text-sm">-</span>
+  }
+
+  if (activeFlags.length === 1) {
+    const flag = activeFlags[0]
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="default" className="h-8 border">
+            {flag.label}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {flag.type === 'beforeMeal' && (
+            <>
+              <DropdownMenuLabel>Meal Timing</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, beforeMeal: true } : r))}>
+                Before Meal
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, beforeMeal: false } : r))}>
+                After Meal
+              </DropdownMenuItem>
+            </>
+          )}
+          {flag.type === 'medStatus' && (
+            <>
+              <DropdownMenuLabel>Medication Status</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, medStatus: 'Unknown' as const } : r))}>
+                Unknown
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, medStatus: 'Before Meds' as const } : r))}>
+                Before Meds
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, medStatus: 'After Meds' as const } : r))}>
+                After Meds
+              </DropdownMenuItem>
+            </>
+          )}
+          {flag.type === 'irregularHeartbeat' && (
+            <>
+              <DropdownMenuLabel>Heart Rhythm</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, irregularHeartbeat: true } : r))}>
+                Irregular
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setData((prev) => prev.map((r) => r.id === record.id ? { ...r, irregularHeartbeat: false } : r))}>
+                Regular
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="default"
+      className="h-8 border gap-1"
+      onClick={() => {
+        setSelectedRecordId(record.id)
+        setFlagsModalOpen(true)
+      }}
+    >
+      <Flag className="h-4 w-4" />
+      <Badge variant="secondary" className="ml-1 px-1.5 py-0">
+        {activeFlags.length}
+      </Badge>
+    </Button>
   )
 }
 
@@ -802,6 +991,17 @@ export default function Vitals() {
     }
   }
 
+  const handleColumnSortDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      setTempColumnSortOrder((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id)
+        const newIndex = items.findIndex((item) => item.id === over.id)
+        return arrayMove(items, oldIndex, newIndex)
+      })
+    }
+  }
+
   const saveConfiguration = () => {
     if (editingConfigId) {
       // Update existing configuration
@@ -837,10 +1037,6 @@ export default function Vitals() {
     }
   }
 
-  const targetOptions = ['High', 'Low', 'Very High', 'Very Low', 'Critical High', 'Critical Low']
-  const operatorOptions = ['Less Than', 'Greater Than', 'Between']
-  const trendOptions = Array.from({ length: 365 }, (_, i) => `Within ${i + 1} day${i === 0 ? '' : 's'}`)
-
   const [filters, setFilters] = useState<FilterState>({
     dateRange: { start: '', end: '' },
     patients: [],
@@ -858,45 +1054,8 @@ export default function Vitals() {
   const [careTeamSearchQuery, setCareTeamSearchQuery] = useState('')
   const [sortColumn, setSortColumn] = useState<'timestamp' | 'values' | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
-
-  // Get active flags for a record
-  const getActiveFlags = (record: VitalsRecord) => {
-    const flags: Array<{
-      type: 'beforeMeal' | 'medStatus' | 'irregularHeartbeat'
-      label: string
-      value: boolean | string
-    }> = []
-
-    // Check for glucose beforeMeal flag
-    if (typeof record.beforeMeal === 'boolean') {
-      flags.push({
-        type: 'beforeMeal',
-        label: record.beforeMeal ? 'Before Meal' : 'After Meal',
-        value: record.beforeMeal
-      })
-    }
-
-    // Check for blood pressure medStatus flag
-    if (typeof record.medStatus === 'string') {
-      flags.push({
-        type: 'medStatus',
-        label: record.medStatus,
-        value: record.medStatus
-      })
-    }
-
-    // Check for BPM irregularHeartbeat flag
-    const hasBPM = record.unit1 === 'BPM' || record.unit2 === 'BPM' || record.unit3 === 'BPM'
-    if (hasBPM && typeof record.irregularHeartbeat === 'boolean') {
-      flags.push({
-        type: 'irregularHeartbeat',
-        label: record.irregularHeartbeat ? 'Irregular' : 'Regular',
-        value: record.irregularHeartbeat
-      })
-    }
-
-    return flags
-  }
+  const [columnSortOrder, setColumnSortOrder] = useState<ColumnSortItem[]>(defaultColumnSort)
+  const [tempColumnSortOrder, setTempColumnSortOrder] = useState<ColumnSortItem[]>(defaultColumnSort)
 
   // Toggle flag handlers
   const toggleBeforeMeal = (recordId: string) => {
@@ -929,26 +1088,6 @@ export default function Vitals() {
     )
   }
 
-  const patients = Array.from(new Set(mockData.map((d) => d.name))).sort()
-  const careTeamOptions = [
-    'Dr. Sarah Miller',
-    'Max',
-    'Dr. James Patterson',
-    'Nurse Emily Chen',
-    'Dr. Rachel Green',
-    'PA Michael Torres',
-    'Pod A',
-    'Pod B',
-    'Pod C',
-    'After Hours',
-    'Day Shift',
-    'Night Shift'
-  ]
-  const programOptions = ['Diabetes Management', 'Cardiac Care', 'General Wellness', 'Post-Op Recovery']
-  const thresholdOptions = ['Critical', 'Warning', 'Normal', 'All']
-  const classificationOptions = Array.from(new Set(mockData.map((d) => d.classification))).sort()
-  const sourceOptions = ['Healthie', 'Vital', 'Elation', 'Canvas']
-
   const handleSort = (column: 'timestamp' | 'values') => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
@@ -958,26 +1097,21 @@ export default function Vitals() {
     }
   }
 
-  let filteredData = data.filter((record) => {
-    const matchesSearch = record.name.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesSearch && record.visible
-  })
-
-  // Apply sorting
-  if (sortColumn) {
-    filteredData = [...filteredData].sort((a, b) => {
-      if (sortColumn === 'timestamp') {
-        const timeA = a.time.getTime()
-        const timeB = b.time.getTime()
-        return sortDirection === 'asc' ? timeA - timeB : timeB - timeA
-      } else if (sortColumn === 'values') {
-        const valueA = a.value1
-        const valueB = b.value1
-        return sortDirection === 'asc' ? valueA - valueB : valueB - valueA
-      }
-      return 0
+  const filteredData = useMemo(() => {
+    const result = data.filter((record) => {
+      const matchesSearch = record.name.toLowerCase().includes(searchQuery.toLowerCase())
+      return matchesSearch && record.visible
     })
-  }
+    if (!sortColumn) return result
+    return [...result].sort((a, b) => {
+      if (sortColumn === 'timestamp') {
+        return sortDirection === 'asc'
+          ? a.time.getTime() - b.time.getTime()
+          : b.time.getTime() - a.time.getTime()
+      }
+      return sortDirection === 'asc' ? a.value1 - b.value1 : b.value1 - a.value1
+    })
+  }, [data, searchQuery, sortColumn, sortDirection])
 
   const toggleVisibility = (id: string) => {
     setData(data.map((record) =>
@@ -993,8 +1127,11 @@ export default function Vitals() {
 
   const applyFilters = () => {
     setFilters(tempFilters)
+    setColumnSortOrder(tempColumnSortOrder)
     setFilterDialogOpen(false)
   }
+
+  const hasActiveSorts = JSON.stringify(columnSortOrder) !== JSON.stringify(defaultColumnSort)
 
   const toggleClassification = (classification: string) => {
     setTempFilters((prev) => ({
@@ -1030,7 +1167,7 @@ export default function Vitals() {
     setFilters(emptyFilters)
   }
 
-  const hasActiveFilters =
+  const hasActiveFilters = useMemo(() => !!(
     filters.dateRange.start ||
     filters.dateRange.end ||
     filters.patients.length > 0 ||
@@ -1040,8 +1177,9 @@ export default function Vitals() {
     filters.reviewed !== 'all' ||
     filters.classification.length > 0 ||
     filters.source.length > 0
+  ), [filters])
 
-  const activeFilterCount =
+  const activeFilterCount = useMemo(() =>
     (filters.dateRange.start ? 1 : 0) +
     (filters.dateRange.end ? 1 : 0) +
     (filters.patients.length > 0 ? 1 : 0) +
@@ -1050,16 +1188,18 @@ export default function Vitals() {
     (filters.classification.length > 0 ? 1 : 0) +
     (filters.source.length > 0 ? 1 : 0) +
     (filters.vitalsThreshold.length > 0 ? 1 : 0) +
-    (filters.reviewed !== 'all' ? 1 : 0)
+    (filters.reviewed !== 'all' ? 1 : 0),
+  [filters])
 
-  const hasModifiedFilters =
+  const hasModifiedFilters = useMemo(() =>
     tempFilters.dateRange.start !== filters.dateRange.start ||
     tempFilters.dateRange.end !== filters.dateRange.end ||
-    JSON.stringify(tempFilters.patients.sort()) !== JSON.stringify(filters.patients.sort()) ||
-    JSON.stringify(tempFilters.careTeam.sort()) !== JSON.stringify(filters.careTeam.sort()) ||
+    JSON.stringify([...tempFilters.patients].sort()) !== JSON.stringify([...filters.patients].sort()) ||
+    JSON.stringify([...tempFilters.careTeam].sort()) !== JSON.stringify([...filters.careTeam].sort()) ||
     tempFilters.program !== filters.program ||
-    JSON.stringify(tempFilters.vitalsThreshold.sort()) !== JSON.stringify(filters.vitalsThreshold.sort()) ||
-    tempFilters.reviewed !== filters.reviewed
+    JSON.stringify([...tempFilters.vitalsThreshold].sort()) !== JSON.stringify([...filters.vitalsThreshold].sort()) ||
+    tempFilters.reviewed !== filters.reviewed,
+  [tempFilters, filters])
 
   const togglePatient = (patient: string) => {
     setTempFilters((prev) => ({
@@ -1198,15 +1338,24 @@ export default function Vitals() {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => setFilterDialogOpen(true)}
+                  onClick={() => {
+                    setTempFilters(filters)
+                    setTempColumnSortOrder(columnSortOrder)
+                    setFilterDialogOpen(true)
+                  }}
                   className="gap-2"
                 >
-                  <Filter className="h-4 w-4" />
-                  Filters
-                  {hasActiveFilters && (
-                    <Badge variant="secondary" className="ml-1">
-                      {activeFilterCount}
-                    </Badge>
+                  <span className="relative">
+                    <Filter className="h-4 w-4" />
+                    {hasActiveFilters && (
+                      <span className="absolute -top-1.5 -right-1.5 h-2 w-2 rounded-full bg-primary" />
+                    )}
+                  </span>
+                  {hasActiveSorts && (
+                    <span className="relative">
+                      <ArrowUpDown className="h-4 w-4" />
+                      <span className="absolute -top-1.5 -right-1.5 h-2 w-2 rounded-full bg-primary" />
+                    </span>
                   )}
                 </Button>
                 {activeTab !== 'all' ? (
@@ -1291,113 +1440,12 @@ export default function Vitals() {
                             {format(record.time, 'MM/dd/yyyy hh:mm a')} PST
                           </TableCell>
                           <TableCell>
-                            {(() => {
-                              const activeFlags = getActiveFlags(record)
-
-                              if (activeFlags.length === 0) {
-                                // No flags - show nothing
-                                return <span className="text-gray-400 text-sm">-</span>
-                              } else if (activeFlags.length === 1) {
-                                // Single flag - inline dropdown editor
-                                const flag = activeFlags[0]
-                                return (
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button
-                                        variant="outline"
-                                        size="default"
-                                        className="h-8 border"
-                                      >
-                                        {flag.label}
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="start">
-                                      {flag.type === 'beforeMeal' && (
-                                        <>
-                                          <DropdownMenuLabel>Meal Timing</DropdownMenuLabel>
-                                          <DropdownMenuSeparator />
-                                          <DropdownMenuItem onClick={() => {
-                                            setData(prevData =>
-                                              prevData.map(r =>
-                                                r.id === record.id ? { ...r, beforeMeal: true } : r
-                                              )
-                                            )
-                                          }}>
-                                            Before Meal
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem onClick={() => {
-                                            setData(prevData =>
-                                              prevData.map(r =>
-                                                r.id === record.id ? { ...r, beforeMeal: false } : r
-                                              )
-                                            )
-                                          }}>
-                                            After Meal
-                                          </DropdownMenuItem>
-                                        </>
-                                      )}
-                                      {flag.type === 'medStatus' && (
-                                        <>
-                                          <DropdownMenuLabel>Medication Status</DropdownMenuLabel>
-                                          <DropdownMenuSeparator />
-                                          <DropdownMenuItem onClick={() => setMedStatus(record.id, 'Unknown')}>
-                                            Unknown
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem onClick={() => setMedStatus(record.id, 'Before Meds')}>
-                                            Before Meds
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem onClick={() => setMedStatus(record.id, 'After Meds')}>
-                                            After Meds
-                                          </DropdownMenuItem>
-                                        </>
-                                      )}
-                                      {flag.type === 'irregularHeartbeat' && (
-                                        <>
-                                          <DropdownMenuLabel>Heart Rhythm</DropdownMenuLabel>
-                                          <DropdownMenuSeparator />
-                                          <DropdownMenuItem onClick={() => {
-                                            setData(prevData =>
-                                              prevData.map(r =>
-                                                r.id === record.id ? { ...r, irregularHeartbeat: true } : r
-                                              )
-                                            )
-                                          }}>
-                                            Irregular
-                                          </DropdownMenuItem>
-                                          <DropdownMenuItem onClick={() => {
-                                            setData(prevData =>
-                                              prevData.map(r =>
-                                                r.id === record.id ? { ...r, irregularHeartbeat: false } : r
-                                              )
-                                            )
-                                          }}>
-                                            Regular
-                                          </DropdownMenuItem>
-                                        </>
-                                      )}
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                )
-                              } else {
-                                // Multiple flags - flag icon with badge count, opens modal
-                                return (
-                                  <Button
-                                    variant="outline"
-                                    size="default"
-                                    className="h-8 border gap-1"
-                                    onClick={() => {
-                                      setSelectedRecordId(record.id)
-                                      setFlagsModalOpen(true)
-                                    }}
-                                  >
-                                    <Flag className="h-4 w-4" />
-                                    <Badge variant="secondary" className="ml-1 px-1.5 py-0">
-                                      {activeFlags.length}
-                                    </Badge>
-                                  </Button>
-                                )
-                              }
-                            })()}
+                            <FlagCell
+                              record={record}
+                              setData={setData}
+                              setSelectedRecordId={setSelectedRecordId}
+                              setFlagsModalOpen={setFlagsModalOpen}
+                            />
                           </TableCell>
                           <TableCell>
                             <div className="flex">
@@ -1489,8 +1537,8 @@ export default function Vitals() {
           <div className="space-y-6 py-4 px-4 overflow-y-auto flex-1">
             {/* Date Range */}
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
+              <Label className={`flex items-center gap-2 ${tempFilters.dateRange.start || tempFilters.dateRange.end ? 'text-green-600' : ''}`}>
+                <Calendar className={`h-4 w-4 ${tempFilters.dateRange.start || tempFilters.dateRange.end ? 'text-green-600' : ''}`} />
                 Date Range
               </Label>
               <div className="grid grid-cols-2 gap-3">
@@ -1523,10 +1571,60 @@ export default function Vitals() {
               </div>
             </div>
 
+            {/* Column Sort Order */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className={`flex items-center gap-2 ${JSON.stringify(tempColumnSortOrder) !== JSON.stringify(defaultColumnSort) ? 'text-green-600' : ''}`}>
+                  <ArrowUpDown className={`h-4 w-4 ${JSON.stringify(tempColumnSortOrder) !== JSON.stringify(defaultColumnSort) ? 'text-green-600' : ''}`} />
+                  Column Sort Order
+                </Label>
+                {JSON.stringify(tempColumnSortOrder) !== JSON.stringify(defaultColumnSort) && (
+                  <button
+                    type="button"
+                    className="text-xs text-muted-foreground hover:text-foreground underline"
+                    onClick={() => setTempColumnSortOrder(defaultColumnSort)}
+                  >
+                    Reset to default
+                  </button>
+                )}
+              </div>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleColumnSortDragEnd}
+              >
+                <SortableContext
+                  items={tempColumnSortOrder.map((c) => c.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {tempColumnSortOrder.map((col) => (
+                    <SortableColumnItem
+                      key={col.id}
+                      item={col}
+                      onToggleActive={(id) =>
+                        setTempColumnSortOrder((prev) =>
+                          prev.map((c) => (c.id === id ? { ...c, active: !c.active } : c))
+                        )
+                      }
+                      onToggleDirection={(id) =>
+                        setTempColumnSortOrder((prev) =>
+                          prev.map((c) =>
+                            c.id === id
+                              ? { ...c, direction: c.direction === 'asc' ? 'desc' : 'asc' }
+                              : c
+                          )
+                        )
+                      }
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
+            </div>
+
             {/* Patient Selector */}
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
+              <Label className={`flex items-center gap-2 ${tempFilters.patients.length > 0 ? 'text-green-600' : ''}`}>
+                <Users className={`h-4 w-4 ${tempFilters.patients.length > 0 ? 'text-green-600' : ''}`} />
                 Patients
               </Label>
               <div className="relative">
@@ -1585,8 +1683,8 @@ export default function Vitals() {
 
             {/* Care Team Filter */}
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Activity className="h-4 w-4" />
+              <Label className={`flex items-center gap-2 ${tempFilters.careTeam.length > 0 ? 'text-green-600' : ''}`}>
+                <Activity className={`h-4 w-4 ${tempFilters.careTeam.length > 0 ? 'text-green-600' : ''}`} />
                 Care Team
               </Label>
               <div className="relative">
@@ -1646,7 +1744,7 @@ export default function Vitals() {
             {/* Program and Values Selectors */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Program</Label>
+                <Label className={tempFilters.program ? 'text-green-600' : ''}>Program</Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="w-full justify-between h-8">
@@ -1668,7 +1766,7 @@ export default function Vitals() {
               </div>
 
               <div className="space-y-2">
-                <Label>Vitals Threshold</Label>
+                <Label className={tempFilters.vitalsThreshold.length > 0 ? 'text-green-600' : ''}>Vitals Threshold</Label>
                 <div className="relative">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -1717,7 +1815,7 @@ export default function Vitals() {
 
             {/* Classification Filter */}
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
+              <Label className={`flex items-center gap-2 ${tempFilters.classification.length > 0 ? 'text-green-600' : ''}`}>
                 Classification
               </Label>
               <div className="grid grid-cols-2 gap-3">
@@ -1793,7 +1891,7 @@ export default function Vitals() {
 
             {/* Source Filter */}
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
+              <Label className={`flex items-center gap-2 ${tempFilters.source.length > 0 ? 'text-green-600' : ''}`}>
                 Source
               </Label>
               <div className="relative">
@@ -1843,7 +1941,7 @@ export default function Vitals() {
 
             {/* Reviewed Status Filter */}
             <div className="space-y-2">
-              <Label>Reviewed Status</Label>
+              <Label className={tempFilters.reviewed !== 'all' ? 'text-green-600' : ''}>Reviewed Status</Label>
               <div className="flex gap-2">
                 <Badge
                   variant={tempFilters.reviewed === 'all' ? 'default' : 'outline'}

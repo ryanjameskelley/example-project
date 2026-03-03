@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Avatar, AvatarImage } from "../atoms/Avatar";
 import { Button } from "../atoms/Button";
 import { Separator } from "../atoms/Separator";
+import { InputGroup, InputGroupInput, InputGroupButton, InputGroupAddon } from "../atoms/InputGroup";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../molecules/DropdownMenu";
 import {
   ChevronsUpDown,
   LayoutDashboard,
@@ -19,6 +21,7 @@ import {
   Phone,
   Video,
   HeartPulse,
+  Settings2,
 } from "lucide-react";
 
 export interface SidebarNavigationItem {
@@ -50,6 +53,9 @@ export interface AppSidebarProps {
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   className?: string;
+  defaultMessagingExpanded?: boolean;
+  defaultSettingsExpanded?: boolean;
+  activeSettingsItem?: string;
   onCreateTeamChannel?: (data: {
     name: string;
     description: string;
@@ -130,8 +136,12 @@ export function AppSidebar({
   customDashboardContent: _customDashboardContent,
   isRightPanelOpen: _isRightPanelOpen = false,
   onToggleRightPanel,
+  defaultMessagingExpanded = true,
+  defaultSettingsExpanded = false,
+  activeSettingsItem,
 }: AppSidebarProps) {
-  const [isMessagingExpanded, setIsMessagingExpanded] = useState(true);
+  const [isMessagingExpanded, setIsMessagingExpanded] = useState(defaultMessagingExpanded);
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(defaultSettingsExpanded);
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
 
   const handleNavigation = (path: string) => {
@@ -172,7 +182,7 @@ export function AppSidebar({
           isCollapsed ? "justify-center" : "justify-start"
         } ${
           isActive
-            ? "bg-[#FFFFFF] text-sidebar-accent-foreground hover:bg-[#FFFFFF] hover:text-sidebar-accent-foreground"
+            ? "bg-[#EBEBEB] text-sidebar-accent-foreground hover:bg-[#EBEBEB] hover:text-sidebar-accent-foreground"
             : ""
         }`}
         onClick={item.path ? () => handleNavigation(item.path!) : hasChildren ? () => {} : undefined}
@@ -246,10 +256,74 @@ export function AppSidebar({
           </div>
         </div>
 
+        {/* Search Input - Fixed */}
+        {!isCollapsed && (
+          <div className="pt-2 px-2 flex-shrink-0">
+            <InputGroup className="rounded-full py-0.5 pl-0.5 pr-px h-8 items-center">
+              <InputGroupInput placeholder="Search" className="ml-1 flex-1 min-w-0" />
+              <InputGroupAddon align="inline-end" className="flex-shrink-0">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <InputGroupButton variant="ghost" className="text-xs rounded-full h-7 pl-1 pr-2 whitespace-nowrap">
+                      Search In... <ChevronDown className="h-3 w-3" />
+                    </InputGroupButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>Contacts</DropdownMenuItem>
+                    <DropdownMenuItem>Tickets</DropdownMenuItem>
+                    <DropdownMenuItem>Events</DropdownMenuItem>
+                    <DropdownMenuItem>Messages</DropdownMenuItem>
+                    <DropdownMenuItem>Team Chats</DropdownMenuItem>
+                    <DropdownMenuItem>Journeys</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
+        )}
+
         {/* Main Navigation - Fixed */}
         <div className="pt-2 px-2 flex-shrink-0">
           <div className="space-y-1">
             {navigationItems.map((item) => renderNavigationItem(item))}
+
+            {/* Settings Section */}
+            <div>
+              <Button
+                variant="ghost"
+                className={`w-full h-8 px-2 py-2 rounded-md ${isCollapsed ? "justify-center" : "justify-start"}`}
+                onClick={() => setIsSettingsExpanded((v) => !v)}
+                title={isCollapsed ? "Settings" : ""}
+              >
+                <Settings2 className={`h-4 w-4 text-sidebar-foreground ${!isCollapsed ? "mr-2" : ""}`} />
+                {!isCollapsed && (
+                  <>
+                    <span className="text-sm text-sidebar-foreground">Settings</span>
+                    {isSettingsExpanded ? (
+                      <ChevronDown className="ml-auto h-4 w-4 text-sidebar-foreground" />
+                    ) : (
+                      <ChevronRight className="ml-auto h-4 w-4 text-sidebar-foreground" />
+                    )}
+                  </>
+                )}
+              </Button>
+              {isSettingsExpanded && !isCollapsed && (
+                <div className="ml-[16px] border-l border-muted-foreground/25 pl-2 mt-0.5 space-y-0.5">
+                  {['Portal', 'Integrations', 'Payments', 'Organizations', 'Other Settings'].map((label) => {
+                    const isActive = activeSettingsItem === label;
+                    return (
+                      <Button
+                        key={label}
+                        variant="ghost"
+                        className={`w-full h-8 px-2 py-2 rounded-md justify-start ${isActive ? 'bg-[#EBEBEB] hover:bg-[#EBEBEB]' : ''}`}
+                      >
+                        <span className="text-sm text-sidebar-foreground">{label}</span>
+                      </Button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
             {showMessagingSection && (
               <Button
@@ -295,7 +369,7 @@ export function AppSidebar({
         )}
 
         {/* Call buttons fixed at bottom with 12px from bottom */}
-        <div className="px-2 pb-3 pt-2 border-t flex-shrink-0">
+        <div className="px-2 pb-3 pt-2 border-t flex-shrink-0 mt-auto">
           <div className="flex gap-2">
             <Button variant="outline" className="flex-1 h-9">
               <Phone className="h-4 w-4 mr-2" />

@@ -180,6 +180,7 @@ export function cn(...inputs: ClassValue[]) {
 - Badge (src/components/atoms/badge.tsx)
 - Switch (src/components/atoms/switch.tsx)
 - Select (src/components/atoms/select.tsx)
+- InputGroup (src/components/atoms/InputGroup.tsx)
 ### Molecules
 - ButtonGroup (src/components/molecules/ButtonGroup.tsx)
 - DropdownMenu (src/components/molecules/DropdownMenu.tsx)
@@ -191,6 +192,7 @@ export function cn(...inputs: ClassValue[]) {
 - Tabs (src/components/molecules/Tabs.tsx)
 - MultiFieldItem (src/components/molecules/MultiFieldItem.tsx)
 
+- StandardTabs (src/components/molecules/StandardTabs.tsx)
 ### Organisms
 - Table (src/components/organisms/table.tsx)
 - Vitals (src/components/organisms/Vitals.tsx)

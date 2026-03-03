@@ -4,6 +4,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 // HMR configured for subdomain: cml9y9hv5000316242ng4hstb.preview.auui.ai
+// Module graph reset: ai-elements moved to atoms/molecules/organisms
 export default defineConfig({
   plugins: [react()],
   base: '/',

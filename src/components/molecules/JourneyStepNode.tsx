@@ -3,7 +3,8 @@ import { Handle, Position } from 'reactflow';
 import {
   MessageCircle, Mail, Phone, Ticket, PenLine, GitBranch, Clock,
   MessageCircleMore, MailOpen, PhoneCall, TicketCheck, PenSquare, GitMerge, Timer,
-  UserRoundPlus, Copy, Terminal, Pencil, Zap, Calendar, FileText, Database, Trash2, Sparkles
+  UserRoundPlus, Copy, Terminal, Pencil, Zap, Calendar, FileText, Database, Trash2, Sparkles,
+  Loader2, Check, X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/atoms/Button';
@@ -173,6 +174,7 @@ export interface JourneyStepNodeData {
   finished?: number;
   total?: number;
   highlighted?: boolean;
+  testStatus?: 'testing' | 'passed' | 'failed';
 }
 
 interface JourneyStepNodeProps {
@@ -217,14 +219,20 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
 
   const handleSparkle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.dispatchEvent(new CustomEvent('journey-step-sparkle', { detail: { id, data } }));
+    window.dispatchEvent(new CustomEvent('journey-step-sparkle', { detail: { id, data, isTrigger } }));
   };
 
   return (
     <div
       className={cn(
-        "group relative min-w-[328px] min-h-[80px] flex items-center gap-3 px-3 border rounded-[10px] transition-colors",
-        data.highlighted
+        "group relative min-w-[328px] min-h-[80px] flex items-center gap-3 px-3 border rounded-[10px] transition-all",
+        data.testStatus === 'testing'
+          ? "border-orange-400 bg-orange-50"
+          : data.testStatus === 'passed'
+          ? "border-green-500 bg-green-50"
+          : data.testStatus === 'failed'
+          ? "border-red-500 bg-red-50"
+          : data.highlighted
           ? "border-green-500 bg-green-50"
           : "border-border bg-background"
       )}
@@ -240,7 +248,7 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
         )}
       />
 
-      <div className={cn("flex items-center justify-center", data.highlighted ? "text-green-600" : config.color)}>
+      <div className={cn("flex items-center justify-center", data.testStatus === 'failed' ? "text-destructive" : data.highlighted ? "text-green-600" : config.color)}>
         <Icon className="w-5 h-5" />
       </div>
 
@@ -265,11 +273,9 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
               <Pencil className="w-4 h-4" />
             </Button>
           </div>
-          {isTrigger && (
-            <Button variant="ghost" onClick={handleSparkle} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
-              <Sparkles className="w-4 h-4" />
-            </Button>
-          )}
+          <Button variant="ghost" onClick={handleSparkle} className="!h-9 !w-9 !p-0 text-[#0A0A0A] hover:!bg-[#F5F5F5]">
+            <Sparkles className="w-4 h-4" />
+          </Button>
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>finished: {finished}</span>
@@ -285,6 +291,22 @@ export function JourneyStepNode({ id, data }: JourneyStepNodeProps) {
           data.highlighted ? "!bg-green-500" : "!bg-border"
         )}
       />
+
+      {data.testStatus && (
+        <div className={cn(
+          "absolute -top-2 -right-2 z-20 w-5 h-5 rounded-full flex items-center justify-center shadow-sm",
+          data.testStatus === 'testing' ? "bg-orange-400" :
+          data.testStatus === 'passed' ? "bg-green-500" : "bg-red-500"
+        )}>
+          {data.testStatus === 'testing' ? (
+            <Loader2 className="w-3 h-3 text-white animate-spin" />
+          ) : data.testStatus === 'passed' ? (
+            <Check className="w-3 h-3 text-white" />
+          ) : (
+            <X className="w-3 h-3 text-white" />
+          )}
+        </div>
+      )}
     </div>
   );
 }

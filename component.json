@@ -1,0 +1,15 @@
+{
+  "name": "Feature Playground",
+  "files": [
+    {
+      "path": "src/components/molecules/Tabs.tsx",
+      "exportName": "Tabs",
+      "category": "molecule"
+    },
+    {
+      "path": "src/components/molecules/StandardTabs.tsx",
+      "exportName": "StandardTabs",
+      "category": "molecule"
+    }
+  ]
+}

@@ -9,6 +9,9 @@ import { useState } from 'react'
 import { SearchList, SearchListItem } from '@/components/molecules/SearchList'
 import { JourneysPage } from '@/components/pages/JourneysPage'
 import { VitalsPage } from '@/components/pages/VitalsPage'
+import { SettingsPage } from '@/components/pages/SettingsPage'
+import { CalendarPage } from '@/components/pages/CalendarPage'
+import { TooltipProvider } from '@/components/atoms/tooltip'
 
 interface Prototype {
   name: string
@@ -27,6 +30,16 @@ const prototypes: Record<string, Prototype> = {
     description: 'Healthcare vitals monitoring table',
     component: VitalsPage,
   },
+  settings: {
+    name: 'Settings',
+    description: 'Settings page',
+    component: SettingsPage,
+  },
+  calendar: {
+    name: 'Calendar',
+    description: 'Calendar page',
+    component: CalendarPage,
+  },
   // Add more prototypes here
 }
 
@@ -36,12 +49,9 @@ export default function App() {
   if (currentPage && prototypes[currentPage]) {
     const Page = prototypes[currentPage].component
     return (
-      <div className="min-h-screen">
-        <div className="p-4 border-b h-[52px] bg-white flex items-center">
-        
-        </div>
+      <TooltipProvider>
         <Page />
-      </div>
+      </TooltipProvider>
     )
   }
 
@@ -52,23 +62,25 @@ export default function App() {
   }))
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100">
-      <div className="container mx-auto px-4 py-16 max-w-2xl">
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            AUUI Prototype Gallery
-          </h1>
-          <p className="text-gray-600">
-            Select a prototype to view
-          </p>
-        </div>
+    <TooltipProvider>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100">
+        <div className="container mx-auto px-4 py-16 max-w-2xl">
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              AUUI Prototype Gallery
+            </h1>
+            <p className="text-gray-600">
+              Select a prototype to view
+            </p>
+          </div>
 
-        <SearchList
-          items={items}
-          onSelect={(id) => setCurrentPage(id)}
-          placeholder="Search prototypes..."
-        />
+          <SearchList
+            items={items}
+            onSelect={(id) => setCurrentPage(id)}
+            placeholder="Search prototypes..."
+          />
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   )
 }
