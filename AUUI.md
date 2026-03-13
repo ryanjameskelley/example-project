@@ -172,6 +172,32 @@ export function cn(...inputs: ClassValue[]) {
 ## Available Components
 
 ### Atoms
+- `@/components/atoms/tooltip` - tooltip
+- `@/components/atoms/textarea` - textarea
+- `@/components/atoms/switch` - switch
+- `@/components/atoms/spinner` - spinner
+- `@/components/atoms/scroll-fade` - scroll-fade
+- `@/components/atoms/progress` - progress
+- `@/components/atoms/input` - input
+- `@/components/atoms/inline-citation` - inline-citation
+- `@/components/atoms/image` - image
+- `@/components/atoms/edge` - edge
+- `@/components/atoms/connection` - connection
+- `@/components/atoms/collapsible` - collapsible
+- `@/components/atoms/badge` - badge
+- `@/components/atoms/accordion` - accordion
+- `@/components/atoms/Shimmer` - Shimmer
+- `@/components/atoms/Separator` - Separator
+- `@/components/atoms/Select` - Select
+- `@/components/atoms/SegmentedBadge` - SegmentedBadge
+- `@/components/atoms/Label` - Label
+- `@/components/atoms/InputGroup` - InputGroup
+- `@/components/atoms/Field` - Field
+- `@/components/atoms/Checkbox` - Checkbox
+- `@/components/atoms/Button` - Button
+- `@/components/atoms/Avatar` - Avatar
+- `@/components/atoms/AppLayout` - AppLayout
+- `@/components/atoms/Alert` - Alert
 - Button (src/components/atoms/Button.tsx)
 
 
@@ -182,6 +208,54 @@ export function cn(...inputs: ClassValue[]) {
 - Select (src/components/atoms/select.tsx)
 - InputGroup (src/components/atoms/InputGroup.tsx)
 ### Molecules
+- `@/components/molecules/voice-selector` - voice-selector
+- `@/components/molecules/transcription` - transcription
+- `@/components/molecules/toolbar` - toolbar
+- `@/components/molecules/tool` - tool
+- `@/components/molecules/task` - task
+- `@/components/molecules/suggestion` - suggestion
+- `@/components/molecules/speech-input` - speech-input
+- `@/components/molecules/sources` - sources
+- `@/components/molecules/snippet` - snippet
+- `@/components/molecules/scroll-area` - scroll-area
+- `@/components/molecules/reasoning` - reasoning
+- `@/components/molecules/prompt-input` - prompt-input
+- `@/components/molecules/popover` - popover
+- `@/components/molecules/open-in-chat` - open-in-chat
+- `@/components/molecules/node` - node
+- `@/components/molecules/model-selector` - model-selector
+- `@/components/molecules/mic-selector` - mic-selector
+- `@/components/molecules/message` - message
+- `@/components/molecules/hover-card` - hover-card
+- `@/components/molecules/dialog` - dialog
+- `@/components/molecules/conversation` - conversation
+- `@/components/molecules/controls` - controls
+- `@/components/molecules/commit` - commit
+- `@/components/molecules/command` - command
+- `@/components/molecules/code-block` - code-block
+- `@/components/molecules/checkpoint` - checkpoint
+- `@/components/molecules/carousel` - carousel
+- `@/components/molecules/card` - card
+- `@/components/molecules/audio-player` - audio-player
+- `@/components/molecules/attachments` - attachments
+- `@/components/molecules/TestWorkflowDrawer` - TestWorkflowDrawer
+- `@/components/molecules/TestRoutesDialog` - TestRoutesDialog
+- `@/components/molecules/Tabs` - Tabs
+- `@/components/molecules/StepSettingsDrawer` - StepSettingsDrawer
+- `@/components/molecules/StandardTabs` - StandardTabs
+- `@/components/molecules/SearchList` - SearchList
+- `@/components/molecules/PageTabs` - PageTabs
+- `@/components/molecules/NoJourney` - NoJourney
+- `@/components/molecules/MultiFieldItem` - MultiFieldItem
+- `@/components/molecules/JourneyStepNode` - JourneyStepNode
+- `@/components/molecules/Item` - Item
+- `@/components/molecules/FlowNode` - FlowNode
+- `@/components/molecules/EditJourneyDialog` - EditJourneyDialog
+- `@/components/molecules/DropdownMenu` - DropdownMenu
+- `@/components/molecules/Drawer` - Drawer
+- `@/components/molecules/CopyJourneyDialog` - CopyJourneyDialog
+- `@/components/molecules/ChatInput` - ChatInput
+- `@/components/molecules/ButtonGroup` - ButtonGroup
 - ButtonGroup (src/components/molecules/ButtonGroup.tsx)
 - DropdownMenu (src/components/molecules/DropdownMenu.tsx)
 - Drawer (src/components/molecules/Drawer.tsx)
@@ -194,5 +268,28 @@ export function cn(...inputs: ClassValue[]) {
 
 - StandardTabs (src/components/molecules/StandardTabs.tsx)
 ### Organisms
+- `@/components/organisms/web-preview` - web-preview
+- `@/components/organisms/test-results` - test-results
+- `@/components/organisms/terminal` - terminal
+- `@/components/organisms/table` - table
+- `@/components/organisms/stack-trace` - stack-trace
+- `@/components/organisms/schema-display` - schema-display
+- `@/components/organisms/sandbox` - sandbox
+- `@/components/organisms/queue` - queue
+- `@/components/organisms/plan` - plan
+- `@/components/organisms/persona` - persona
+- `@/components/organisms/panel` - panel
+- `@/components/organisms/package-info` - package-info
+- `@/components/organisms/jsx-preview` - jsx-preview
+- `@/components/organisms/file-tree` - file-tree
+- `@/components/organisms/environment-variables` - environment-variables
+- `@/components/organisms/context` - context
+- `@/components/organisms/confirmation` - confirmation
+- `@/components/organisms/chain-of-thought` - chain-of-thought
+- `@/components/organisms/canvas` - canvas
+- `@/components/organisms/artifact` - artifact
+- `@/components/organisms/agent` - agent
+- `@/components/organisms/Vitals` - Vitals
+- `@/components/organisms/AppSidebar` - AppSidebar
 - Table (src/components/organisms/table.tsx)
 - Vitals (src/components/organisms/Vitals.tsx)

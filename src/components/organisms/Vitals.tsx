@@ -63,7 +63,6 @@ import {
   GripVertical,
 } from 'lucide-react'
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/molecules/popover'
-import { DateSpanRoot, DateSpanTrigger, DateSpanCalendar } from '@/components/molecules/date/DateSpan'
 import { MultiFieldItem } from '@/components/molecules/MultiFieldItem'
 import { format } from 'date-fns'
 import {
@@ -109,7 +108,7 @@ interface VitalsRecord {
 }
 
 interface FilterState {
-  dateRange: { from?: Date; to?: Date }
+  dateRange: { start: string; end: string }
   patients: string[]
   careTeam: string[]
   program: string
@@ -638,7 +637,7 @@ export default function Vitals() {
   }
 
   const [filters, setFilters] = useState<FilterState>({
-    dateRange: { from: undefined, to: undefined },
+    dateRange: { start: '', end: '' },
     patients: [],
     careTeam: [],
     program: '',
@@ -744,7 +743,7 @@ export default function Vitals() {
 
   const clearFilters = () => {
     const emptyFilters: FilterState = {
-      dateRange: { from: undefined, to: undefined },
+      dateRange: { start: '', end: '' },
       patients: [],
       careTeam: [],
       program: '',
@@ -759,8 +758,8 @@ export default function Vitals() {
   }
 
   const hasActiveFilters = useMemo(() => !!(
-    filters.dateRange.from ||
-    filters.dateRange.to ||
+    filters.dateRange.start ||
+    filters.dateRange.end ||
     filters.patients.length > 0 ||
     filters.careTeam.length > 0 ||
     filters.program ||
@@ -771,8 +770,8 @@ export default function Vitals() {
   ), [filters])
 
   const activeFilterCount = useMemo(() =>
-    (filters.dateRange.from ? 1 : 0) +
-    (filters.dateRange.to ? 1 : 0) +
+    (filters.dateRange.start ? 1 : 0) +
+    (filters.dateRange.end ? 1 : 0) +
     (filters.patients.length > 0 ? 1 : 0) +
     (filters.careTeam.length > 0 ? 1 : 0) +
     (filters.program ? 1 : 0) +
@@ -783,8 +782,8 @@ export default function Vitals() {
   [filters])
 
   const hasModifiedFilters = useMemo(() =>
-    tempFilters.dateRange.from !== filters.dateRange.from ||
-    tempFilters.dateRange.to !== filters.dateRange.to ||
+    tempFilters.dateRange.start !== filters.dateRange.start ||
+    tempFilters.dateRange.end !== filters.dateRange.end ||
     JSON.stringify([...tempFilters.patients].sort()) !== JSON.stringify([...filters.patients].sort()) ||
     JSON.stringify([...tempFilters.careTeam].sort()) !== JSON.stringify([...filters.careTeam].sort()) ||
     tempFilters.program !== filters.program ||
@@ -1119,24 +1118,38 @@ export default function Vitals() {
           <div className="space-y-6 py-4 px-4 overflow-y-auto flex-1">
             {/* Date Range */}
             <div className="space-y-2">
-              <Label className={`flex items-center gap-2 ${tempFilters.dateRange.from || tempFilters.dateRange.to ? 'text-green-600' : ''}`}>
-                <Calendar className={`h-4 w-4 ${tempFilters.dateRange.from || tempFilters.dateRange.to ? 'text-green-600' : ''}`} />
+              <Label className={`flex items-center gap-2 ${tempFilters.dateRange.start || tempFilters.dateRange.end ? 'text-green-600' : ''}`}>
+                <Calendar className={`h-4 w-4 ${tempFilters.dateRange.start || tempFilters.dateRange.end ? 'text-green-600' : ''}`} />
                 Date Range
               </Label>
-              <Popover>
-                <DateSpanRoot
-                  value={tempFilters.dateRange.from ? { from: tempFilters.dateRange.from, to: tempFilters.dateRange.to } : undefined}
-                  onChange={(range) =>
-                    setTempFilters((prev) => ({
-                      ...prev,
-                      dateRange: { from: range?.from, to: range?.to },
-                    }))
-                  }
-                >
-                  <DateSpanTrigger className="w-full" />
-                  <DateSpanCalendar />
-                </DateSpanRoot>
-              </Popover>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Start Date">
+                  <input
+                    type="date"
+                    value={tempFilters.dateRange.start}
+                    onChange={(e) =>
+                      setTempFilters((prev) => ({
+                        ...prev,
+                        dateRange: { ...prev.dateRange, start: e.target.value },
+                      }))
+                    }
+                    className="flex h-8 w-full rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </Field>
+                <Field label="End Date">
+                  <input
+                    type="date"
+                    value={tempFilters.dateRange.end}
+                    onChange={(e) =>
+                      setTempFilters((prev) => ({
+                        ...prev,
+                        dateRange: { ...prev.dateRange, end: e.target.value },
+                      }))
+                    }
+                    className="flex h-8 w-full rounded-[10px] border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </Field>
+              </div>
             </div>
 
             {/* Column Sort Order */}
