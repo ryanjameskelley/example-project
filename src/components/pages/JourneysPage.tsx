@@ -74,8 +74,8 @@ import {
 } from '@/components/molecules/JourneyStepNode';
 import { StepSettingsDrawer } from '@/components/molecules/StepSettingsDrawer';
 import { TestWorkflowDrawer } from '@/components/molecules/TestWorkflowDrawer';
-import { EditJourneyDialog } from '@/components/molecules/EditJourneyDialog';
-import { CopyJourneyDialog } from '@/components/molecules/CopyJourneyDialog';
+import { EditJourneyDialog } from '@/components/molecules/dialogs/EditJourneyDialog';
+import { CopyJourneyDialog } from '@/components/molecules/dialogs/CopyJourneyDialog';
 import {
   Empty,
   EmptyContent,
