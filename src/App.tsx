@@ -8,9 +8,7 @@
 import { useState } from 'react'
 import { SearchList, SearchListItem } from '@/components/molecules/SearchList'
 import { JourneysPage } from '@/components/pages/JourneysPage'
-import { VitalsPage } from '@/components/pages/VitalsPage'
 import { Settings } from '@/components/pages/settings/Settings'
-import { CalendarPage } from '@/components/pages/CalendarPage'
 import { TooltipProvider } from '@/components/atoms/tooltip'
 
 interface Prototype {
@@ -25,20 +23,10 @@ const prototypes: Record<string, Prototype> = {
     description: 'User journey prototypes',
     component: JourneysPage,
   },
-  vitals: {
-    name: 'Vitals',
-    description: 'Healthcare vitals monitoring table',
-    component: VitalsPage,
-  },
   settings: {
     name: 'Settings',
     description: 'Settings page',
     component: Settings,
-  },
-  calendar: {
-    name: 'Calendar',
-    description: 'Calendar page',
-    component: CalendarPage,
   },
   // Add more prototypes here
 }

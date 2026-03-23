@@ -3,8 +3,6 @@ import { AppLayout } from '@/components/atoms/AppLayout';
 import { Button } from '@/components/atoms/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/molecules/PageTabs';
 import { PanelLeft } from 'lucide-react';
-import { SettingsCalendar } from './SettingsCalendar';
-import { SettingsVitals } from './SettingsVitals';
 
 const TABS = ['billing', 'calendar', 'vitals', 'logs', 'contacts', 'communications', 'webhooks', 'admin'] as const;
 type Tab = typeof TABS[number];
@@ -62,13 +60,7 @@ export function Settings() {
         </div>
 
         {/* Tab content */}
-        <TabsContent value="calendar" className="mt-0">
-          <SettingsCalendar />
-        </TabsContent>
-        <TabsContent value="vitals" className="mt-0">
-          <SettingsVitals />
-        </TabsContent>
-        {(['billing', 'logs', 'contacts', 'communications', 'webhooks', 'admin'] as const).map((tab) => (
+        {TABS.map((tab) => (
           <TabsContent key={tab} value={tab} className="mt-0" />
         ))}
       </Tabs>
