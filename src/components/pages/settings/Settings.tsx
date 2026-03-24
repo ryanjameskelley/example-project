@@ -3,6 +3,8 @@ import { AppLayout } from '@/components/atoms/AppLayout';
 import { Button } from '@/components/atoms/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/molecules/PageTabs';
 import { PanelLeft } from 'lucide-react';
+import { SettingsCalendar } from './SettingsCalendar';
+import { SettingsVitals } from './SettingsVitals';
 
 const TABS = ['billing', 'calendar', 'vitals', 'logs', 'contacts', 'communications', 'webhooks', 'admin'] as const;
 type Tab = typeof TABS[number];
@@ -20,7 +22,7 @@ const TAB_META: Record<Tab, { title: string; description: string }> = {
 
 export function Settings() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState<Tab>('calendar');
+  const [activeTab, setActiveTab] = useState<Tab>('vitals');
 
   const meta = TAB_META[activeTab];
 
@@ -60,7 +62,13 @@ export function Settings() {
         </div>
 
         {/* Tab content */}
-        {TABS.map((tab) => (
+        <TabsContent value="calendar" className="mt-0">
+          <SettingsCalendar />
+        </TabsContent>
+        <TabsContent value="vitals" className="mt-0">
+          <SettingsVitals />
+        </TabsContent>
+        {(['billing', 'logs', 'contacts', 'communications', 'webhooks', 'admin'] as const).map((tab) => (
           <TabsContent key={tab} value={tab} className="mt-0" />
         ))}
       </Tabs>

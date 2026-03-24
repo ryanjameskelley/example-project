@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Check, HeartPulse } from 'lucide-react'
+import { ArrowUpRight, Check, ChevronDown, HeartPulse, Phone, Video, MessageSquare } from 'lucide-react'
 import { VitalItem, type VitalReadingType, type VitalItemSegment } from '@/components/molecules/VitalItem'
 import { BloodPressureReading } from '@/components/molecules/BloodPressureReading'
 import { OtherReading } from '@/components/molecules/OtherReading'
@@ -29,6 +29,20 @@ import {
   BreadcrumbSeparator,
 } from '@/components/atoms/breadcrumb'
 import { cn } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/atoms/Select'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from '@/components/molecules/DropdownMenu'
+import { DateSpanRoot, DateSpanTrigger, DateSpanCalendar } from '@/components/molecules/date/DateSpan'
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -622,27 +636,30 @@ const ContactsDialogNav = React.forwardRef<HTMLDivElement, ContactsDialogNavProp
   ({ activeItem = 'All Contacts', onSelect, className }, ref) => (
     <div
       ref={ref}
-      className={cn('hidden md:flex flex-col w-[200px] border-r bg-gray-50 py-3 gap-0.5 px-2 flex-shrink-0', className)}
+      className={cn('hidden md:flex flex-col w-[200px] border-r bg-gray-50 flex-shrink-0', className)}
     >
-      {contactsNav.map((item) => {
-        const isActive = activeItem === item.name
-        return (
-          <button
-            key={item.name}
-            type="button"
-            onClick={() => onSelect?.(item.name)}
-            className={cn(
-              'flex items-center gap-2 w-full h-8 px-2 rounded-md text-sm transition-colors outline-none focus:outline-none',
-              isActive
-                ? 'bg-[#EBEBEB] text-foreground font-medium'
-                : 'text-muted-foreground hover:bg-[#EBEBEB]/60 hover:text-foreground'
-            )}
-          >
-            <item.icon className="h-4 w-4 flex-shrink-0" />
-            <span>{item.name}</span>
-          </button>
-        )
-      })}
+      {/* Nav items */}
+      <div className="py-3 px-2 flex flex-col gap-0.5">
+        {contactsNav.map((item) => {
+          const isActive = activeItem === item.name
+          return (
+            <button
+              key={item.name}
+              type="button"
+              onClick={() => onSelect?.(item.name)}
+              className={cn(
+                'flex items-center gap-2 w-full h-8 px-2 rounded-md text-sm transition-colors outline-none focus:outline-none',
+                isActive
+                  ? 'bg-[#EBEBEB] text-foreground font-medium'
+                  : 'text-muted-foreground hover:bg-[#EBEBEB]/60 hover:text-foreground'
+              )}
+            >
+              <item.icon className="h-4 w-4 flex-shrink-0" />
+              <span>{item.name}</span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 )
@@ -659,6 +676,13 @@ interface ContactsDialogContentAreaProps {
 
 function ContactsDialogContentArea({ className, children }: ContactsDialogContentAreaProps) {
   const [view, setView] = React.useState<ContentView>('vitals')
+  const [dateRange, setDateRange] = React.useState<{ from?: Date; to?: Date }>({})
+  const [program, setProgram] = React.useState<string>('')
+  const [thresholds, setThresholds] = React.useState<string[]>([])
+  const [timezone, setTimezone] = React.useState<string>('')
+
+  const toggleThreshold = (t: string) =>
+    setThresholds((prev) => prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t])
   const [detailType, setDetailType] = React.useState<VitalReadingType>('blood-pressure')
 
   function openDetail(type: VitalReadingType) {
@@ -717,20 +741,108 @@ function ContactsDialogContentArea({ className, children }: ContactsDialogConten
   return (
     <main className={cn('flex flex-1 flex-col overflow-hidden', className)}>
       <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-        {breadcrumb}
+        <ArrowUpRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        <div className="flex-1 min-w-0">{breadcrumb}</div>
+        <div className="flex flex-shrink-0">
+          <button
+            type="button"
+            title="Call"
+            className="flex items-center justify-center h-8 w-8 rounded-[10px] text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+          >
+            <Phone className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Video call"
+            className="flex items-center justify-center h-8 w-8 rounded-[10px] text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+          >
+            <Video className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            title="Message"
+            className="flex items-center justify-center h-8 w-8 rounded-[10px] text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </header>
 
       {view === 'vitals' && !children && (
         <div className="flex flex-1 flex-col overflow-hidden relative">
-          <div className="absolute top-0 left-0 right-0 z-10 flex flex-col sm:flex-row gap-2 p-4 pb-2 bg-white/70 backdrop-blur-sm">
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => setView('add-blood-pressure')}>
-              Add blood pressure reading
-            </Button>
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => setView('add-other-reading')}>
-              Add other reading
-            </Button>
+          <div className="absolute top-0 left-0 right-0 z-10 flex flex-col gap-2 p-4 pb-3 bg-white/70 backdrop-blur-sm">
+            {/* Filters row */}
+            <div className="flex gap-2 overflow-x-auto">
+              <Popover>
+                <DateSpanRoot
+                  value={dateRange.from ? { from: dateRange.from, to: dateRange.to } : undefined}
+                  onChange={(range) => setDateRange({ from: range?.from, to: range?.to })}
+                >
+                  <DateSpanTrigger className="h-8 text-xs flex-shrink-0" />
+                  <DateSpanCalendar />
+                </DateSpanRoot>
+              </Popover>
+
+              <Select value={program} onValueChange={setProgram}>
+                <SelectTrigger className="h-8 text-xs w-[130px] flex-shrink-0">
+                  <SelectValue placeholder="Program" />
+                </SelectTrigger>
+                <SelectContent>
+                  {['Diabetes Management', 'Hypertension', 'Weight Loss', 'Cardiac Care'].map((p) => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="h-8 pl-3 pr-2 text-xs rounded-[10px] border border-input bg-background flex items-center gap-1.5 flex-shrink-0 w-[130px] text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                  >
+                    <span className="flex-1 overflow-x-auto whitespace-nowrap scrollbar-none text-left">
+                      {thresholds.length === 0 ? 'Threshold' : thresholds.join(', ')}
+                    </span>
+                    <ChevronDown className="h-3.5 w-3.5 opacity-50 flex-shrink-0" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {['Critical', 'Warning', 'Normal'].map((t) => (
+                    <DropdownMenuCheckboxItem
+                      key={t}
+                      checked={thresholds.includes(t)}
+                      onCheckedChange={() => toggleThreshold(t)}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      {t}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Select value={timezone} onValueChange={setTimezone}>
+                <SelectTrigger className="h-8 text-xs w-[150px] flex-shrink-0">
+                  <SelectValue placeholder="Timezone" />
+                </SelectTrigger>
+                <SelectContent>
+                  {['America/New_York', 'America/Chicago', 'America/Los_Angeles', 'Europe/London', 'Asia/Tokyo'].map((tz) => (
+                    <SelectItem key={tz} value={tz}>{tz.replace(/_/g, ' ')}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Action buttons row */}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button variant="outline" size="sm" className="flex-1" onClick={() => setView('add-blood-pressure')}>
+                Add blood pressure reading
+              </Button>
+              <Button variant="outline" size="sm" className="flex-1" onClick={() => setView('add-other-reading')}>
+                Add other reading
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-4 pb-4 pt-[104px] sm:pt-[60px]">
+          <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-4 pb-4 pt-[152px] sm:pt-[108px]">
             {VITALS_DATA.map((item) => (
               <button
                 key={item.id}
@@ -793,14 +905,14 @@ const ContactsDialogContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DialogContent
     ref={ref}
-    className={cn('overflow-hidden p-0 md:max-h-[560px] md:max-w-[720px] lg:max-w-[820px]', className)}
+    className={cn('overflow-hidden p-0 w-[calc(100vw-48px)] max-w-[calc(100vw-48px)] h-[calc(100vh-48px)] max-h-[calc(100vh-48px)]', className)}
     {...props}
   >
     <ContactsDialogTitle className="sr-only">Contacts</ContactsDialogTitle>
     <ContactsDialogDescription className="sr-only">
       Browse and manage your contacts.
     </ContactsDialogDescription>
-    <div className="flex h-[540px]">{children}</div>
+    <div className="flex h-full">{children}</div>
   </DialogContent>
 ))
 ContactsDialogContent.displayName = 'ContactsDialogContent'
